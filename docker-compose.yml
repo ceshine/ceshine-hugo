@@ -7,3 +7,4 @@ web:
         - 80:1313
     volumes_from:
         - content
+    restart: on-failure
