@@ -1,0 +1,4 @@
+baseURL = "https://hugo-test.herokuapp.com"
+languageCode = "en-us"
+title = "Life is short"
+theme = "purehugo"
