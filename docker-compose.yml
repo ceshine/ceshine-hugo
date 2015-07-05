@@ -1,0 +1,9 @@
+content:
+    build: dockerfiles/content/
+
+web:
+    build: dockerfiles/hugo/
+    ports:
+        - 8888:1313
+    volumes_from:
+        - content
