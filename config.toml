@@ -2,3 +2,9 @@ baseURL = "http://ares.ceshine.net"
 languageCode = "en-us"
 title = "Life is short"
 theme = "purehugo"
+Paginate = 5
+
+[params]
+   twitter = "ceshine_en"
+   github = "ceshine"
+   google_analytics = "UA-24180048-3"
