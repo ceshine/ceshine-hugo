@@ -13,9 +13,9 @@ Because my Internet connection is metered, I'd like to change it to the free mir
 
 And this command does the trick:
 
-{{< highlight bash >}}
+``` bash
 sed -i 's/http:\/\/archive.ubuntu.com/http:\/\/mirror.internode.on.net\/pub\/ubuntu/g' /etc/apt/sources.list
-{{< /highlight >}}
+```
 
 Change **http:\/\/mirror.internode.on.net\/pub\/ubuntu** to the url of whatever mirror you prefer.
 
