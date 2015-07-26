@@ -14,12 +14,12 @@ Two command-line utilities I've found quite useful: **shuf** and **[sample](http
 
 **shuf** can be used to randomly get N record from the population:
 
-    :::bash
+```bash
     shuf -n 100 training_data.csv
-
+```
 **sample** can be used to randomly extract N% of the data:
 
-    :::bash
+```bash
     sample -r 0.3 training_data.csv
-
+```
 These are really easy examples, but should suffice in most cases. You can check out the documentation yourself and get creative if you feel like it.
