@@ -1,4 +1,4 @@
-baseURL = "http://ares.ceshine.net"
+baseURL = "http://blog.ceshine.net"
 languageCode = "en-us"
 title = "Life is short"
 theme = "purehugo"
