@@ -7,7 +7,7 @@ title = "Plotly Example: Deaths Caused By Cancer in Taiwan"
 
 +++
 
-I've been looking for a way for me to easlily develop and share data visualization. I don't want static image files because of their inflexibility, and creating every plots using [D3.js](http://d3js.org/) seems like an overkill. [Plotly](https://plot.ly/), a web service that creates plots based on D3 and provides API for both Python and R, has so far been a very good match for my needs. To get started, you can read this [tutorial](http://blog.revolutionanalytics.com/2014/05/ropensci-and-plotly-make-ggplots-shareable-interactive-and-with-d3.html) for R, or the official [documentation](https://plot.ly/r/).
+I've been looking for a way for me to easily develop and share data visualization. I don't want static image files because of their inflexibility, and creating every plots using [D3.js](http://d3js.org/) seems like an overkill. [Plotly](https://plot.ly/), a web service that creates plots based on D3 and provides API for both Python and R, has so far been a very good match for my needs. To get started, you can read this [tutorial](http://blog.revolutionanalytics.com/2014/05/ropensci-and-plotly-make-ggplots-shareable-interactive-and-with-d3.html) for R, or the official [documentation](https://plot.ly/r/).
 
 In this post I'm going to demonstrate Plotly by analyzing a data set obtained from [data.gov.tw](http://data.gov.tw/node/8154). The data set contains the number of deaths every year in Taiwan from 1991 to 2014 that were caused by cancer, categorized by the type of cancer, location, sex, and age group. There were a change of ways of categorizing cancers in 2008, so for convenience we're going to focus on the data after the change.
 
