@@ -9,7 +9,7 @@ title = "Beijing PM2.5 Concentration History 2015-2016"
 
 Plotted with R package **dygraphs**. (Click the image to access the interactive version)
 
-[![PM 2.5 Concentration](images/pm25.png)](htmls/pm25.html)
+[![PM 2.5 Concentration](/images/pm25.png)](htmls/pm25.html)
 
 [Source: US Embassy](http://www.stateair.net/web/historical/1/1.html)
 
