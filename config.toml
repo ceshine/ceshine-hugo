@@ -6,6 +6,6 @@ Paginate = 5
 
 [params]
    disqusShortname = "ceshine-lis-blog"
-   twitter = "ceshine_en"
-   github = "ceshine"
+   twitterName = "ceshine_en"
+   githubName = "ceshine"
    google_analytics = "UA-24180048-3"
