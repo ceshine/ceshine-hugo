@@ -5,6 +5,7 @@ theme = "purehugo"
 Paginate = 5
 
 [params]
+   disqusShortname = "ceshine-lis-blog"
    twitter = "ceshine_en"
    github = "ceshine"
    google_analytics = "UA-24180048-3"
