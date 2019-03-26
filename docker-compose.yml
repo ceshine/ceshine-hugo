@@ -1,0 +1,10 @@
+content:
+    build: dockerfiles/content/
+
+web:
+    build: dockerfiles/hugo/
+    ports:
+        - 80:1313
+    volumes_from:
+        - content
+    restart: on-failure
