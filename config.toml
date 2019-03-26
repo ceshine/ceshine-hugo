@@ -1,4 +1,4 @@
-baseURL = "https://blog.ceshine.net"
+baseURL = "https://blog.ceshine.net/"
 languageCode = "en"
 title = "Life is short"
 theme = "cactus-plus"
@@ -28,7 +28,7 @@ hasCJKLanguage = false
    enableShare = true
 
 	# Navigation links
-	home = "/"
+	home = ""
 	archive = ""
 
    # show latest posts in single page
