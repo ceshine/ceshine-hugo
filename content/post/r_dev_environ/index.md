@@ -1,6 +1,7 @@
 ---
 date: 2019-01-03T12:02:54.970Z
 Description: "Using Docker and the packrat package"
+Categories: [ "Machine Learning" ]
 title: "More Portable, Reproducible R Development Environment"
 tags:
   - docker

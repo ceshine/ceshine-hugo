@@ -1,7 +1,7 @@
 +++
 Description = "Does it benefits those who still use Pascal consumer cards?"
 Tags = ["pytorch", "deep_learning"]
-Categories = []
+Categories = ["Machine Learning"]
 date = "2019-03-26T19:54:30+08:00"
 title = "Use NVIDIA Apex for Easy Mixed Precision Training in PyTorch"
 +++

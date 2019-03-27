@@ -1,7 +1,7 @@
 +++
 Categories = [ "Python" ]
 Description = "This should help you avoid a common pitfall you'd encounter trying to use ipython notebooks in virtualenv"
-Tags = []
+Tags = ["python"]
 date = "2014-04-29T13:54:38+08:00"
 title = "Tip for using iPython Notebooks in virtualenv"
 +++

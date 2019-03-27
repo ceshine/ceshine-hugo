@@ -1,7 +1,7 @@
 +++
 Categories = [ "Machine Learning" ]
 Description = ""
-Tags = []
+Tags = ["machine_learning", "bayesian"]
 date = "2015-07-11T17:54:38+10:00"
 title = "Bayesian Logistic Regression using PyMC3"
 +++

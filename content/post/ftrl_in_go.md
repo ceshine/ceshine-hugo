@@ -2,7 +2,7 @@
 
 Categories = [ "Machine Learning", "Golang" ]
 Description = "Using Go to solve Kaggle Avazu challenge by implementing FTRL-Proximal Algorithm"
-Tags = []
+Tags = ["golang", "machine_learning"]
 date = "2014-12-09T17:42:55+10:00"
 title = "Implement FTRL-Proximal Algorithm in Go - Part 1"
 

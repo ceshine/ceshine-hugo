@@ -1,7 +1,7 @@
 +++
 Categories = ["Docker"]
 Description = ""
-Tags = []
+Tags = ["docker"]
 date = "2015-07-28T17:00:36+10:00"
 title = "Migrated the Blog from Pelican to Hugo"
 +++

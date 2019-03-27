@@ -1,7 +1,7 @@
 +++
 Categories = [ "Data Engineering" ]
 Description = "Taking random samples from a large set"
-Tags = []
+Tags = ["data_eng"]
 date = "2015-01-22T10:42:55+10:00"
 title = "Random Sampling at the Command Line"
 +++

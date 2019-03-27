@@ -1,7 +1,7 @@
 +++
 Categories = [ "Docker" ]
 Description = ""
-Tags = []
+Tags = ["docker"]
 date = "2015-07-07T17:42:55+10:00"
 title = "Change Sources of Ubuntu in a Docker image"
 

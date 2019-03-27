@@ -1,7 +1,7 @@
 +++
 Categories = ["golang"]
 Description = ""
-Tags = []
+Tags = ["golang"]
 date = "2015-08-29T15:26:20+08:00"
 title = "First Step of Web Scraping in Go"
 +++

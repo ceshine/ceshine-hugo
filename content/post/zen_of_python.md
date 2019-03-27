@@ -1,7 +1,7 @@
 +++
 Categories = [ "Python" ]
 Description = ""
-Tags = []
+Tags = ["python"]
 date = "2013-10-07T13:54:38+08:00"
 title = "Dicussing the zen of python"
 +++

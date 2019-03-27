@@ -2,7 +2,7 @@
 
 Categories = [ "Machine Learning", "Golang" ]
 Description = "Concurrent version of the previous implementation of FTRL-Proximal Algorithm"
-Tags = []
+Tags = ["golang", "machine_learning"]
 date = "2015-01-02T17:42:55+10:00"
 title = "Implement FTRL-Proximal Algorithm in Go - Part 2"
 

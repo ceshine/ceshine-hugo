@@ -1,7 +1,7 @@
 +++
 Categories = ["Visualization"]
-Description = ""
-Tags = []
+Description = "Plotted with R package dygraphs."
+Tags = ["dataviz", "rstat"]
 date = "2016-07-13T20:04:17+08:00"
 title = "Beijing PM2.5 Concentration History 2015-2016"
 

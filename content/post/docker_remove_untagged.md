@@ -2,6 +2,7 @@
 date = "2015-07-05T18:09:20+10:00"
 draft = false
 title = "Docker: Remove All Untagged Images"
+tags = ["docker"]
 categories = [
   "Docker"
 ]

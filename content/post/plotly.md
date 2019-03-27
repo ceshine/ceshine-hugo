@@ -1,7 +1,7 @@
 +++
 Categories = ["Visualization", "R"]
 Description = ""
-Tags = []
+Tags = ["dataviz", "rstat"]
 date = "2015-08-13T17:54:30+08:00"
 title = "Plotly Example: Deaths Caused By Cancer in Taiwan"
 

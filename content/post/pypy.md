@@ -1,7 +1,7 @@
 +++
 Categories = [ "Python" ]
 Description = "Using PyPy could help a lot in machine learning challenges/competitions"
-Tags = []
+Tags = ["python"]
 date = "2014-11-29T13:54:38+08:00"
 title = "The Power of PyPy"
 +++

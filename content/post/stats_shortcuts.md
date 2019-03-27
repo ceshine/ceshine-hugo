@@ -1,7 +1,7 @@
 +++
 Categories = [ "Python", "Statistics" ]
 Description = "confidence interval, correlation coefficient, and linear regression"
-Tags = []
+Tags = ["python", "stats"]
 date = "2014-02-25T17:54:38+08:00"
 title = "Shortcuts for some common statistical functions"
 +++
@@ -33,7 +33,7 @@ from numpy import corrcoef
 x = [1, 2, 3, 4, 100]
 y = [6, 7, 8, 9, 10]
 
-r = corrcoef(x, y)  
+r = corrcoef(x, y)
 
 >>> r
 array([[ 1., 0.72499943],
