@@ -1,7 +1,6 @@
 ---
 slug: umap-on-rapids-15x-speedup
 date: 2019-03-30T07:16:26.582Z
-author: ""
 title: "UMAP on RAPIDS (15x Speedup)"
 description: "Exploring the new GPU acceleration library from NVIDIA"
 images:
