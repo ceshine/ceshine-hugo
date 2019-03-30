@@ -51,7 +51,7 @@ The source code to this post is provided in this repository: **[ceshine/quantile
 
 The most important piece of the puzzle is the loss function, as introduced in Part 1:
 
-{{< figure src="1*Is3CINEjFT2N2bOCbh8aOg.png" caption="*Loss Function of Quantile Regression ([Source](https://www.wikiwand.com/en/Quantile_regression)" >}}
+{{< figure src="1*Is3CINEjFT2N2bOCbh8aOg.png" caption="Loss Function of Quantile Regression ([Source](https://www.wikiwand.com/en/Quantile_regression))" >}}
 
 The tricky part is how to deal with the indicator function. Using if-else statement on each example would be very inefficient. The smarter way to do it is to calculate both y * τ and y * (τ-1) and take element-wise maximums (this pair will always have one positive and one negative number except when y=0. τ is in (0, 1) range.).
 
