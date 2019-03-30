@@ -34,7 +34,7 @@ url: /post/umap-on-rapids-15x-speedup/
 
 This NeurIPS 2018 talk provides an overview and vision of RAPIDS when it was launched:
 
-{{< youtube k9E-YSWQxIU >}}
+{{< youtube id="k9E-YSWQxIU" class="youtube" >}}
 
 The RAPIDS project also provides [some example notebook](https://github.com/rapidsai/notebooks). Most prominently [the cuDF + Dask-XGBoost Mortgage example](https://github.com/rapidsai/notebooks/blob/branch-0.6/mortgage/E2E.ipynb). (The link to the dataset in the notebook is broken. [Here’s the correct one](https://rapidsai.github.io/datasets/).)
 
