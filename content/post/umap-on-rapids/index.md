@@ -27,7 +27,7 @@ url: /post/umap-on-rapids-15x-speedup/
 
 # RAPIDS
 
-[RAPIDS](https://rapids.ai/) is a collection of Python libraries from NVIDIA that enables the users to do their data science pipelines entirely on GPUs. The two main components are `cuDF` and `cuML`. The `cuDR` library provides Pandas-like data frames, and `cuML` mimics `scikit-learn`. There’s also a `cuGRAPH` graph analytics library that have been introduced in the latest release ([0.6 on March 28](https://medium.com/rapids-ai/the-road-to-1-0-building-for-the-long-haul-657ae1afdfd6)).
+[RAPIDS](https://rapids.ai/) is a collection of Python libraries from NVIDIA that enables the users to do their data science pipelines entirely on GPUs. The two main components are `cuDF` and `cuML`. The `cuDF` library provides Pandas-like data frames, and `cuML` mimics `scikit-learn`. There’s also a `cuGRAPH` graph analytics library that have been introduced in the latest release ([0.6 on March 28](https://medium.com/rapids-ai/the-road-to-1-0-building-for-the-long-haul-657ae1afdfd6)).
 
 > The RAPIDS suite of open source software libraries gives you the freedom to execute end-to-end data science and analytics pipelines entirely on GPUs. RAPIDS is incubated by [NVIDIA®](https://nvidia.com) based on years of accelerated data science experience. RAPIDS relies on [NVIDIA CUDA®](https://developer.nvidia.com/cuda-toolkit) primitives for low-level compute optimization, and exposes GPU parallelism and high-bandwidth memory speed through user-friendly Python interfaces.
 
