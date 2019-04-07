@@ -20,8 +20,8 @@ url: /post/use-visual-studio-code-to-develop-python-programs/
 {{< figure src="featuredImage.jpeg" caption="[Photo Credit](https://pixabay.com/en/drop-of-water-dew-close-up-nature-3671613/)" >}}
 
 Joel Grus offered his critique of Jupyter Notebook in a recent talk. I think most of his points are valid and recommend you to [read the slides](https://docs.google.com/presentation/d/1n2RlMdmv1p25Xy5thJUhkKGvjtV-dkAIsUXP-AL4ffI/edit#slide=id.g3cbe089527_0_12) or [watch the talk](https://www.youtube.com/watch?v=7jiPeIFXb6U). However, one thing that caught my attention is Mr. Grus’s Python IDE(Visual Studio Code). It looks so good that I decided to give it a try, which led to this blog post.
-[**I Don't Like Notebooks - Joel Grus - #JupyterCon 2018**
-*I Don't Like Notebooks hi, I'm Joel, and I don't like notebooks Joel Grus (@joelgrus) #JupyterCon 2018*docs.google.com](https://docs.google.com/presentation/d/1n2RlMdmv1p25Xy5thJUhkKGvjtV-dkAIsUXP-AL4ffI/edit#slide=id.g362da58057_0_1)
+
+*([I Don't Like Notebooks - Joel Grus - #JupyterCon 2018](https://docs.google.com/presentation/d/1n2RlMdmv1p25Xy5thJUhkKGvjtV-dkAIsUXP-AL4ffI/edit#slide=id.g362da58057_0_1))*
 
 *Some disclaimers first: Which IDE to use is a very personal choice. I don’t claim that Visual Studio Code is the best Python IDE that everyone should use. This is just my opinionated review, and what works best for my use case might not work best for yours.*
 
