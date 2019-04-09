@@ -26,8 +26,6 @@ url: /post/quantile-regression-part-1/
 
 {{< figure src="featuredImage.jpeg" caption="[Photo Credit](https://pixabay.com/en/oldtimer-mga-convertible-sports-car-3508052/)" >}}
 
-**What is it and How does it work?**
-
 I’m starting to think prediction interval[1] should be a required output of every real-world regression model. You need to know the uncertainty behind each point estimation. Otherwise the predictions are often not actionable.
 
 For example, consider historical sales of an item under a certain circumstance are (10000, 10, 50, 100). Standard least squares method gives you an estimate of 2540. If you restock based on that prediction, you’re likely going to significantly overstock 75% of the time. The prediction is almost useless. But if you estimate the quantiles of the data distribution, the estimated 5th, 50th, and 95th percentiles are 16, 75, 8515, which are much more informative than the 2540 single estimation. It is also the idea of quantile regression.

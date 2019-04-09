@@ -6,8 +6,6 @@ date = "2019-03-26T19:54:30+08:00"
 title = "Use NVIDIA Apex for Easy Mixed Precision Training in PyTorch"
 +++
 
-**Does it benefits those who still use Pascal consumer cards?**
-
 ![](/images/apex/featuredImage.jpeg)*Photo by [Sam Power](https://unsplash.com/photos/6aP9EGsYE3s?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)*
 
 The Apex project from NVIDIA is touted as a PyTorch extension that let developers do mixed precision and distributed training “[with 4 or fewer line changes to the existing code](https://news.developer.nvidia.com/introducing-apex-pytorch-extension-with-tools-to-realize-the-power-of-tensor-cores/?ncid=--43654)”. It’s been out for a while (circa June 2018) and seems to be well received ([huggingface/pytorch-pretrained-BERT](https://github.com/huggingface/pytorch-pretrained-BERT) uses Apex to do 16-bit training). So I decided to give it a try. This post documents what I’ve learned.

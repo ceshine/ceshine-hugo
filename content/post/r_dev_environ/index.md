@@ -8,7 +8,6 @@ tags:
   - rstats
 url: /post/more-portable-reproducible-r-development-environment/
 ---
-**Using Docker and the packrat package**
 
 {{< figure src="featuredImage.jpeg" caption="[Photo Credit](https://unsplash.com/photos/BzrrAFlc2uk)" >}}
 

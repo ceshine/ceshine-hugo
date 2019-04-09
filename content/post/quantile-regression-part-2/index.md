@@ -27,8 +27,6 @@ url: /post/quantile-regression-part-2/
 
 {{< figure src="featuredImage.jpeg" caption="[Photo Credit](https://pixabay.com/en/pier-jetty-sunset-sea-ocean-1467984/)" >}}
 
-**An Overview of Tensorflow, Pytorch, LightGBM implementations**
-
 We’ve discussed what quantile regression is and how does it work in Part 1. In this Part 2 we’re going to explore how to train quantile regression models in deep learning models and gradient boosting trees.
 
 # Source Code
