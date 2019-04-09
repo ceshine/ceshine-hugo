@@ -371,6 +371,13 @@ em, i {
     color: #111;
 }
 
+.post .subtitle{
+    font: normal 1.5rem "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #b2b9be;
+    margin: -15px 0 20px 0;
+    letter-spacing: 1px;
+}
+
 .post h2.headline {
     font: normal 0.9rem "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin: -5px 0 0 0;
@@ -384,11 +391,12 @@ em, i {
     margin: -5px 0 40px 0;
     color: #b2b9be;
     font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+    /* text-transform: uppercase; */
+        letter-spacing: 2px;
     margin-top: 5px;
     display: block;
 }
+
 
 #post-list h2 {
     font: normal 17px/1.5em "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
