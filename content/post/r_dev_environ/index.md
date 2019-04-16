@@ -37,7 +37,7 @@ The following sections will give you some more concrete instructions on how to c
 
 (This section assume you already [installed Docker in your system](https://www.docker.com/get-started), and your operating system is Unix-like.)
 
-The original *rocker/rstudio* image misses some system packages required by *devtools *and* tidyverse*. The following Dockerfile installs them for you (download and run `docker build -t &lt;image_name&gt; -f Dockerfile .`).
+The original *rocker/rstudio* image misses some system packages required by *devtools *and* tidyverse*. The following Dockerfile installs them for you (download and run `docker build -t <image_name> -f Dockerfile .`).
 
 {{< gist ceshine 3b9b4ae613c57a746eb980944a014a7d >}}
 
@@ -60,13 +60,13 @@ Create a project in RStudio if you haven’t already. Open* Tools/Project Option
 
 {{< figure src="1*pNiFT_w7osVayg0ps3GWbA.png" width="80%">}}
 
-Now install all the required packages as usual. When you are done. Run `packrat::snapshot()` to tell *packrat *to write down all the packages you’ve installed and their respective versions.
+Now install all the required packages as usual. When you are done. Run `packrat::snapshot()` to tell *packrat* to write down all the packages you’ve installed and their respective versions.
 
 Inside `packet/` directory, you’ll want to add `init.R`, `packrat.lock`, and `packrat.opts` to your version control system. Everything else is disposable.
 
 {{< figure src="1*_bzUZLDwylM12o5LzhtX5A.png">}}
 
-When you clone the code to a new system, or screw up the library, simply (re-)open the project and run `packrat::restore()`. It tells *packrat *to (re-)install the packages according to the file `packrat.lock`, so you’ll have the exactly the same library as before.
+When you clone the code to a new system, or screw up the library, simply (re-)open the project and run `packrat::restore()`. It tells *packrat* to (re-)install the packages according to the file `packrat.lock`, so you’ll have the exactly the same library as before.
 
 Not only *packrat* keeps tracks of packages installed via `install.packages`, those installed via `devtools:install_github` are also included. Here’s what the entry would look like in `packrat.lock`:
 
