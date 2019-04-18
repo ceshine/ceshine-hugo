@@ -49,7 +49,7 @@ Here are two good tutorials on TextRank algorithm: [Document Summarization using
 
 # An Example
 
-We’re going to use the texts from the first two sections of the ["Neo-Nazism" entry on Wikipedia](https://www.wikiwand.com/en/Neo-Nazism)as an example to demonstrate the web interface and to visualize the associated internal graph created by TextRank.
+We’re going to use the texts from the first two sections of the ["Neo-Nazism" entry on Wikipedia](https://www.wikiwand.com/en/Neo-Nazism) as an example to demonstrate the web interface and to visualize the associated internal graph created by TextRank.
 
 An static snapshot of the web interface can be found here: **[Demo Page for TextRank Algorithm (EN)](https://publicb2.ceshine.net/file/ceshine-public/misc/textrank_demo.html)**.
 
