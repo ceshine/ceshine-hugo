@@ -14,7 +14,7 @@ url: /post/cjk-unicode/
 
 I have a situation where an automatic mechanism to remove texts in a dataset that are not in Chinese. The dataset contains characters from Traditional Chinese, Simplified Chinese, English, and on some rare occasion French, Arabic, and other languages.
 
-General purpose language detection pacakges (such as [this one](https://pypi.org/project/langdetect/)) produces a lot more false positives than expected. Texts with Chinese characters mixed with latin characters are often classified as different languages. And quite often Chinese texts are classified as Korean, which is very interesting because the dataset does not have any Korean characters.
+General purpose language detection packages (such as [this one](https://pypi.org/project/langdetect/)) produces a lot more false positives than expected. Texts with Chinese characters mixed with latin characters are often classified as different languages. And quite often Chinese texts are classified as Korean, which is very interesting because the dataset does not have any Korean characters.
 
 Since the tasks only requires a binary label (Chinese or not Chinese) for each input, I figure a better approach might be building my own algorithm that utilize the block range information of Unicode.
 
