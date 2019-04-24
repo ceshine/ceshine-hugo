@@ -18,7 +18,7 @@ General purpose language detection packages (such as [this one](https://pypi.org
 
 Since the tasks only requires a binary label (Chinese or not Chinese) for each input, I figure a better approach might be building my own algorithm that utilize the block range information of Unicode.
 
-This post documents what I've learned about CJK characters in Unicode, and presents a better but still inperfect solution.
+This post documents what I've learned about CJK characters in Unicode, and presents a better but still imperfect solution.
 
 # CJK characters in Unicode
 
