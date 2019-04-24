@@ -54,7 +54,7 @@ The "common" block of CJK Unified Ideographs should cover most of the case. We s
 
 I emphasize using Python **3** to simplify things. The default encoding for Python 3 source code is UTF-8, and the language's *str* type contains Unicode characters, meaning any string created using "unicode rocks!", 'unicode rocks!', or the triple-quoted string syntax is stored as Unicode [6].
 
-The following implementation uses `re.search` to search for characters in the specified block(s). Some simple test cases are supplied, along with some incorrect cases, including Japanese texts with only Chinese characters, and a bizarre but common usage of a Japanese character in Tradtional Chinese texts.
+The following implementation uses `re.search` to search for characters in the specified block(s). Some simple test cases are supplied, along with some incorrect cases, including Japanese texts with only Chinese characters, and a bizarre but common usage of a Japanese character in Traditional Chinese texts.
 
 {{< gist ceshine 1f8cd81ce34d89f1429d0928c28d97e4 >}}
 
