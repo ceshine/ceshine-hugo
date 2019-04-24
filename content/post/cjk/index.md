@@ -14,7 +14,7 @@ url: /post/cjk-unicode/
 
 I have a situation where an automatic mechanism to remove texts in a dataset that are not in Chinese. The dataset contains characters from Traditional Chinese, Simplified Chinese, English, and on some rare occasion French, Arabic, and other languages.
 
-General purpose language detection packages (such as [this one](https://pypi.org/project/langdetect/)) produces a lot more false positives than expected. Texts with Chinese characters mixed with latin characters are often classified as different languages. And quite often Chinese texts are classified as Korean, which is very interesting because the dataset does not have any Korean characters.
+General purpose language detection packages (such as [this one](https://pypi.org/project/langdetect/)) produces a lot more false positives than expected. Texts with Chinese characters mixed with Latin characters are often classified as different languages. And quite often Chinese texts are classified as Korean, which is very interesting because the dataset does not have any Korean characters.
 
 Since the tasks only requires a binary label (Chinese or not Chinese) for each input, I figure a better approach might be building my own algorithm that utilize the block range information of Unicode.
 
@@ -30,7 +30,7 @@ So can we take a character out from the unified ideographs and tell if it is a C
 
 > It's basically impossible and largely meaningless. It's the equivalent of asking if "a" is an English letter or a French one. There are some characters where one can guess based on the source information in the Unihan Database that it's traditional Chinese, simplified Chinese, Japanese, Korean, or Vietnamese, but there are too many exceptions to make this really reliable.[1]
 
-The good news is that Korean rarely use Chinese characters in modern days, and Japanese texts in most cases contains their own "hiragana" and "katakana" characters. The other cases with all Chinese characers, unfortunately, might require us to rely on probablistic models that use language features. Distinguishing between Traditional and Simplified Chinese can be also quite difficult as well, and awaits futher research.
+The good news is that Korean rarely use Chinese characters in modern days, and Japanese texts in most cases contains their own "hiragana" and "katakana" characters. The other cases with all Chinese characters, unfortunately, might require us to rely on probabilistic models that use language features. Distinguishing between Traditional and Simplified Chinese can be also quite difficult as well, and awaits further research.
 
 ## Respective Unicode Blocks
 
