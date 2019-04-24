@@ -1,7 +1,7 @@
 ---
 slug: cjk-unicode
 date: 2019-04-24T00:30:57.007Z
-title: "Dectecting Chinese Characters in Unicode Strings"
+title: "Detecting Chinese Characters in Unicode Strings"
 description: "CJK in Unicode and Python 3 implementation"
 tags:
   - nlp
