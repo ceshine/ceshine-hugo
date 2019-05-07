@@ -24,7 +24,7 @@ This post does not intend to cover all kind of plots. Only plots relevant to the
 
 I used [Yet Another Chinese News Dataset](https://www.kaggle.com/ceshine/yet-another-chinese-news-dataset) I published on Kaggle. The two associated notebooks are also published on Kaggle:
 
-1. [[YACND] Starter Notebook v2](https://www.kaggle.com/ceshine/yacnd-starter-notebook-v2?scriptVersionId=12691036): Plotly Express API
+1. [[YACND] Starter Notebook v2](https://www.kaggle.com/ceshine/yacnd-starter-notebook-v2?scriptVersionId=13852976): Plotly Express API
 2. [Starter Kernel (Yet Another Chinese News Dataset)](https://www.kaggle.com/ceshine/starter-kernel-yet-another-chinese-news-dataset?scriptVersionId=12691089): Plotly.py API
 
 # Number of Entries by Source
