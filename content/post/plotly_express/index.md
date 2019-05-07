@@ -73,7 +73,9 @@ Plotly Express Attempt One:
 
 {{< gist ceshine c0ff65a4ed617971384179a178d61e7e >}}
 
-The problem of this approach is that this API only allows stacking the two bars together, instead of grouping them. In this particular context, I think stacking makes it harder for reader to read the chart. So we have to find another way.
+~~The problem of this approach is that this API only allows stacking the two bars together, instead of grouping them. In this particular context, I think stacking makes it harder for reader to read the chart. So we have to find another way.~~
+
+(20190507 Update: Now it's possible to pass `barmode="group"` to `px.bar`.)
 
 Another option is to use the `facet_rol` or `facet_col` parameter:
 
