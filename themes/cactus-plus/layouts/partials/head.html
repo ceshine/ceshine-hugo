@@ -34,4 +34,6 @@
 	{{ range .Site.Params.customCSS }}
 	<link rel="stylesheet" href="{{ $.Site.BaseURL }}{{ . }}">
 	{{ end }}
+
+	{{ partial "mathjax_support.html" . }}
 </head>
