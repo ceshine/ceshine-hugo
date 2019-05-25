@@ -18,7 +18,7 @@ Unlike other feature importance measures, SHAP values are fairly complicated and
 
 <div>$$\phi_{i} = \sum_{S \subset F \backslash \{i\}} \frac{|S|!(|F|-|S|-1)!}{|F|!}[f_{S \cup \{i\}}(x_{S \cup \{i\}}) - f_S(x_S)]$$</div>
 
-> *Shapley regression values* are feature importances for linear models **in the presence of multicollinearity**.
+> *Shapley regression values* are feature importances for linear models **in the presence of multicollinearity**. [1]
 
 *Multicollinearity* means that predictor variables in a regression model are highly correlated. The existence of multicollinearity violates [one of the assumptions of multiple linear regression](https://www.statisticssolutions.com/assumptions-of-multiple-linear-regression/), and the regression coefficients cannot be reliably interpreted as importances.
 
@@ -30,7 +30,7 @@ Shapley regression values can be broken into three parts: the summation, combina
 
 Given a feature subset `$S \subset F$`, where `$F$` is the set of all features. A model `$f_S(x_S)$` is trained with features in `$S$` present, and another model `$f_{S \cup \{i\}}(x_{S \cup \{i\}})$` is trained with an additional feature *i* in interest. Then the above calculate the difference in model predictions from these two models.
 
-This bascially translates to the change in model prediction when a feature *i* is added.
+This basically translates to the change in model prediction when a feature *i* is added.
 
 ## Assign weights
 
@@ -42,7 +42,7 @@ We can reformulate the above as:
 
 ## Summation
 
-Firstly, since we have `${|F|-1}\choose{|S|}$` difference subsets of features with size `|S|`, their weights sums to `${1}/{|F|}$`.
+Firstly, since we have `${|F|-1}\choose{|S|}$` different subsets of features with size `|S|`, their weights sums to `${1}/{|F|}$`.
 
 All the possible subset sizes range from 0 to `$|F| - 1$` (we have to exclude the one feature we want its feature importance calculated). That is `$|F|$` different subset sizes. Combined with the previous result, the weights of all possible feature subsets sum to exactly **one**.
 
@@ -66,7 +66,7 @@ It has been proved that the Shapley value is the only one possible additive feat
 
 <div>$$f(x) = g(x')$$</div>
 
-The explanation model `$g(x')$` gives the same value as the original model `$f(x)$`. (Remember `$x=h_x(x')$`.)
+The explanation model `$g(x')$` gives the same value as the original model `$f(x)$`. (Remember that `$x=h_x(x')$`.)
 
 ## Property 2 (Missingness)
 
@@ -88,7 +88,7 @@ SHAP values makes one major approximation and two optional approximations under 
 
 ## Conditional expectation function
 
-Since most model cannot handles arbitrary pattern of missing inputs, the function `$f(z_S)$` is approximated by a conditional expectation `$E[f(x) | z_S]$`. This comes from *"integrating over samples from the training dataset"* used in Shapley sampling values. When the training dataset is too big, we use a smaller weighted background data set instead. The Python implementation recommends running a K-mean algorithm to create such background data sets.
+Since most model cannot handles arbitrary pattern of missing inputs, the function `$f(z_S)$` is approximated by a conditional expectation `$E[f(x) | z_S]$`. This comes from *"integrating over samples from the training data set"* used in Shapley sampling values. When the training data set is too big, we use a smaller weighted background data set instead. The Python implementation recommends running a K-mean algorithm to create such background data sets.
 
 We can accurately calculate this expectation when the model is a tree model. The training sample counts that goes through the left and right nodes are the weights of their respective predictions.
 
@@ -98,7 +98,7 @@ In many other models we are not able to efficiently calculate the expectation wh
 
 ## Model Linearity
 
-Instead of integrating samples, we can directly fill in the **mean value of the feature in the background data set** if we assume the indepedent features and linear model.
+Instead of integrating samples, we can directly fill in the **mean value of the feature in the background data set** if we assume the independent features and linear model.
 
 # Kernel SHAP (Linear LIME + Shapley values)
 
