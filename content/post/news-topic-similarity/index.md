@@ -30,7 +30,7 @@ In this post we establish a topic similarity measure among the news articles col
 
 BERT stands for **B**idirectional **E**ncoder **R**epresentations from **T**ransformers. It comes from a paper published by Google AI Language in 2018[1]. It is based on the idea that fine-tuning a pretrained language model can help the model achieve better results in the downstream tasks[2][3].
 
-We’ve seen transformers[4] used to train (unidirectional) language models in the OpenAI paper[3]. BERT uses a clever task design (masked language model) to enable training of bidirectional models, and also adds a next sentence prediction task to improve sentence-level understanding. As a result, BERT obtains new state-of-the-art re- sults on eleven natural language processing tasks.
+We’ve seen transformers[4] used to train (unidirectional) language models in the OpenAI paper[3]. BERT uses a clever task design (masked language model) to enable training of bidirectional models, and also adds a next sentence prediction task to improve sentence-level understanding. As a result, BERT obtains new state-of-the-art results on eleven natural language processing tasks.
 
 Here is a great series on BERT. If you’re already familiar with language models, you can start with Part 2 (otherwise you might want to check out Part 1): **[Dissecting BERT Part 2: BERT Specifics](https://medium.com/dissecting-bert/dissecting-bert-part2-335ff2ed9c73)**.
 
