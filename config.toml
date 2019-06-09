@@ -8,7 +8,7 @@ hasCJKLanguage = false
 
 [params]
    author = "Ceshine Lee"
-   bio = "I Write Stuffs."
+   bio = "Technical Notes from a Data Geek."
    description = "Life is Short"
    twitter = "ceshine_en"
    enableRSS = true
