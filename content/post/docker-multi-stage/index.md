@@ -44,6 +44,8 @@ We are going to use `nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04`[[4]]({{<ref "#re
 I personally prefer to use miniconda in Docker images because it's the easiest way to install PyTorch and you get to choose the version of your Python interpreter easily. The following will install `miniconda` into `/opt/conda`:
 
 ```
+FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04 AS BUILD
+
 ARG PYTHON_VERSION=3.7
 ARG CONDA_PYTHON_VERSION=3
 ARG CONDA_DIR=/opt/conda
@@ -92,6 +94,8 @@ When you install PyTorch via conda, an independent CUDA binaries are installed. 
 Here we create a default user, which can improve security, and copy the whole `/opt/conda` directory into the new runtime image.
 
 ```
+FROM nvidia/cuda:10.0-base
+
 ARG CONDA_DIR=/opt/conda
 ARG USERNAME=docker
 ARG USERID=1000
@@ -108,6 +112,8 @@ WORKDIR /home/$USERNAME
 
 COPY --chown=1000 --from=build /opt/conda/. $CONDA_DIR
 ```
+
+The new `FROM` marks the start of the second stage.
 
 Unfortunately, it seems the `--chown=1000` has to be hard-coded. Docker cannot handle `--chown=$USERID`. This is a minor inconvenience.
 
