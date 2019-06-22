@@ -17,7 +17,7 @@ url: /post/docker-multi-stage-build/
 
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://unsplash.com/photos/C2M7DWL2fDk)" >}}
 
-# Why use mutli-stage build?
+# Why Use Mutli-Stage Build?
 
 Starting from Docker 17.05, users can utilize this new "multi-stage build" feature [[1]]({{<ref "#references" >}}) to simplify their workflow and make the final Docker images smaller. It basically streamlines the "Builder pattern", which means using a "builder" image to build the binary files, and copying those binary files to another runtime/production image.
 
@@ -25,9 +25,9 @@ Despite being an interpreted programming language, many of Python libraries, esp
 
 ## CUDA-enabled Docker images
 
-We can build CUDA-enabled Docker images using nvidia-docker[[2]]({{<ref "#references" >}}). These types of images can potentially benefits hugely from multi-stage build, because (a) their sizes are quite big (usually multiple GBs) and (b) many packages that use CUDA requires CUDA library to build, which is only useful in build time.
+We can build CUDA-enabled Docker images using nvidia-docker[[2]]({{<ref "#references" >}}). These types of images can potentially benefit hugely from multi-stage build, because (a) their sizes are quite big (usually multiple GBs) and (b) many packages that use CUDA requires CUDA library to build, but it is only useful in build time.
 
-We are going demonstrate the power of multi-stage build by building a Docker image that has PyTorch 1.1 and NVIDIA Apex[[3]({{<ref "#references" >}}) installed. Here's a sneak peek of the build image and the final runtime image:
+We are going demonstrate the power of multi-stage build by building a Docker image that has PyTorch 1.1 and NVIDIA Apex[[3]]({{<ref "#references" >}}) installed. Here's a sneak peek of the build image and the final runtime image:
 
 {{< figure src="image-sizes.png" caption="The sizes of the \"build\" image and the final \"runtime\" image. " >}}
 
