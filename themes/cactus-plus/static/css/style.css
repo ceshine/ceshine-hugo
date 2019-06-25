@@ -24,7 +24,7 @@ code.has-jax {font: inherit;
 
 figcaption p{
     text-align: center;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
 }
 
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
@@ -136,7 +136,7 @@ table {
 /* Spacing */
 
 .post h1, h3, h4, h5, p, #post-body ul, #post-list li, #post-body ol, pre {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 
@@ -147,7 +147,7 @@ html, body {
 }
 
 body {
-    font: 18px/1 "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font: 18px/1 "Merriweather", "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #666;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -197,7 +197,7 @@ h2 {
     font-weight: 300;
     color: #aaa;
     margin-top: 10px;
-    font-family: "Lato", 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: "Merriweather", 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-style: normal;
 }
 
@@ -208,6 +208,7 @@ nav.main-nav {
     margin: 0 auto;
     text-align: right;
     z-index: 100;
+    font-family: "Lato", 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 nav.main-nav a {
@@ -215,7 +216,7 @@ nav.main-nav a {
     right: 6px;
     padding: 8px 12px;
     color: #5badf0;
-    font-size: 1rem;
+    font-size: 1.2rem;
     line-height: 1.35;
     border-radius: 3px;
 }
@@ -257,7 +258,7 @@ nav.main-nav a.cta {
 }
 
 #wrapper.home {
-    max-width: 600px;
+    max-width: 800px;
     margin: 0 auto;
     padding: 0px 40px 20px 40px;
 }
@@ -315,7 +316,7 @@ ul>li {
 /* Line Height */
 
 #post-body, p {
-    line-height: 1.7;
+    line-height: 2.0;
 }
 #post-body p > a {
   word-break: break-word;
@@ -366,33 +367,38 @@ em, i {
     margin-top: 40px;
     margin-bottom: 20px;
     color: #222;
-    font: 300 2.3rem "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font: 300 2.rem "Merriweather", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+
+.post h1.title{
+    font-size: 2.6rem;
 }
 
 .post h2 {
-    margin-top: 20px;
-    margin-bottom: 10px;
-    font: 300 24px/1.5 "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font: 300 1.5rem "Merriweather", "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #111;
 }
 
 .post .subtitle{
-    font: normal 1.5rem "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    color: #b2b9be;
-    margin: -15px 0 20px 0;
+    font: normal 1.25rem "Merriweather", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #b0b0b0;
+    margin: -5px 0 20px 0;
     letter-spacing: 1px;
 }
 
 .post h2.headline {
-    font: normal 0.9rem "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font: normal 0.95rem "Merriweather", "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin: -5px 0 0 0;
-    color: #b2b9be;
+    color: #b2b2b2;
     letter-spacing: 1px;
     display: inline-block;
 }
 
 .post h2.headline .tags {
-    font: normal 0.9rem "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font: normal 0.9rem "Merriweather", "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin: -5px 0 40px 0;
     color: #b2b9be;
     font-size: 13px;
@@ -404,7 +410,7 @@ em, i {
 
 
 #post-list h2 {
-    font: normal 17px/1.5em "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font: normal 17px/1.5em "Merriweather", "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #aaa;
     margin-top: 2px;
 }
@@ -414,7 +420,7 @@ h3, h4, h5 {
 }
 
 h3 {
-    font-size: 20px;
+    font-size: 1.3rem;
     font-weight: 400;
 }
 
@@ -437,7 +443,7 @@ h6 {
 
 p.small {
     color: #bbb;
-    font-size: 14px;
+    font-size: 1rem;
     line-height: 1.5;
     display: block;
     text-align: center;
@@ -541,14 +547,14 @@ Post List
 #post-list a {
     color: #333;
     display: block;
-    font: bold 19px/1.7 "Lato", "Helvetica Neue", helvetica, Arial, sans-serif;
+    font: bold 19px/1.7 "Merriweather", "Helvetica Neue", helvetica, Arial, sans-serif;
 }
 
 #post-list .dates {
     float: right;
     position: relative;
     top: 1px;
-    font: 300 17px/1.8 "Lato", "Helvetica Neue", helvetica, Arial, sans-serif;
+    font: 300 17px/1.8 "Merriweather", "Helvetica Neue", helvetica, Arial, sans-serif;
     color: #bbb;
 }
 
@@ -581,6 +587,7 @@ Post List
 
 #footer {
     margin-top: 100px;
+    font-family: "Lato", "Helvetica Neue", helvetica, Arial, sans-serif;
 }
 
 
@@ -700,7 +707,7 @@ h1.archive {
 
 h2.month {
     width: 100%;
-    font: bold 13px/1 "Lato", "Helvetica Neue", helvetica, Arial, sans-serif;
+    font: bold 13px/1 "Merriweather", "Helvetica Neue", helvetica, Arial, sans-serif;
     text-transform: uppercase;
     margin-top: 40px;
     margin-bottom: 10px;
@@ -714,7 +721,7 @@ h2.month {
 
 #archive-list a {
     display: block;
-    font: bold 17px/1.7 "Lato", "Helvetica Neue", helvetica, Arial, sans-serif;
+    font: bold 17px/1.7 "Merriweather", "Helvetica Neue", helvetica, Arial, sans-serif;
     color: #333;
 }
 
@@ -722,7 +729,7 @@ h2.month {
     float: right;
     position: relative;
     top: 1px;
-    font: 300 17px/1.7 "Lato", "Helvetica Neue", helvetica, Arial, sans-serif;
+    font: 300 17px/1.7 "Merriweather", "Helvetica Neue", helvetica, Arial, sans-serif;
     color: #bbb;
 }
 
@@ -747,12 +754,12 @@ h2.month {
     margin-bottom: 0px;
 }
 #post-list.archive.readmore h3 {
-    font: 400 20px "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font: 400 20px "Merriweather", "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin-bottom: 30px;
 }
 
 #post-list.archive.readmore a {
-    font: 400 16px/1.6 "Lato", "Helvetica Neue", helvetica, Arial, sans-serif;
+    font: 400 16px/1.6 "Merriweather", "Helvetica Neue", helvetica, Arial, sans-serif;
     color: #5694f1;
 }
 
@@ -761,7 +768,7 @@ h2.month {
 }
 
 #post-list.archive.readmore .dates {
-    font: 300 16px/1.6 "Lato", "Helvetica Neue", helvetica, Arial, sans-serif;
+    font: 300 16px/1.6 "Merriweather", "Helvetica Neue", helvetica, Arial, sans-serif;
 }
 
 #disqus_thread, #ds-thread {
@@ -940,10 +947,10 @@ a.symbol:hover {
 }
 #TableOfContents a code{
   font-family: Menlo, Monaco, Courier;
-  background-color: #fff;
+  background-color: #ccc;
   font-size: 1.1rem;
   padding: 2px 3px;
-  font-weight: 100;
+  font-weight: 700;
 }
 
 
@@ -977,5 +984,5 @@ a.symbol:hover {
 
 /* BMC */
 .bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}
-.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#FF813F !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 0px 9px !important;font-size: 17px !important;letter-spacing:-0.08px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Lato', sans-serif !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}
+.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#FF813F !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 0px 9px !important;font-size: 17px !important;letter-spacing:-0.08px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family: "Merriweather", sans-serif !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}
 .bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#ffffff !important;}
