@@ -23,6 +23,8 @@ Starting from Docker 17.05, users can utilize this new "multi-stage build" featu
 
 Despite being an interpreted programming language, many of Python libraries, especially the ones doing scientific computing and machine learning, are built upon pieces written in compiled languages (mostly C/C++). Therefore, the "Builder pattern" can still be applied.
 
+(The following sections assume that you've already read the multi-stage build documentation [[1]]({{<ref "#references" >}}).)
+
 ## CUDA-enabled Docker images
 
 We can build CUDA-enabled Docker images using nvidia-docker[[2]]({{<ref "#references" >}}). These types of images can potentially benefit hugely from multi-stage build, because (a) their sizes are quite big (usually multiple GBs) and (b) many packages that use CUDA requires CUDA library to build, but it is only useful in build time.
@@ -44,7 +46,7 @@ We are going to use `nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04`[[4]]({{<ref "#re
 I personally prefer to use miniconda in Docker images because it's the easiest way to install PyTorch and you get to choose the version of your Python interpreter easily. The following will install `miniconda` into `/opt/conda`:
 
 ```
-FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04 AS BUILD
+FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04 AS build
 
 ARG PYTHON_VERSION=3.7
 ARG CONDA_PYTHON_VERSION=3
