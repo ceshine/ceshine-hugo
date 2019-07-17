@@ -53,7 +53,7 @@ Or this Github Repo:
 
 The Github repo contains a Dockerfile and `packrat `configurations. Please refer to this previous post for more information:
 
-[*More Portable, Reproducible R Development Environment*](https://medium.com/the-artificial-impostor/more-portable-reproducible-r-development-environment-c3074df7a6a8)
+[*More Portable, Reproducible R Development Environment*](/post/more-portable-reproducible-r-development-environment/)
 
 (Unfortunately, I couldn’t install`rstudio/gt` in Kaggle Kernel. Otherwise, it would be a great place to host the rendered document.)
 

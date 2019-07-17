@@ -1,10 +1,10 @@
 ---
-slug: neural-language-model-with-pytorch
+slug: neural-language-models
 date: 2018-10-13T02:17:58.305Z
-title: "[Notes] Neural Language Model with PyTorch"
+title: "[Notes] Neural Language Models with PyTorch"
 description: "With Notebook Examples Runnable on Google Colab"
 images:
-  - featuredImage.jpeg
+  - featuredImage.jpg
   - 1*ekykZNcZHThhb-uTIDaTGQ.png
   - 1*yliRO4vJ1OQ8i3YCeuqAZA.png
   - 1*DVCsHtcfX8Hrb-1BJg92fw.png
@@ -26,7 +26,7 @@ keywords:
   - nlp
   - pytorch
   - tutorial
-url: /post/neural-language-model-with-pytorch/
+url: /post/neural-language-models/
 ---
 
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/en/dawn-arable-fog-autumn-landscape-3725927/)" >}}
