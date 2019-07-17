@@ -16,6 +16,8 @@ hasCJKLanguage = false
    enableDisqus = true
    disqusShortname = "ceshine-lis-blog"
    githubName = "ceshine"
+   pygmentsUseClassic = false
+   pygmentsCodeFencesGuessSyntax = true
 
    enableSummary = true
 	# Set the value to true if use description in post front matter replace content summary
