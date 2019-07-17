@@ -1,7 +1,7 @@
 /* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
 
 code {
-    background: #efe;
+    background: rgba(240, 240, 240, 0.5);
     font-size: 1.1rem;
     font-weight: 500;
     padding: 4px;
