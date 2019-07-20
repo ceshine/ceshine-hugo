@@ -32,7 +32,7 @@ Compared to the Freesound competition, this competition has larger train and tes
 > Each object is annotated by **a single annotator without a verification step**. Annotators were advised to add multiple labels from an ontology provided by The Met, and additionally are allowed to add free-form text when they see fit. They were able to view the museum's online collection pages and advised to avoid annotating labels already present. The attributes can relate to what one "sees" in the work or what one infers as the object's "utility."
 > **While we have made efforts to make the attribute labels as high quality as possible, you should consider these annotations noisy**. There may be a small number of attributes with similar meanings. **The competition metric, F2 score, was intentionally chosen to provide some robustness against noisy labels, favoring recall over precision**.
 
-(Emphasis added by me.)
+(Emphasis mine.)
 
 This is essentially a (noisy) multi-label image classification problem. There are two type of labels (called attributes in this dataset): culture and tag[[1](https://www.kaggle.com/ttahara/eda-compare-number-of-culture-and-tag-attributes)]. Culture labels are more generic, e.g. "american", "british", "french". Tag labels have a wider range of specificity, e.g. "landscapes", "boy", "dogs", "working". Tags are less noisy than cultures, and some tags are very similar to ImageNet classes[[2](https://www.kaggle.com/c/imet-2019-fgvc6/discussion/94687)].
 
@@ -133,7 +133,7 @@ The first step is the zip the source code, upload to Kaggle as a Dataset, along 
 1. The inference kernel does not allow Internet connection (so no `pip install`)
 2. even if the package is preinstalled in Kaggle kernel, Kaggle might upgrade the package at any time and potentially breaks your code. My inference kernels were broken when Kaggle upgrade the version PyTorch to 1.1. It's relatively harder to (re-)install PyTorch yourself in Kaggle Kernel, but you can avoid the same problem for all other smaller packages.
 
-Now you can train models as in this Kernel: [iMet Trainer](https://www.kaggle.com/ceshine/imet-trainer/). Note that I use *delegator* to simplify interaction with the system shell, but you can use the built-in *subprocess* to achive the same thing. Download the trained model to your local folder.
+Now you can train models as in this Kernel: [iMet Trainer](https://www.kaggle.com/ceshine/imet-trainer/). Note that I use *delegator* to simplify interaction with the system shell, but you can use the built-in *subprocess* to achieve the same thing. Download the trained model to your local folder.
 
 Upload the trained model to Kaggle as a new Dataset: [Public iMet 2019 Models](https://www.kaggle.com/ceshine/public-imet-2019-models).
 
