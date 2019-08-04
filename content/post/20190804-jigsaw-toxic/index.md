@@ -29,7 +29,7 @@ XLNet[7] was published and its pretrained model released in the final week of th
 
 I entered this competition with two weeks left. I built a pipeline that I am rather happy with and made some good progress at the start. Unfortunately the metric function I copied from a public Kaggle Kernel was bugged (an important threshold condition `>= 0.5` was replaced by `> 0.5`), which severely undermines my effort in the last week because I was optimizing the wrong thing, and it caused the local cross-validation score to deviate from the public leaderboard score. In the end I was placed at [187th](https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification/leaderboard) on the private leaderboard. I used only Kaggle Kernel and Google Colab to train my models.
 
-After the competition, I spent some time debugging my code and finally found the bug. I published corrected solution [on the on Github at *ceshine/jigsaw-toxic-2019*](https://github.com/ceshine/jigsaw-toxic-2019). It should be able to get into silver medal range by ensembling 5 to 10 models. I tried incorporating the loss weighting used in 6th place solution[11] and the "power 3.5 weighted sum" ensemble scheme used in 2th place solution[8], and was able to reach the 70th-place private score with 5 *BERT-base-uncased* and 2 *GPT-2* models.
+After the competition, I spent some time debugging my code and finally found the bug. I published corrected solution [on the on Github at **ceshine/jigsaw-toxic-2019**](https://github.com/ceshine/jigsaw-toxic-2019). It should be able to get into silver medal range by ensembling 5 to 10 models. I tried incorporating the loss weighting used in 6th place solution[11] and the "power 3.5 weighted sum" ensemble scheme used in 2th place solution[8], and was able to reach the 70th-place private score with 5 *BERT-base-uncased* and 2 *GPT-2* models.
 
 I think the performance of my single models can still be slightly improved, but the rest of the gains needed to reach gold medal range probably can only be achieved by creating a larger and more diverse ensemble. (Hopefully I'll manage to find time to get back to this in the future.)
 
@@ -109,3 +109,10 @@ Currently only covers 2nd, 3rd and 4th place solutions.
 15. [[23rd place]A Loss function for the Jigsaw competition](https://www.kaggle.com/mashhoori/a-loss-function-for-the-jigsaw-competition)
 16. [Reaching the depths of (power/geometric) ensembling when targeting the AUC metric](https://medium.com/data-design/reaching-the-depths-of-power-geometric-ensembling-when-targeting-the-auc-metric-2f356ea3250e)
 17. [Sun, C., Qiu, X., Xu, Y., & Huang, X. (2019). How to Fine-Tune BERT for Text Classification?](http://arxiv.org/abs/1905.05583)
+
+## My Solution / Implementation
+
+* [Github repository — **ceshine/jigsaw-toxic-2019**](https://github.com/ceshine/jigsaw-toxic-2019)
+* [Kaggle Training Kernel](https://www.kaggle.com/ceshine/bert-finetuning-public?scriptVersionId=17512842)
+* [Kaggle Inference Kernel](https://www.kaggle.com/ceshine/toxic-2019-simple-ensemble-public?scriptVersionId=18261117)
+* [Colab Training Notebook](https://colab.research.google.com/drive/1g0enYROgp7K6bOVSy9jmsPUg29ZVhGXs)
