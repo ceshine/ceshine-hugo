@@ -42,7 +42,7 @@ So did the metric really reduced unintended bias? The following is a sample of c
 * Mean BPSN AUC: 0.928757 (background-positive subgroup-negative)
 * Mean Subgroup AUC: 0.906707
 
-However, these scors only show that the model is much better than a model that take random guesses. We need a human-level score baseline or the score from models trained using only overall AUC to have a proper comparison.
+However, these scores only show that the model is much better than a model that take random guesses. We need a human-level score baseline or the score from models trained using only overall AUC to have a proper comparison.
 
 ## Qualitative Research
 
