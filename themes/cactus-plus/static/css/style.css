@@ -372,7 +372,8 @@ em, i {
 
 
 .post h1.title{
-    font-size: 2.6rem;
+    font-size: 2.5rem;
+    line-height: 1.2;
 }
 
 .post h2 {
