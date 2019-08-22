@@ -55,6 +55,8 @@ We want to make sure that **’s** tokens will never be the start of a sentence.
 
 Now Spacy will correctly identify the previous two examples as full sentences.
 
+***20190822 Update***: Added rules that improves the handling of curly quotes.
+
 # Source Code
 
 {{< gist ceshine 7741974cf14d838c7a3b3e2c1031d8c7 >}}
