@@ -55,7 +55,7 @@ I chose to use [nvidia-docker](https://github.com/NVIDIA/nvidia-docker) and used
 
 Related post: ***[Docker + NVIDIA GPU = nvidia-docker — Portable Deep Learning Environments](https://medium.com/the-artificial-impostor/docker-nvidia-gpu-nvidia-docker-808b23e1657)***.
 
-Just follow the installation instruction from the nvidia-docker :
+Just follow the installation instructions from the nvidia-docker :
 
 ```bash
 # If you have nvidia-docker 1.0 installed: we need to remove it and all existing GPU containers
@@ -85,7 +85,7 @@ sudo apt-get install -y nvidia-docker2
 sudo pkill -SIGHUP dockerd
 ```
 
-Run` docker run --runtime=nvidia --rm nvidia/cuda nvidia-smi` to check if the installation was successful.
+Run `docker run --runtime=nvidia --rm nvidia/cuda nvidia-smi` to check if the installation was successful.
 
 **You’ll probably want to take a snapshot of the boot disk at this point.**
 
@@ -96,7 +96,6 @@ For Tensorflow there are [plenty of official images](https://hub.docker.com/r/te
 ```
 docker pull tensorflow/tensorflow:1.8.0-gpu
 ```
-
 
 For PyTorch you have to build the image yourself locally. Clone the [PyTorch Git repo](https://github.com/pytorch/pytorch) and run this command:
 
