@@ -15,15 +15,15 @@ url: /post/pytorch-memory-swish/
 
 # Motivation
 
-Recently I've been trying out [*EfficientNet* models implemented in PyTorch](https://github.com/lukemelas/EfficientNet-PyTorch). I've managed to successfully fine-tune pretrained EfficientNet models on my data set and reach accuracy on par with the mainstream ones like *SE-ResNeXt-50*. However, training the model from scratch has proven to be much harder.
+Recently I've been trying out [_EfficientNet_ models implemented in PyTorch](https://github.com/lukemelas/EfficientNet-PyTorch). I've managed to successfully fine-tune pretrained EfficientNet models on my data set and reach accuracy on par with the mainstream ones like _SE-ResNeXt-50_. However, training the model from scratch has proven to be much harder.
 
-Fine-tuned *EfficientNet* models can reach the same accuracy with much smaller number of parameters, but they seem to occupy a lot of GPU memory than it probably should (comparing to the mainstream ones). There is an open issue on the Github Repository about this problem — [[lukemelas/EfficientNet-PyTorch] Memory Issues](https://github.com/lukemelas/EfficientNet-PyTorch/issues/18).
+Fine-tuned _EfficientNet_ models can reach the same accuracy with much smaller number of parameters, but they seem to occupy a lot of GPU memory than it probably should (comparing to the mainstream ones). There is an open issue on the Github Repository about this problem — [[lukemelas/EfficientNet-PyTorch] Memory Issues](https://github.com/lukemelas/EfficientNet-PyTorch/issues/18).
 
-Github user [@selina](https://github.com/seilna) suggested that the batch normalization and [Swish activation](https://arxiv.org/abs/1710.05941) are the bottlenecks, and claming that by using [***custom ops*** in PyTorch](https://pytorch.org/docs/stable/notes/extending.html), we can reduce GPU memory usage by up to 30%.
+Github user [@selina](https://github.com/seilna) suggested that the batch normalization and [Swish activation](https://arxiv.org/abs/1710.05941) are the bottlenecks, and claming that by using [**_custom ops_** in PyTorch](https://pytorch.org/docs/stable/notes/extending.html), we can reduce GPU memory usage by up to 30%.
 
 ## Custom Swish Function
 
-This is the most straightforward implementation of a Swish activation module used in *EfficientNet* ($f(x) = x \cdot \sigma(\beta x)$ with $\beta = 1$):
+This is the most straightforward implementation of a Swish activation module used in _EfficientNet_ ($f(x) = x \cdot \sigma(\beta x)$ with $\beta = 1$):
 
 {{< gist ceshine 8d843a60eb6e20189dd805851517172a >}}
 
@@ -43,7 +43,7 @@ I've just learned that now PyTorch has a handy function `torch.cuda.memory_alloc
 
 > Returns the current GPU memory occupied by tensors in bytes for a given device.
 >
-> *Note: This is likely less than the amount shown in nvidia-smi since some unused memory can be held by the caching allocator and some context needs to be created on GPU. See Memory management for more details about GPU memory management.*
+> _Note: This is likely less than the amount shown in nvidia-smi since some unused memory can be held by the caching allocator and some context needs to be created on GPU. See Memory management for more details about GPU memory management._
 
 I used to extract that information from calls to `nvidia-smi` command, but the number reported by `nvidia-smi` will be very inaccurate due to the PyTorch memory caching mechanism.
 
@@ -61,18 +61,18 @@ When using batch sizes of 128, the GPU memory footprints of the training loop we
 
 ```
 (1st epoch)
-data: 524 GB
-forw: 1552 GB
-loss: 1552 GB
-back: 1044 GB
-step: 1044 GB
+data: 524 MB
+forw: 1552 MB
+loss: 1552 MB
+back: 1044 MB
+step: 1044 MB
 ====================
 (2nd epoch)
-data: 1044 GB
-forw: 2072 GB
-loss: 2072 GB
-back: 1044 GB
-step: 1044 GB
+data: 1044 MB
+forw: 2072 MB
+loss: 2072 MB
+back: 1044 MB
+step: 1044 MB
 (The latter epochs are exactly the same as the second one.)
 ```
 
@@ -88,7 +88,7 @@ The custom-op version of Swish uses **almost 20%** less memory when batch size i
 
 # Source Code
 
-[My fork of *EfficientNet-PyTorch*](https://github.com/ceshine/EfficientNet-PyTorch) has replaced the original swish function with the more memory-efficient one.
+[My fork of _EfficientNet-PyTorch_](https://github.com/ceshine/EfficientNet-PyTorch) has replaced the original swish function with the more memory-efficient one.
 
 The notebook used to run the experiments:
 
