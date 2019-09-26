@@ -2,7 +2,7 @@
 slug: zero-shot-bert-sent-emb
 date: 2019-09-24T00:00:00.000Z
 title: "Zero Shot Cross-Lingual Transfer with Multilingual BERT"
-description: "fine-tuning BERT for Sentence Embeddings on English NLI Datasets"
+description: "Fine-tuning BERT for Sentence Embeddings on English NLI Datasets"
 tags:
   - pytorch
   - nlp
@@ -72,7 +72,7 @@ There is a big problem when we try to extend the results of SBERT to other langu
 
 ## Design
 
-We first load the pre-trained `bert-base-multilingual-cased` model, and **freeze the embedding vectors** (otherwise only English vectors will be updated, invalidating vectors in other languages). Then we follow the example training script from the official SBERT Github repo - [`training_nli.py`](https://github.com/UKPLab/sentence-transformers/blob/24b69783420a22108382a2b29706c7f6f612d809/examples/training_nli.py) to fine-tune the model on the AllNLI dataset for one epoch. All hyper-parameters are the same ones used in the example script.
+We first load the pre-trained `bert-base-multilingual-cased` model, and **freeze the embedding vectors** (otherwise only English vectors will be updated, invalidating vectors in other languages). Then we follow the example training script from the official SBERT Github repo — [`training_nli.py`](https://github.com/UKPLab/sentence-transformers/blob/24b69783420a22108382a2b29706c7f6f612d809/examples/training_nli.py) to fine-tune the model on the AllNLI dataset for one epoch. All hyper-parameters are the same ones used in the example script.
 
 ## Results
 
