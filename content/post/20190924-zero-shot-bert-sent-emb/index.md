@@ -108,7 +108,7 @@ For our model, the error rates are much higher, mainly because we did not fine-t
 
 However, the fine-tuned model reduces the error rates of the baseline models by at most **27%**, **50%**, and **61%** respectively for the **mean**(taking the average of the hidden states in the final layer), **max**(taking the maximum in each dimension of the hidden states in the final layer), and **CLS**(taking the hidden states of the CLS token in the final layer) baselines:
 
-{{< figure src="tatoeba.png" caption="The fine-tuning setup (1) and inference setup (2) from [3]" >}}
+{{< figure src="tatoeba.png" caption="" >}}
 
 The above results show that English-only fine-tuning successfully pull sentences that are semantically similar but in different languages closer to each other. Although the error rates are still far from ideal, it could be a good starting point and could reduce the amount of data in other languages required to improve the representations of those languages.
 
