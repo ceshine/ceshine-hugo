@@ -24,7 +24,7 @@ url: /post/zero-shot-bert-sent-emb/
 
 # Synopsis
 
-Do you want multilingual sentence embeddings, but only have a training dataset in English? This post presents an experiment that finetuned a pretrained multilingual BERT model("BERT-Base, Multilingual Uncased" [1][2]) on monolingual(English) _AllNLI_ dataset[4] to create **sentence embeddings for a single sentence**[3]. The experiment shows that the finetuned multilingual BERT sentence embeddings have generally better performance (i.e. lower error rates) over baselines in a multilingual similarity search task (Tatoeba dataset[5]). However, the error rates are still significantly higher than the ones from specialized sentence embedding models trained with multilingual datasets[5].
+Do you want multilingual sentence embeddings, but only have a training dataset in English? This post presents an experiment that finetuned a pretrained multilingual BERT model("BERT-Base, Multilingual Uncased" [1][2]) on monolingual(English) _AllNLI_ dataset[4] to create **sentence embeddings model(that maps a sentence to a fixed-size vector)**[3]. The experiment shows that the finetuned multilingual BERT sentence embeddings have generally better performance (i.e. lower error rates) over baselines in a multilingual similarity search task (Tatoeba dataset[5]). However, the error rates are still significantly higher than the ones from specialized sentence embedding models trained with multilingual datasets[5].
 
 # Introduction
 
@@ -54,7 +54,7 @@ Although BERT models achieved SOTA on STS tasks, the number of forward-passes ne
 
 > Finding in a collection of n = 10,000 sentences the pair with the highest similarity requires with BERT n·(n−1)/2 = 49,995,000 inference computations. On a modern V100 GPU, this requires about **65 hours**. [3]
 
-A common solution is to map each sentence fix-sized vector living in a vector space where similar sentences are close. **Sentence-BERT(SBERT)**[3] is a modification of the pretrained BERT network that encodes sentences to fix-sized vectors. The number of forward-passes needed grows linearly now, making large scale similarity search practical:
+A common solution is to map each sentence fixed-siz vector living in a vector space where similar sentences are close. **Sentence-BERT(SBERT)**[3] is a modification of the pretrained BERT network that encodes sentences to fixed-size vectors. The number of forward-passes needed grows linearly now, making large scale similarity search practical:
 
 > This reduces the effort for finding the most similar pair from 65 hours with BERT / RoBERTa to about 5 seconds with SBERT, while maintaining the accuracy from BERT. [3]
 
