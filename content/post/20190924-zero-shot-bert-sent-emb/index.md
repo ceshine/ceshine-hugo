@@ -2,7 +2,7 @@
 slug: zero-shot-bert-sent-emb
 date: 2019-09-24T00:00:00.000Z
 title: "Zero Shot Cross-Lingual Transfer with Multilingual BERT"
-description: "Finetuning BERT for Sentence Embeddings on English NLI Datasets"
+description: "fine-tuning BERT for Sentence Embeddings on English NLI Datasets"
 tags:
   - pytorch
   - nlp
@@ -24,7 +24,7 @@ url: /post/zero-shot-bert-sent-emb/
 
 # Synopsis
 
-Do you want multilingual sentence embeddings, but only have a training dataset in English? This post presents an experiment that finetuned a **pretrained multilingual BERT model**("BERT-Base, Multilingual Uncased" [1][2]) on **monolingual(English)** _AllNLI_ dataset[4] to create **sentence embeddings model(that maps a sentence to a fixed-size vector)**[3]. The experiment shows that the finetuned multilingual BERT sentence embeddings have generally better performance (i.e. lower error rates) over baselines in a multilingual similarity search task (Tatoeba dataset[5]). However, the error rates are still significantly higher than the ones from specialized sentence embedding models trained with multilingual datasets[5].
+Do you want multilingual sentence embeddings, but only have a training dataset in English? This post presents an experiment that fine-tuned a **pretrained multilingual BERT model**("BERT-Base, Multilingual Uncased" [1][2]) on **monolingual(English)** _AllNLI_ dataset[4] to create **sentence embeddings model(that maps a sentence to a fixed-size vector)**[3]. The experiment shows that the fine-tuned multilingual BERT sentence embeddings have generally better performance (i.e. lower error rates) over baselines in a multilingual similarity search task (Tatoeba dataset[5]). However, the error rates are still significantly higher than the ones from specialized sentence embedding models trained with multilingual datasets[5].
 
 # Introduction
 
@@ -58,13 +58,13 @@ A common solution is to map each sentence to a fixed-size vector living in a vec
 
 > This reduces the effort for finding the most similar pair from 65 hours with BERT / RoBERTa to about 5 seconds with SBERT, while maintaining the accuracy from BERT. [3]
 
-In short, SBERT adds an average pooling layer on top of the final layer of BERT to create sentence embeddings, and use the embeddings as input to sub-network targeted at the finetuning task.
+In short, SBERT adds an average pooling layer on top of the final layer of BERT to create sentence embeddings, and use the embeddings as input to sub-network targeted at the fine-tuning task.
 
 It also achieves SOTA on multiple tasks when comparing to other sentence embeddings methods.
 
-{{< figure src="sbert.png" caption="The finetuning setup (1) and inference setup (2) from [3]" >}}
+{{< figure src="sbert.png" caption="The fine-tuning setup (1) and inference setup (2) from [3]" >}}
 
-For STS and SentEval tasks, SBERT models were finetuned on the AllNLI dataset (SNLI + Multi-NLI datasets combined[4]). For supervised STS, SBERT achieves slightly worse results than BERT, and the differences in Spearman correlation are within _3_. Overall, SBERT produces very good sentence embeddings.
+For STS and SentEval tasks, SBERT models were fine-tuned on the AllNLI dataset (SNLI + Multi-NLI datasets combined[4]). For supervised STS, SBERT achieves slightly worse results than BERT, and the differences in Spearman correlation are within _3_. Overall, SBERT produces very good sentence embeddings.
 
 # Experiment
 
@@ -72,7 +72,7 @@ There is a big problem when we try to extend the results of SBERT to other langu
 
 ## Design
 
-We first load the pretrained `bert-base-multilingual-cased` model, and **freeze the embedding vectors** (otherwise only English vectors will be updated, invalidating vectors in other languages). Then we follow the example training script from the official SBERT Github repo - [`training_nli.py`](https://github.com/UKPLab/sentence-transformers/blob/24b69783420a22108382a2b29706c7f6f612d809/examples/training_nli.py) to finetune the model on the AllNLI dataset for one epoch. All hyper-parameters are the same ones used in the example script.
+We first load the pretrained `bert-base-multilingual-cased` model, and **freeze the embedding vectors** (otherwise only English vectors will be updated, invalidating vectors in other languages). Then we follow the example training script from the official SBERT Github repo - [`training_nli.py`](https://github.com/UKPLab/sentence-transformers/blob/24b69783420a22108382a2b29706c7f6f612d809/examples/training_nli.py) to fine-tune the model on the AllNLI dataset for one epoch. All hyper-parameters are the same ones used in the example script.
 
 ## Results
 
@@ -104,19 +104,19 @@ The Tatoeba dataset was introduced in [5] as a multilingual similarity search ta
 
 {{< figure src="tatoeba_laser.png" caption="Tatoeba error rates reported in [5]" >}}
 
-For our model, the error rates are much higher, mainly because we did not finetune on any languages besides English, but we still want the model to have meaningful sentence embeddings for those languages (a.k.a. zero-shot learning).
+For our model, the error rates are much higher, mainly because we did not fine-tune on any languages besides English, but we still want the model to have meaningful sentence embeddings for those languages (a.k.a. zero-shot learning).
 
-However, the finetuned model reduces the error rates of the baseline models by at most **27%**, **50%**, and **61%** respectively for the **mean**(taking the average of the hidden states in the final layer), **max**(taking the maximum in each dimension of the hidden states in the final layer), and **CLS**(taking the hidden states of the CLS token in the final layer) baselines:
+However, the fine-tuned model reduces the error rates of the baseline models by at most **27%**, **50%**, and **61%** respectively for the **mean**(taking the average of the hidden states in the final layer), **max**(taking the maximum in each dimension of the hidden states in the final layer), and **CLS**(taking the hidden states of the CLS token in the final layer) baselines:
 
-{{< figure src="tatoeba.png" caption="The finetuning setup (1) and inference setup (2) from [3]" >}}
+{{< figure src="tatoeba.png" caption="The fine-tuning setup (1) and inference setup (2) from [3]" >}}
 
-The above results show that English-only finetuning successfully pull sentences that are semantically similar but in different languages closer to each other. Although the error rates are still far from ideal, it could be a good starting point and could reduce the amount of data in other languages required to improve the representations of those languages.
+The above results show that English-only fine-tuning successfully pull sentences that are semantically similar but in different languages closer to each other. Although the error rates are still far from ideal, it could be a good starting point and could reduce the amount of data in other languages required to improve the representations of those languages.
 
 ### Future Work
 
 - Hyper-parameter tuning (e.g. training for more epochs, using different learning rate schedule, etc.).
 - Freeze lower layers of the transformer in the multilingual BERT pretrained model to better preserve the lower level multilingual representations.
-- As suggested in _bert-as-service_[7], using the hidden states from **the second-to-last layer** could improve the sentence embeddings model. We can try finetuning on that layer and compare it with the performance of the baselines that uses hidden states from the same layer.
+- As suggested in _bert-as-service_[7], using the hidden states from **the second-to-last layer** could improve the sentence embeddings model. We can try fine-tuning on that layer and compare it with the performance of the baselines that uses hidden states from the same layer.
 - Evaluate the _Multilingual Universal Sentence Encoders_[8][9] on the Tatoeba dataset for comparison.
 
 ## Source Code
