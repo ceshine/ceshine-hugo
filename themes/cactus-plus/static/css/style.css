@@ -477,7 +477,7 @@ i {
   margin-top: 40px;
   margin-bottom: 20px;
   color: #222;
-  font: 300 2rem "Merriweather", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: 700 2rem "Merriweather", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .post h1.title {
@@ -488,9 +488,17 @@ i {
 .post h2 {
   margin-top: 30px;
   margin-bottom: 15px;
-  font: 300 1.5rem "Merriweather", "Helvetica Neue", Helvetica, Arial,
+  font: 600 1.5rem "Merriweather", "Helvetica Neue", Helvetica, Arial,
     sans-serif;
   color: #111;
+}
+
+.post h3 {
+  margin-top: 30px;
+  margin-bottom: 10px;
+  font: 600 1.25rem "Merriweather", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+  color: #222;
 }
 
 .post .subtitle {
@@ -537,7 +545,7 @@ h5 {
 
 h3 {
   font-size: 1.3rem;
-  font-weight: 400;
+  font-weight: bold;
 }
 
 h4 {
