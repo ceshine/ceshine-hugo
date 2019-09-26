@@ -24,7 +24,7 @@ url: /post/zero-shot-bert-sent-emb/
 
 # Synopsis
 
-Do you want multilingual sentence embeddings, but only have a training dataset in English? This post presents an experiment that finetuned a pretrained multilingual BERT model("BERT-Base, Multilingual Uncased" [1][2]) on monolingual(English) _AllNLI_ dataset[4] to create **sentence embeddings model(that maps a sentence to a fixed-size vector)**[3]. The experiment shows that the finetuned multilingual BERT sentence embeddings have generally better performance (i.e. lower error rates) over baselines in a multilingual similarity search task (Tatoeba dataset[5]). However, the error rates are still significantly higher than the ones from specialized sentence embedding models trained with multilingual datasets[5].
+Do you want multilingual sentence embeddings, but only have a training dataset in English? This post presents an experiment that finetuned a **pretrained multilingual BERT model**("BERT-Base, Multilingual Uncased" [1][2]) on **monolingual(English)** _AllNLI_ dataset[4] to create **sentence embeddings model(that maps a sentence to a fixed-size vector)**[3]. The experiment shows that the finetuned multilingual BERT sentence embeddings have generally better performance (i.e. lower error rates) over baselines in a multilingual similarity search task (Tatoeba dataset[5]). However, the error rates are still significantly higher than the ones from specialized sentence embedding models trained with multilingual datasets[5].
 
 # Introduction
 
@@ -32,7 +32,7 @@ In this section, we briefly review the technical foundation of the experiment.
 
 ## BERT
 
-BERT[1] is a language representation model that uses a new pretraining objective — masked language model(MLM) and next sentence prediction, that obtained SOTA results on many downstream tasks, including some sentence pair classification tasks, such as Natural Language Inference(NLI) and Semantic Textual Similarity(STS).
+BERT[1] is a language representation model that uses two new pretraining objectives — masked language model(MLM) and next sentence prediction, that obtained SOTA results on many downstream tasks, including some sentence pair classification tasks, such as Natural Language Inference(NLI) and Semantic Textual Similarity(STS).
 
 {{< figure src="bert_input.png" caption="BERT is designed to accept one to two sentences/paragraphs as input.[1]" >}}
 
