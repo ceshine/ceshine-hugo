@@ -154,7 +154,7 @@ Something like Tukey's (1977) five number summary (the minimum, first quartile, 
 
 ## Disciplined Data Exploration
 
-> Accord- ing to Tukey (1973), exploratory analysis of the data is not “just descriptive statistics,” but rather an “actively incisive rather than passively descriptive” activity, “with a real emphasis on the discovery of the unexpected.”
+> According to Tukey (1973), exploratory analysis of the data is not “just descriptive statistics,” but rather an “actively incisive rather than passively descriptive” activity, “with a real emphasis on the discovery of the unexpected.”
 
 An example of how exploratory analysis may be essential for scientific inquiry is in the detection of and adjustment for batch effects.
 
