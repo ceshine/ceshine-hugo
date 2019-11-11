@@ -26,7 +26,7 @@ The last piece of puzzle is **getting a notification when your preemptible insta
 
 # Solution
 
-Google Cloud Compute allows users to run [startup script](https://cloud.google.com/compute/docs/startupscript) and [shutdown script](https://cloud.google.com/compute/docs/shutdownscript) via its [metadata server](https://cloud.google.com/compute/docs/storing-retrieving-metadata). Preemptible instances will have 30 seconds to run the shutdown script after the shutdown process begins, which is more than enough for our use case — sending a notification.
+[Google Cloud Compute](https://cloud.google.com/compute/) allows users to run [startup script](https://cloud.google.com/compute/docs/startupscript) and [shutdown script](https://cloud.google.com/compute/docs/shutdownscript) via its [metadata server](https://cloud.google.com/compute/docs/storing-retrieving-metadata). Preemptible instances will have 30 seconds to run the shutdown script after the shutdown process begins, which is more than enough for our use case — sending a notification.
 
 ```python
 #!/home/ceshine/miniconda3/envs/pytorch/bin/python

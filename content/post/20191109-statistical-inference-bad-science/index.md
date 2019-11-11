@@ -2,7 +2,7 @@
 slug: statistical-inference-bad-science
 date: 2019-11-09T00:00:00.000Z
 title: "[Notes] “Statistical Inference Enables Bad Science; Statistical Thinking Enables Good Science”"
-description: "The Article by Christopher Tong on The American Statistician Volume 73, 2019"
+description: "Reading the Article by Christopher Tong on The American Statistician Volume 73, 2019"
 tags:
   - science
   - statistics
@@ -64,7 +64,7 @@ This kind of bias would lead to an underestimation of the uncertainty because we
 
 # Exploratory and Confirmatory Objectives in Scientific Research
 
-> The obvious way to avoid the difficulties of overfitting and produce valid statistical inferences is to completely prespecify the study design and statistical analysis plan prior to the start of data collection. T
+> The obvious way to avoid the difficulties of overfitting and produce valid statistical inferences is to completely prespecify the study design and statistical analysis plan prior to the start of data collection.
 
 Tong uses the phased experimentation of medical clinical trials as an example of scientific research where exploratory/confirmatory distinction is clearly made.
 
