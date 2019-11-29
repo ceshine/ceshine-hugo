@@ -1,7 +1,7 @@
 ---
 slug: finetune-sentence-bert
 date: 2019-11-28T00:00:00.000Z
-title: "Finetuning BERT for Similarity Search"
+title: "Fine-tuning BERT for Similarity Search"
 description: "BERT as Sentence Encoder is Surprisingly Sample-Efficient"
 tags:
   - pytorch
