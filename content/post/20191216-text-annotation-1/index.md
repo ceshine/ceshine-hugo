@@ -19,7 +19,7 @@ url: /post/text-annotation-1/
 
 # Introduction
 
-In my previous post — [Fine-tuning BERT for Similarity Search](https://blog.ceshine.net/post/finetune-sentence-bert/) — I mentioned that I annotated 2,000 pair of sentence pairs, but did not describe how I did it and what tool I used. Now in this two-part series we'll see how I created a customized text annotation tool that greatly speed up the annotation process.
+In my previous post — [Fine-tuning BERT for Similarity Search](https://blog.ceshine.net/post/finetune-sentence-bert/) — I mentioned that I annotated 2,000 pair of sentence pairs, but did not describe how I did it and what tool I used. Now in this two-part series, we'll see how I created a customized text annotation tool that greatly speeds up the annotation process.
 
 The entire stack is developed in two days. You can probably do it a lot faster if you are familiar with the technology (the actual time I spent on it is about 6 hours top).
 
@@ -28,17 +28,17 @@ The entire stack is developed in two days. You can probably do it a lot faster i
 You might ask, why build your own tool? Why not just use Excel or open-source/proprietary tools? There are several reasons:
 
 1. The Excel UI is not necessarily the best fit for test reading and annotation.
-1. You have do all the data management inside Excel, including shuffling, sampling, or splitting the dataset. All of them are tedious manual labor and prone to errors.
-1. Open source tool can be overly complicated for your use case, and also requires a lot of work to customize.
+1. You have to do all the data management inside Excel, including shuffling, sampling, or splitting the dataset. All of them are tedious manual labor and prone to errors.
+1. Open-source tools can be overly complicated for your use case, and also requires a lot of work to customize.
 1. You might not want to pay for the proprietary tool if the scale of your annotation work is relatively small.
 1. Learning — you can see this as an opportunity to practice and improves your web development skills. (More details in the next section.)
 
 The customized annotation tool I built does these things:
 
-1. Manage user sessions — uses signed cookies to identify users, provide different set of pairs for annotation, and keep track of annotated pairs.
-1. Editable annotations — users can submit the results, make some changes afterwards, and submit again. No duplicated entries will be generated.
-1. Each submit is stored in a csv file, with a timestamp field — you can easily pick out annotations from a specific time range that could be problematic.
-1. Automatically pick a score based on the model prediction — the annotator only need to adjust the model prediction. Also it gives you an idea how the model performs on unseen entries.
+1. Manage user sessions — uses signed cookies to identify users, provide different sets of pairs for annotation, and keep track of annotated pairs.
+1. Editable annotations — users can submit the results, make some changes afterward, and submit them again. No duplicated entries will be generated.
+1. Each submission is stored in a CSV file, with a timestamp field — you can easily pick out annotations from a specific time range that could be problematic.
+1. Automatically pick a score based on the model prediction — the annotator only needs to adjust the model prediction. Also, it gives you an idea of how the model performs on unseen entries.
 
 {{< figure src="screenshot.png" caption="Our Annotation Interface. Need some work aesthetically, but useful enough IMO." >}}
 
@@ -48,15 +48,15 @@ I don't remember exactly where I got the idea of a React front-end working with 
 
 {{< single_tweet 1143951419151540225 >}}
 
-Having React in your arsenal is very empowering. You don't need to attend a bootcamp or spend a couple of months. Just learn the basics and start building stuffs. Granted, the results can be very ugly (in terms of both presentation and code), but as long as it work reasonably well, it's still better than nothing. (You'll still probably need professional help if you want to build any customer-facing applications.)
+Having React in your arsenal is very empowering. You don't need to attend a boot camp or spend a couple of months. Just learn the basics and start building stuffs. Granted, the results can be very ugly (in terms of both presentation and code), but as long as it works reasonably well, it's still better than nothing. (You'll still probably need professional help if you want to build any customer-facing applications.)
 
-The learning resource in the following Twitter thread by Ines Montani are very helpful:
+The learning resources in the following Twitter thread by Ines Montani are very helpful:
 
 {{< single_tweet 1144173215293591555 >}}
 
 # The API Server
 
-We'll going to be use [FastAPI](https://github.com/tiangolo/fastapi) to build our back-end API server. It's created by Sebastián Ramírez (tiangolo) and is built on top of [Starlette](https://www.starlette.io/). The other popular alternative is to use [Flask](https://www.palletsprojects.com/p/flask/). I had experience using both, and IMO FastAPI is better if you just want to build an API server (without any no front-end logic).
+We're going to use [FastAPI](https://github.com/tiangolo/fastapi) to build our back-end API server. It's created by Sebastián Ramírez (tiangolo) and is built on top of [Starlette](https://www.starlette.io/). The other popular alternative is to use [Flask](https://www.palletsprojects.com/p/flask/). I had experience using both, and IMO FastAPI is better if you just want to build an API server (without any no front-end logic).
 
 The source code can be found at [veritable-tech/text-annotation-api-server/server.py](https://github.com/veritable-tech/text-annotation-api-server/blob/blog-post/server.py). The codebase could use some refactoring, but this state represents how I quickly put together all the necessary parts in the first place.
 
@@ -64,7 +64,7 @@ The source code can be found at [veritable-tech/text-annotation-api-server/serve
 
 (I'm going to skip the non-essential lines here to save space. Please refer to the source code for the full implementation).
 
-First we need to create the app object and add a session middleware:
+First, we need to create the app object and add a session middleware:
 
 ```python
 from starlette.middleware.sessions import SessionMiddleware
@@ -79,7 +79,7 @@ APP.add_middleware(
 
 The `secret_key` is used to sign the cookies, which makes sure their contents are not tampered with.
 
-Next step is to create a GET endpoint for retrieving a batch/set of sentence pairs to annotate. At the start of the function, we check if we've seen this user. If not, we create a new user ID for them and save the ID to the associated session:
+The next step is to create a GET endpoint for retrieving a batch/set of sentence pairs to annotate. At the start of the function, we check if we've seen this user. If not, we create a new user ID for them and save the ID to the associated session:
 
 ```python
 @APP.get("/batch/", response_model=BatchForAnnotation)
@@ -225,17 +225,17 @@ The code should be quite straight-forward to read. We create a copy of a slice o
 
 ## Potential Improvements
 
-We now already have a functioning back-end server with just about 150 lines of code. There are definitely many potential improvements, including:
+We now already have a functioning back-end server with just about 150 lines of code. There are many potential improvements, including:
 
-- Specify which page to fetch in the GET request. (Currently we can only fetch the pages that has not received any submissions.)
+- Specify which page to fetch in the GET request. (Currently, we can only fetch the pages that have not received any submissions.)
 - Store the user ID in the output file.
 - Use a persistent store for the application states, so an application restart will not erase previous records.
 - Customizable page size at the start of the session.
 
-Some of these are relatively easy to implement. Readers are encouraged to implement them as excercises.
+Some of these are relatively easy to implement. Readers are encouraged to implement them as exercises.
 
 # To Be Continued
 
-We've covered the back-end API server in this post. In the next post we'll describe how to write a fairly basic React front-end to interact with both the user and the back-end server.
+We've covered the back-end API server in this post. In the next post, we'll describe how to write a fairly basic React front-end to interact with both the user and the back-end server.
 
 [Read the Part 2 here](https://blog.ceshine.net/post/text-annotation-2/).
