@@ -1,15 +1,17 @@
 ---
 slug: text-annotation-1
 date: 2019-12-16T00:00:00.000Z
-title: "Create Customized Text Annotation Tool in Two Days - Part 1"
+title: "Create a Customized Text Annotation Tool in Two Days - Part 1"
 description: "Building a Back-end API Server with Multi-user Support"
 tags:
   - nlp
   - dataset
+  - fastapi
 keywords:
   - nlp
   - dataset
   - annotation
+  - fastapi
 url: /post/text-annotation-1/
 ---
 
@@ -235,3 +237,5 @@ Some of these are relatively easy to implement. Readers are encouraged to implem
 # To Be Continued
 
 We've covered the back-end API server in this post. In the next post we'll describe how to write a fairly basic React front-end to interact with both the user and the back-end server.
+
+[Read the Part 2 here](https://blog.ceshine.net/post/text-annotation-2/).
