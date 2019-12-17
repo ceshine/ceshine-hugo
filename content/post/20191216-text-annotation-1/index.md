@@ -19,9 +19,9 @@ url: /post/text-annotation-1/
 
 # Introduction
 
-In my previous post — [Fine-tuning BERT for Similarity Search](https://blog.ceshine.net/post/finetune-sentence-bert/) — I mentioned that I annotated 2,000 pair of sentence pairs, but did not describe how I did it and what tool I used. Now in this two-part series, we'll see how I created a customized text annotation tool that greatly speeds up the annotation process.
+In my previous post, [Fine-tuning BERT for Similarity Search](https://blog.ceshine.net/post/finetune-sentence-bert/), I mentioned that I annotated 2,000 pair of sentence pairs, but did not describe how I did it and what tool I used. Now in this two-part series, we'll see how I created a customized text annotation tool that greatly speeds up the annotation process.
 
-The entire stack is developed in two days. You can probably do it a lot faster if you are familiar with the technology (the actual time I spent on it is about 6 hours top).
+The entire stack was developed in two days. You can probably do it a lot faster if you are familiar with the technology (the actual time I spent on it is about 6 hours top).
 
 ## Why Build Your Own Annotation Tool
 
@@ -31,11 +31,11 @@ You might ask, why build your own tool? Why not just use Excel or open-source/pr
 1. You have to do all the data management inside Excel, including shuffling, sampling, or splitting the dataset. All of them are tedious manual labor and prone to errors.
 1. Open-source tools can be overly complicated for your use case, and also requires a lot of work to customize.
 1. You might not want to pay for the proprietary tool if the scale of your annotation work is relatively small.
-1. Learning — you can see this as an opportunity to practice and improves your web development skills. (More details in the next section.)
+1. Learning — you can see this as an opportunity to practice and improve your web development skills. (More details in the next section.)
 
 The customized annotation tool I built does these things:
 
-1. Manage user sessions — uses signed cookies to identify users, provide different sets of pairs for annotation, and keep track of annotated pairs.
+1. Manage user sessions — use signed cookies to identify users, provide different sets of pairs for annotation, and keep track of annotated pairs.
 1. Editable annotations — users can submit the results, make some changes afterward, and submit them again. No duplicated entries will be generated.
 1. Each submission is stored in a CSV file, with a timestamp field — you can easily pick out annotations from a specific time range that could be problematic.
 1. Automatically pick a score based on the model prediction — the annotator only needs to adjust the model prediction. Also, it gives you an idea of how the model performs on unseen entries.
@@ -172,7 +172,7 @@ def get_batch(request: Request):
     )
 ```
 
-The `GLOBAL_CACHE[uid]["submitted"]` store `page -> output_path` key/value pairs. The `output_path` points to a CSV file where a user-submitted batch of annotations has been saved to.
+The `GLOBAL_CACHE[uid]["submitted"]` stores `page -> output_path` key/value pairs. The `output_path` points to a CSV file where a user-submitted batch of annotations has been saved to.
 
 The `find_page_to_annotate` function finds the first page that hasn't been annotated yet.
 
@@ -221,7 +221,7 @@ def submit_batch(batch: BatchAnnotated, request: Request):
     )
 ```
 
-The code should be quite straight-forward to read. We create a copy of a slice of the Pandas data frame, do some data validation to make sure the pair IDs and the page are matched, and update the slice with the submitted labels. If the submitted page already has been submitted before, we overwrite the previous output; if not, we create a new output file.
+The code should be quite straightforward to read. We create a copy of a slice of the Pandas data frame, do some data validation to make sure the pair IDs and the page are matched, and update the slice with the submitted labels. If the submitted page already has been submitted before, we overwrite the previous output; if not, we create a new output file.
 
 ## Potential Improvements
 
