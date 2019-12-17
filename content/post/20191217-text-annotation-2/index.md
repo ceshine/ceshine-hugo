@@ -19,7 +19,7 @@ url: /post/text-annotation-2/
 
 # Introduction
 
-In [Part 1](https://blog.ceshine.net/post/text-annotation-1/) of this series, we've discussed why building your own annotation tool can be a good idea, and demonstrated a back-end API server based on [FastAPI](https://github.com/tiangolo/fastapi). Now in this Part 2, we'll going to build a front-end interface that interact with the end user (the annotator). The front-end needs to do mainly three things:
+In [Part 1](https://blog.ceshine.net/post/text-annotation-1/) of this series, we've discussed why building your own annotation tool can be a good idea, and demonstrated a back-end API server based on [FastAPI](https://github.com/tiangolo/fastapi). Now in this Part 2, we're going to build a front-end interface that interacts with the end-user (the annotator). The front-end needs to do mainly three things:
 
 1. Fetch a batch of sentence/paragraph pairs to be annotated from the back-end server.
 2. Present the pairs to the annotator and provide a way for them to adjust the automatically generated labels.
@@ -31,7 +31,7 @@ Disclaimer: I'm relatively inexperienced in front-end development. The code here
 
 This post assumes you have basic understandings of Javascript, React, HTML, and CSS/Sass. If you don't, please refer to the learning resources mentioned in [Part 1](https://blog.ceshine.net/post/text-annotation-1/).
 
-You need install [npm](https://www.npmjs.com/get-npm) on your system (one recommended way is via [nvm](https://github.com/nvm-sh/nvm)), and create a new React project using the [Create React App](https://create-react-app.dev/).
+You need to install [npm](https://www.npmjs.com/get-npm) on your system (one recommended way is via [nvm](https://github.com/nvm-sh/nvm)), and create a new React project using the [Create React App](https://create-react-app.dev/).
 
 We'll be using the [Bulma CSS framework](https://bulma.io/). The way we used to integrate Bulma into React is to install the `bulma`, `node-sass`, and `react-bulma-components` package (via npm). We'll also be using the `immutable` package to store the states in React.
 
@@ -47,7 +47,7 @@ The source code for this post can be found at [veritable-tech/text-annotation-re
 
 ## Page Layout
 
-The overall page layout is defined is defined in the `render` method in `src/App.js`:
+The overall page layout is defined in the `render` method in `src/App.js`:
 
 ```javascript
 render() {
@@ -84,11 +84,11 @@ render() {
 
 There are two buttons, one for fetching the page and one for submitting the changes. The submit button will only be displayed when a batch/page has been fetched.
 
-We'll create an `Entries` React component that is responsible for displaying the pairs and also collecting the annotations. The two states in the `App` component — `page` and `pairs` — is passed to the `Entries` component as properties. There is also a function `changeScore` that is passed to handle the changes in labels.
+We'll create an `Entries` React component that is responsible for displaying the pairs and also collecting the annotations. The two states in the `App` component — `page` and `pairs` — are passed to the `Entries` component as properties. There is also a function `changeScore` that is passed to handle the changes in labels.
 
 ## The App Component
 
-This is the main React component that every workflow will go through. We starts by initialize the application state:
+This is the main React component that every workflow will go through. We start by initializing the application state:
 
 ```javascript
 class App extends Component {
@@ -107,7 +107,7 @@ class App extends Component {
 
 ## Fetching a Batch
 
-We use the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+We use the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API):
 
 ```javascript
 async function getBatch() {
@@ -154,7 +154,7 @@ The `Math.round(x[3] * 4) / 4` part automatically transform the continuous predi
 
 ## The Entries and Entry Component
 
-The `Entries` component is fairly simple. It just go through the `pairs` property and create one `Entry` component for each pair:
+The `Entries` component is fairly simple. It just goes through the `pairs` property and creates one `Entry` component for each pair:
 
 ```javascript
 class Entries extends Component {
@@ -198,9 +198,9 @@ const Entry = props => {
 };
 ```
 
-The code should be quite straight-forward. Let me know in the comment if any of above is unclear to you.
+The code should be quite straightforward. Let me know in the comment if any of the above is unclear to you.
 
-The `props.row.get(3).toFixed(4)` part is the adjusted similarity score from the model, and is displayed for reference (mostly for debugging).
+The `props.row.get(3).toFixed(4)` part is the adjusted similarity score from the model and is displayed for reference (mostly for debugging).
 
 The only "moving part" in the sub-section is the `changeScore` function/method that is called when a user clicks on one of the activated label buttons:
 
@@ -255,6 +255,6 @@ async submitBatch() {
 
 Here we conclude our journey of building a customized annotation tool. As you can see, it's not as hard as you might think. Almost all the changes I've made to the base React project have been fit inside this single blog post! And the 2,000 annotations I've made via this tool can testify that it works well enough (the actual number at the point of writing is approaching 3,000).
 
-It's obvious there is a lot of space for improvement. In a lot of cases, you can just use [the modifiers of Bulma](https://bulma.io/documentation/modifiers/) to make your UI look better. You can also write your own CSS like I briefly did in the `App.scss` file. You can add a page selector like I mentioned in Part 1. You can implement a account-based user management system. It's all up to your specific use case and imagination.
+There is a lot of space for improvement, of course. In a lot of cases, you can just use [the modifiers of Bulma](https://bulma.io/documentation/modifiers/) to make your UI look better. You can also write your own CSS like I briefly did in the `App.scss` file. You can add a page selector as I mentioned in Part 1. You can implement an account-based user management system. It's all up to your specific use case and imagination.
 
 I hope this series has been helpful to you, and thank you for reading all the way to this point. If you have any specific questions or recommendations, please let me know in the comment section.
