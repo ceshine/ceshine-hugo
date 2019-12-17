@@ -43,7 +43,7 @@ Let's take another look at what we'll be getting at the end of this section:
 
 {{< figure src="../text-annotation-1/screenshot.png" >}}
 
-The source code is located at [veritable-tech/text-annotation-react-frontend](https://github.com/veritable-tech/text-annotation-react-frontend/tree/blog-post).
+The source code for this post can be found at [veritable-tech/text-annotation-react-frontend](https://github.com/veritable-tech/text-annotation-react-frontend/tree/blog-post).
 
 ## Page Layout
 
