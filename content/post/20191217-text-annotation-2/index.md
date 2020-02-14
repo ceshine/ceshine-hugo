@@ -82,13 +82,13 @@ render() {
 }
 ```
 
-There are two buttons, one for fetching the page and one for submitting the changes. The submit button will only be displayed when a batch/page has been fetched.
+There are two buttons, one for fetching a new batch/page and one for submitting the changes made to the fetched batch. The submit button will only be displayed when a batch/page has been fetched.
 
 We'll create an `Entries` React component that is responsible for displaying the pairs and also collecting the annotations. The two states in the `App` component — `page` and `pairs` — are passed to the `Entries` component as properties. There is also a function `changeScore` that is passed to handle the changes in labels.
 
 ## The App Component
 
-This is the main React component that every workflow will go through. We start by initializing the application state:
+This is the main React component that every data and logic will go through. We start by initializing the application state:
 
 ```javascript
 class App extends Component {
@@ -107,7 +107,7 @@ class App extends Component {
 
 ## Fetching a Batch
 
-We use the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API):
+We use the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) to make requests to the back-end API server:
 
 ```javascript
 async function getBatch() {
@@ -126,9 +126,9 @@ async function getBatch() {
 }
 ```
 
-The `credentials: "include"` is necessary to make sure `fetch` sends the cookies to the back-end, since the where the front-end is hosted is not always the same as the back-end (therefore will have different origins). The `mode: "cors"` part is for the same reason.
+The `credentials: "include"` is necessary to make sure `fetch` sends the cookies to the back-end, since the front-end is not always hosted at the same place as the back-end (therefore will have different origins). The `mode: "cors"` part is for the same reason.
 
-The error handling in this function is very bare-bone, and will require you to use the developer console in browser to detect the errors. Nonetheless, this interaction is fairly simple and will almost never go wrong if your server and browser is on the same machine or in the same network. You can improve the error handling if you're dealing with more complicated scenarios.
+The error handling in this function is very bare-bone, and will require you to use the developer console in browser to view the error messages. Nonetheless, this interaction is fairly simple and will almost never go wrong if your server and browser is on the same machine or in the same network. You can improve the error handling if you're dealing with more complicated scenarios.
 
 The following method of the `App` component call the `getBatch` function and set the application states afterwards:
 
@@ -236,7 +236,7 @@ async function postBatch(batch) {
 }
 ```
 
-And the `submitBatch` method of the `App` component prepares the payload for the `fetch` request, and display an alert to the user when the submission has been successfully accepted by the back-end server.
+And the `submitBatch` method of the `App` component prepares the payload for the `fetch` request, and displays an alert to the user when the submission has been successfully accepted by the back-end server.
 
 ```javascript
 async submitBatch() {
@@ -255,6 +255,6 @@ async submitBatch() {
 
 Here we conclude our journey of building a customized annotation tool. As you can see, it's not as hard as you might think. Almost all the changes I've made to the base React project have been fit inside this single blog post! And the 2,000 annotations I've made via this tool can testify that it works well enough (the actual number at the point of writing is approaching 3,000).
 
-There is a lot of space for improvement, of course. In a lot of cases, you can just use [the modifiers of Bulma](https://bulma.io/documentation/modifiers/) to make your UI look better. You can also write your own CSS like I briefly did in the `App.scss` file. You can add a page selector as I mentioned in Part 1. You can implement an account-based user management system. It's all up to your specific use case and imagination.
+There is a lot of space for improvement, of course. In a lot of cases, you can just use [the modifiers of Bulma](https://bulma.io/documentation/modifiers/) to make your UI look better. For more complicated cases, you can write your own CSS like I've briefly done in the `App.scss` file. You can add a page selector as I mentioned in Part 1. You can implement an account-based user management system. It's all up to your specific use case and imagination.
 
 I hope this series has been helpful to you, and thank you for reading all the way to this point. If you have any specific questions or recommendations, please let me know in the comment section.
