@@ -387,9 +387,9 @@ class RobertaEncoder(TFRobertaPreTrainedModel):
 
 There are 30 types of target labels, and I split them into three categories:
 
-1. Those only related to the question.
-2. Those only related to the answer.
-3. Those require information from both the question and the answer.
+1. Those that are only related to the question.
+2. Those that are only related to the answer.
+3. Those that require information from both the question and the answer.
 
 We create three classification heads for each category. Each head only uses data from the relevant encoder (e.g., the question head will only use results from the question encoder) to reduce over-fitting. I also found that putting a context gating on the intermediate states slightly improves the accuracy.
 
@@ -459,12 +459,12 @@ class DualRobertaModel(tf.keras.Model):
 
 PyTorch developer should find the above quite similar to a PyTorch model.
 
-(This is a form of [multitask learning](https://ruder.io/multi-task/). I've seen some of the top solutions chose to train two or three separate models instead. The latter approach also helps to alleviate the problem of some question apearing multiple times in the dataset.)
+(This is a form of [multitask learning](https://ruder.io/multi-task/). I've seen some of the top solutions chose to train two or three separate models instead. The latter approach also helps to alleviate the problem of some questions appearing multiple times in the dataset.)
 
 # Wrapping Up
 
-In this post, we briefly discussed how the learning curve of TensorFlow has been significantly improved in the 2.x release, and how the TPU has become more accessible than ever. We also present a case study of solving a Q&A labeling problem by fine-tuning RoBERTa-base model from _huggingface/transformer_ library and with it some code snippets that could be useful for those who are more familiar with PyTorch.
+In this post, we briefly discussed how the learning curve of TensorFlow has been significantly improved in the 2.x release, and how the TPU has become more accessible than ever. We also present a case study of solving a Q&A labeling problem by fine-tuning RoBERTa-base model from _huggingface/transformer_ library and with it some code snippets that could be useful to those who are more familiar with PyTorch.
 
-In fact, TensorFlow 2.1 and TPU are also a very good fit for CV applications. I already have another CV project in the pipeline and I haven't met any unsurmountable obstacles yet. I'll probably publish another case study of solving an image classification problem in about a month.
+TensorFlow 2.1 and TPU are also a very good fit for CV applications. I have another CV project in the pipeline and it has been a nice development experience so far. I'll probably publish another case study of solving an image classification problem in about a month.
 
-I'd love to hear from you. If you find any details in the presented codebase confusing, please let me know in the comment section. I'll add a section to this post or write a bonus post.
+Thanks for reading! I'd love to hear from you. If you find any details in the presented codebase confusing, please let me know in the comment section. I'll add a section to this post or write a bonus post.
