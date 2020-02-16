@@ -194,6 +194,8 @@ The TPU requires that the entire training loop to be compiled into graphs (i.e.,
 
 You'll need to get a strategy object from `tf_hepler_bot.utils.prepare_tpu`([source code location](https://github.com/ceshine/kaggle-quest/blob/795d94c70f7c97fd2c0a5f383fdf52571f9bb0ed/tf-helper-bot/tf_helper_bot/bot.py#L249)):
 
+(If you're using Cloud TPU instead of TPU from Colab, you'll also need to set the `TPU_NAME` environment variable. Check [the documentation](https://www.tensorflow.org/guide/tpu) for more details. Also, remember to allow access to Cloud APIs on your VM.)
+
 ```python
 def prepare_tpu():
     try:
