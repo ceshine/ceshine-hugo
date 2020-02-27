@@ -1,16 +1,25 @@
 <footer id="footer">
     {{ if .Site.Social }}
-        {{ partial "social.html" . }}
+    {{ partial "social.html" . }}
     {{ end }}
     <p class="small">
-    {{ with .Site.Params.copyright }}
+        {{ with .Site.Params.copyright }}
         {{ . | markdownify }}
-    {{ else }}
-       © Copyright {{ now.Format "2006"}} <i class="fa fa-heart" aria-hidden="true"></i> {{ .Site.Params.Author }}
-    {{ end }}
+        {{ else }}
+        © Copyright {{ now.Format "2006"}} <i class="fa fa-heart"
+            aria-hidden="true"></i> {{ .Site.Params.Author }}
+        {{ end }}
     </p>
     <p class="small">
-        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a
+            href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
     </p>
-    <p class="small"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/ceshine"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me a coffee"><span style="margin-left:5px">Buy me a coffee</span></a></p>
+    <p class="small"><a class="bmc-button" target="_blank"
+            href="https://www.buymeacoffee.com/ceshine"><img
+                src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg"
+                alt="Buy me a coffee"><span style="margin-left:5px">Buy me a
+                coffee</span></a></p>
+    <noscript><p><img
+                src="//analytics.ceshine.net/matomo.php?idsite=3&amp;rec=1"
+                style="border:0;" alt="" /></p></noscript>
 </footer>
