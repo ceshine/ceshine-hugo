@@ -18,7 +18,7 @@ url: /post/gcp-shutdown-script/
 
 I was recently given a $300 credit to [Google Cloud Platform](https://cloud.google.com/) from Google to participate in a Kaggle competition. This gives me free access to the powerful GPUs (T4, P100, even V100) to train models and thus opens the window to many new possibilities. However, the problem is that $300 can be used up rather quickly. For example, [one Tesla P100 GPU cost \$1.46 per hour](https://cloud.google.com/compute/gpus-pricing), so \$300 can only give me 200 hours or 8.5 days. Don't forget there are still other costs from CPU, memory, and disk storage.
 
-The good news is Google provides a much cheaper option: [preemptible instances](https://cloud.google.com/preemptible-vms/). Preemptible instances can run for up to 24 hours, and can be preempted (shut down) at any time. The preemptible GPUs are about [30% cheaper](https://cloud.google.com/compute/gpus-pricing) than regular ones. That translates to more than 3 times more hours to build and train your models.
+The good news is Google provides a much cheaper option: [preemptible instances](https://cloud.google.com/preemptible-vms/). Preemptible instances can run for up to 24 hours, and can be preempted (shut down) at any time. The preemptible GPUs are about [70% cheaper](https://cloud.google.com/compute/gpus-pricing) than regular ones. That translates to more than 3 times more hours to build and train your models.
 
 Resumable training is essential when using pre-emptible instances. Regularly saves checkpoints during training, and you can resume training from the latest checkpoint when the instance is preempted or shut down after 24 hours of running. Please check the documentation of your deep learning framework to see how to do resumable training.
 
