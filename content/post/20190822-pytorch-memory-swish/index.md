@@ -5,7 +5,7 @@ title: "More Memory-Efficient Swish Activation Function"
 description: "And How to Profile PyTorch GPU Memory Usage"
 tags:
   - pytorch
-  - tip
+  - tips
 keywords:
   - pytorch
 url: /post/pytorch-memory-swish/

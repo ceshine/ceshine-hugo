@@ -4,7 +4,7 @@ date: 2019-10-25T00:00:00.000Z
 title: "Pro Tip: Use Shutdown Script Detect Preemption on GCP"
 description: "Get a Notification when your Google Cloud Compute instance is preempted"
 tags:
-  - tip
+  - tips
   - gcp
 keywords:
   - tutorial
