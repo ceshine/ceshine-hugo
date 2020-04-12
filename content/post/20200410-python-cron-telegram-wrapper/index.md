@@ -83,7 +83,7 @@ Usually, I would containerize the python environment, and the crontab entry woul
 10 0,12 * * *  docker run --rm somecontainer >> /home/ceshine/somejob.log 2>&1
 ```
 
-{{< figure src="example.png" caption="Example message on successful execution" >}}
+{{< figure src="example.png" caption="Example message on successful execution." >}}
 
 ## Notes
 

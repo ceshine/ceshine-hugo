@@ -15,7 +15,7 @@ R is awesome. In my opinion it’s the best (free) tool for telling great storie
 
 I briefly mentioned my preferred R setup in this previous post “[Analyzing Tweets with R](https://medium.com/the-artificial-impostor/analyzing-tweets-with-r-92ff2ef990c6)” (in “R tips” section), which includes _Microsoft R Open _(_MRO_) and the _checkpoint_ package. Unfortunately, _checkpoint_ doesn’t work well with RStudio, and some weird issues with MRO become more and more annoying to me. Therefore I decided to find a new setup that can work more smoothly and reliably. After some trial and error, here is a configuration that I ended up most satisfied with:
 
-- Use a slightly modified the **[rocker/rstudio](https://github.com/rocker-org/rocker/wiki/Using-the-RStudio-image) Docker image** to provide R base environment and RStudio over the web interface. (This replaces manually installing R via CRAN and RStudio.)
+- Use a slightly modified **[rocker/rstudio](https://github.com/rocker-org/rocker/wiki/Using-the-RStudio-image) Docker image** to provide R base environment and RStudio over the web interface. (This replaces manually installing R via CRAN and RStudio.)
 
 - Use the **[packrat](https://rstudio.github.io/packrat/) package** in every projects to automatically manage package dependencies. (This replaces the _checkpoint_ package)
 
