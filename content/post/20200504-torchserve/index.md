@@ -85,7 +85,9 @@ TorchServe requires the user to package all model artifacts into a single model 
 
 ```bash
 mkdir model-store
-torch-model-archiver --model-name b4 --version 1.0 --serialized-file cache/b4.pt --handler handler.py --export-path model-store
+torch-model-archiver --model-name b4 --version 1.0 \
+    --serialized-file cache/b4.pt --handler handler.py \
+    --export-path model-store
 ```
 
 ### Start the TorchServe service
