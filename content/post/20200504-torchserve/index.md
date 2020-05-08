@@ -1,7 +1,7 @@
 ---
 slug: torchserve
 date: 2020-05-04T00:00:00.000Z
-title: "Deploying Efficientnet Model using TorchServe"
+title: "Deploying EfficientNet Model using TorchServe"
 description: "A Case Study"
 tags:
   - python
@@ -26,7 +26,7 @@ AWS recently released [TorchServe](https://github.com/pytorch/serve), an open-so
 
 **This post is not meant to be the tutorials for beginners.** Instead, it uses a case study to show the readers what a slightly more complicated deployment looks like, and saves the readers' time by referencing relevant documents and example code.
 
-In this post,we will deploy an Efficientnet model from the [rwightman/gen-efficientnet-pytorch](https://github.com/rwightman/gen-efficientnet-pytorch) repo. The server accepts images as arrays in Numpy binary format and returns the corresponding class probabilities. (The reason for using Numpy binary format is that in this use case the images are already read into memory on the client-side, the network bandwidth is cheap and we don't have strict latency requirements, so re-encoded it into JPEG or PNG format doesn't make sense.)
+In this post,we will deploy an EfficientNet model from the [rwightman/gen-efficientnet-pytorch](https://github.com/rwightman/gen-efficientnet-pytorch) repo. The server accepts images as arrays in Numpy binary format and returns the corresponding class probabilities. (The reason for using Numpy binary format is that in this use case the images are already read into memory on the client-side, the network bandwidth is cheap and we don't have strict latency requirements, so re-encoded it into JPEG or PNG format doesn't make sense.)
 
 # Case Study
 
