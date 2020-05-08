@@ -24,7 +24,7 @@ AWS recently released [TorchServe](https://github.com/pytorch/serve), an open-so
 
 [This post from the AWS Machine Learning Blog](https://aws.amazon.com/blogs/machine-learning/deploying-pytorch-models-for-inference-at-scale-using-torchserve/) and [the documentation of TorchServe](https://github.com/pytorch/serve/blob/master/docs/README.md) should be more than enough to get you started. But for advanced usage, the documentation is a bit chaotic and the example code suggests sometimes conflicting ways to do things.
 
-**This post is not meant to be the tutorials for beginners.** Instead, it uses a case study to show the readers what a slightly more complicated deployment looks like, and saves the readers' time by referencing relevant documents and example code.
+**This post is not meant to be a tutorial for beginners.** Instead, it uses a case study to show the readers what a slightly more complicated deployment looks like, and saves the readers' time by referencing relevant documents and example code.
 
 In this post,we will deploy an EfficientNet model from the [rwightman/gen-efficientnet-pytorch](https://github.com/rwightman/gen-efficientnet-pytorch) repo. The server accepts images as arrays in Numpy binary format and returns the corresponding class probabilities. (The reason for using Numpy binary format is that in this use case the images are already read into memory on the client-side, the network bandwidth is cheap and we don't have strict latency requirements, so re-encoded it into JPEG or PNG format doesn't make sense.)
 
