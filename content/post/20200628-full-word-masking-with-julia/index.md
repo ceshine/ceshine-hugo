@@ -128,7 +128,7 @@ end
 
 ## Sampling
 
-Randomly sample one word from each example to be masked. Since I can't think of any simple way to vectorized this in Python, a naive for-loop approach is used. Vectorizing in Julia, on the other had, is fairly straight-forward. As a result, the Julia version is vastly faster (100x) than the Python one.
+Randomly sample one word from each example to be masked. Since I can't think of any simple way to vectorized this in Python, a naive for-loop approach is used. Vectorizing in Julia, on the other hand, is fairly straight-forward. As a result, the Julia version is vastly faster (100x) than the Python one.
 
 Note: I used Numpy in the Python implementation, so it's not really "pure python" in this case.
 
@@ -202,7 +202,7 @@ augmented_sentences = masking(sentences, first_piece_masks, masking_points)
 
 # Conclusion
 
-This is the first time I integrate Julia in an NLP pipeline, and the results are encouraging. The easy of development of Julia is on the same level of Python, but the is on a totally different level. In this example the most improvement in speed comes from the sampling process, but it only represents less than 40 % of the total run time. And the total run time in Python is relatively short. I look forward to seeing what kind of speedup Julia can bring in bigger datasets or more complicated tasks.
+This is the first time I integrate Julia in an NLP pipeline, and the results are encouraging. The easy of development of Julia is on the same level as Python, but the is on a totally different level. In this example, the most improvement in speed comes from the sampling process, but it only represents less than 40 % of the total run time. And the total run time in Python is relatively short. I look forward to seeing what kind of speedup Julia can bring in bigger datasets or more complicated tasks.
 
 ([The notebook actually used in the pipeline](https://github.com/ceshine/transformer_to_rnn/blob/master/notebooks/03-1-1-masking-training-sequences.ipynb)).
 
