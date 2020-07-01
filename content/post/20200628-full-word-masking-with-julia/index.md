@@ -26,7 +26,7 @@ This post describes the Julia code I wrote for this task and shows that for this
 
 This is the algorithm I used to do whole word masking (given that the examples are already tokenized to word pieces):
 
-1. For each example, mark all the word pieces that are either the whole word or the first piece of a word (by using a mask).
+1. For each example, mark all the word pieces that are either a whole word or the first piece of a word (by using a mask).
 2. Randomly sample N marked pieces for each example (N is a hyper-parameter).
 3. Replacing the selected pieces with "[MASK]".
 4. Check if the next piece is a part of this word (tokens start with "##" in BERT tokenizer). If so, also replace it with "[MASK]".
