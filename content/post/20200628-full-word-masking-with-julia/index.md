@@ -16,7 +16,7 @@ url: /post/julia-whole-word-masking/
 
 # Introduction
 
-In my last post, [[Failure Report] Distill Fine-tuned Transformers into Recurrent Neural Networks](https://blog.ceshine.net/post/failed-to-distill-transformer-into-rnn/), I tried to distill the knowledge of a fine-tuned BERT model into an LSTM or GRU model without any data augmentation and failed to achieve satisfiable results. In the follow-up works, I tried to replicate the easies-to-implement augmentation method — masking — used in [1] and see its effect. The masking described in [1] is called “whole word masking” [2], that is, masking the whole word instead of justing masking a single word piece.
+In my last post, [[Failure Report] Distill Fine-tuned Transformers into Recurrent Neural Networks](https://blog.ceshine.net/post/failed-to-distill-transformer-into-rnn/), I tried to distill the knowledge of a fine-tuned BERT model into an LSTM or GRU model without any data augmentation and failed to achieve satisfiable results. In the follow-up works, I tried to replicate the easies-to-implement augmentation method — masking — used in [1] and see its effect. The masking described in [1] is called “whole word masking” [2], that is, masking the whole word instead of just masking a single word piece.
 
 It is non-trivial to implement whole word masking, as it would require the sampling process to be aware of which word piece is itself a whole word, and which is part of a word. As you may know, doing text processing in pure Python is quite slow comparing to other compiled languages. I recently picked up the Julia programming language, which promises the flexibility of scripting languages and the speed of compiled languages, and thought that it was a good opportunity to test Julia in the field.
 
