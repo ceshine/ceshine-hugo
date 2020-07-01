@@ -51,7 +51,7 @@ Notebook used in this section:
   - Python: 326 ms
   - Julia: **47 ms** (single-threaded)
   - Julia: 39 ms (multi-threaded)
-- Sample On Word to Mask
+- Sample One Word to Mask
   - Python: 8.2 s (using `Numpy.random.choice`)
   - Julia: **69 ms**
 - Masking
@@ -118,11 +118,9 @@ results = is_first_piece.(sentences)
 A multi-thread version is also provided, which can sometimes be faster depending on your hardware:
 
 ```julia
-@benchmark begin
-    results = [Bool[] for _ in 1:length(sentences)]
-    Threads.@threads for i in 1:length(sentences)
-       results[i] = is_first_piece(sentences[i])
-    end
+results = [Bool[] for _ in 1:length(sentences)]
+Threads.@threads for i in 1:length(sentences)
+    results[i] = is_first_piece(sentences[i])
 end
 ```
 
