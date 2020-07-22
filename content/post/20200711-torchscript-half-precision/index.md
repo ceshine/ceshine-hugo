@@ -15,11 +15,11 @@ url: /post/torchscript-half-precision/
 
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://unsplash.com/photos/wdc9ZAiwBB4)" >}}
 
-This is a short post describing how to use half precision in [TorchScript](https://pytorch.org/docs/stable/jit.html). This can speed up models that were trained using mixed precision in PyTorch (using [Apex Amps](https://github.com/NVIDIA/apex)), and also some of the model trained using full precision (with some potential degradation of accuracies).
+This is a short post describing how to use half precision in [TorchScript](https://PyTorch.org/docs/stable/jit.html). This can speed up models that were trained using mixed precision in PyTorch (using [Apex Amps](https://github.com/NVIDIA/apex)), and also some of the model trained using full precision (with some potential degradation of accuracy).
 
-> TorchScript is a way to create serializable and optimizable models from PyTorch code. Any TorchScript program can be saved from a Python process and loaded in a process where there is no Python dependency. [source](https://pytorch.org/docs/stable/jit.html#)
+> TorchScript is a way to create serializable and optimizable models from PyTorch code. Any TorchScript program can be saved from a Python process and loaded in a process where there is no Python dependency. [source](https://PyTorch.org/docs/stable/jit.html#)
 
-> This repository (NVIDIA/apex) holds NVIDIA-maintained utilities to streamline mixed precision and distributed training in Pytorch. Some of the code here will be included in upstream Pytorch eventually. [source](https://github.com/NVIDIA/apex)
+> This repository (NVIDIA/apex) holds NVIDIA-maintained utilities to streamline mixed precision and distributed training in PyTorch. Some of the code here will be included in upstream PyTorch eventually. [source](https://github.com/NVIDIA/apex)
 
 # Overview
 
