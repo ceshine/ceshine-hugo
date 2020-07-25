@@ -26,7 +26,7 @@ hasCJKLanguage = false
 	enableGoogleAnalytics = true
    enableBaiduAnalytics = false
 
-   enableTwitterCard = false
+   enableTwitterCard = true
    enableShare = true
 
 	# Navigation links

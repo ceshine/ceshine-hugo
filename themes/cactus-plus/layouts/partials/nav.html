@@ -1,10 +1,12 @@
 <nav class="main-nav">
 	{{ $url := replace .Permalink .Site.BaseURL "" }}
 	{{ if not .IsHome }}
-	<a href='{{ .Site.BaseURL }}'> <span class="arrow">←</span>{{ with .Site.Params.home }}{{ . }}{{ else }}Home{{ end }}</a>
+	<a href='{{ .Site.BaseURL }}'> <span
+			class="arrow">←</span>{{ with .Site.Params.home }}{{ . }}{{ else }}Home{{ end }}</a>
 	{{ end }}
 	<a href='{{ .Site.BaseURL }}post'>{{ with .Site.Params.archive }}{{ . }}{{ else }}Archive{{ end }}</a>
 	<a href='{{ .Site.BaseURL }}tags'>{{ with .Site.Params.tags }}{{ . }}{{ else }}Tags{{ end }}</a>
+	<a href='https://cse.google.com/cse?cx=012068080395570722180:mkybebmxy94'>Search</a>
 	<a href='https://www.veritable.pw' target="_blank" rel="noopener noreferrer" class="plain-link">Consulting</a>
 	{{ range $key, $val := .Site.Params.Links }}
 	<a href="{{ $val }}">{{ $key }}</a>
