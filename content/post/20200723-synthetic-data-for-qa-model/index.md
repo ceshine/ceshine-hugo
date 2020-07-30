@@ -22,7 +22,7 @@ url: /post/synthetic-data-for-qa-model/
 
 Some caveats:
 
-1. We need models to be able to get decent results. (The paper reported that the question generation model with the number of parameters from 117M to 8.3B. See the ablation study in the following sections.)
+1. We need big models to be able to get decent results. (The paper reported that the question generation model with the number of parameters from 117M to 8.3B. See the ablation study in the following sections.)
 2. Generated QA data is still not at the same level as the real data. (At least 4x+ more synthetic data is needed to reach the same level of accuracy.)
 
 There are a lot of contents in this paper, and it can be a bit overwhelming. I wrote down parts of the paper that I think is most relevant in this post, and hopefully, it can be helpful to you as well.
@@ -33,10 +33,10 @@ There are a lot of contents in this paper, and it can be a bit overwhelming. I w
 
 There are three or four stages in the data generation process. Each stage requires a separate model:
 
-+ Stage 0 - [Optional] **Context generation**: The SQuAD 1.1 training data were used to train the following three stages (Figure 2 below). But when testing/generating, we can choose to use real Wikipedia data or use a model to generate Wikipedia-like data.
-+ Stage 1 - **Answer Generation** ($\hat{p} \sim p(a|c)$): A BERT-style model to do answer extraction from the given context. The start and the end of the token span are jointly sampled.
-+ Stage 2 - **Question Generation** ($\hat{q} \sim p(q|\hat{a},c)$): Fine-tuned GPT-2 model to generation question from the context and the answer.
-+ Stage 3 - **Roundtrip Filtration** ($\hat{a} \stackrel{?}{=} a^{\ast} \sim p(a|c,\hat{q})$): A trained extractive QA model to get the answer from the context and the generated question. If the predicted answer matches the generated answer, we keep this triplet (context, answer, and question). Otherwise, the triplet is discarded.
+- Stage 0 - [Optional] **Context generation**: The SQuAD 1.1 training data were used to train the following three stages (Figure 2 below). But when testing/generating, we can choose to use real Wikipedia data or use a model to generate Wikipedia-like data.
+- Stage 1 - **Answer Generation** ($\hat{p} \sim p(a|c)$): A BERT-style model to do answer extraction from the given context. The start and the end of the token span are jointly sampled.
+- Stage 2 - **Question Generation** ($\hat{q} \sim p(q|\hat{a},c)$): Fine-tuned GPT-2 model to generation question from the context and the answer.
+- Stage 3 - **Roundtrip Filtration** ($\hat{a} \stackrel{?}{=} a^{\ast} \sim p(a|c,\hat{q})$): A trained extractive QA model to get the answer from the context and the generated question. If the predicted answer matches the generated answer, we keep this triplet (context, answer, and question). Otherwise, the triplet is discarded.
 
 The last step seems to be very strict. Any deviation from the generated answer will not be tolerated. However, given the EM(exact match) of the model trained on SQuAD 1.1 alone is already 87.7%, it's reasonable to expect that the quality of answer predicted by the filtration model to be quite accurate. The paper also proposes an over-generation technique (generate two questions for each answer and context pair) to compensate for those valid triplets being discarded.
 
