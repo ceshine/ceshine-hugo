@@ -23,7 +23,7 @@ url: /post/synthetic-data-for-qa-model/
 Some caveats:
 
 1. We need big models to be able to get decent results. (The paper reported question generation models with the number of parameters from 117M to 8.3B. See the ablation study in the following sections.)
-2. Generated QA data is still not at the same level as the real data. (At least 4x+ more synthetic data is needed to reach the same level of accuracy.)
+2. Generated QA data is still not at the same level as the real data. (At least 3x+ more synthetic data is needed to reach the same level of accuracy.)
 
 There are a lot of contents in this paper, and it can be a bit overwhelming. I wrote down parts of the paper that I think is most relevant in this post, and hopefully, it can be helpful to you as well.
 
