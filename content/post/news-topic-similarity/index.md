@@ -11,7 +11,7 @@ tags:
   - machine_learning
   - pytorch
   - nlp
-  - deep_learning
+  - deep-learning
   - bert
 keywords:
   - machine-learning
@@ -50,7 +50,7 @@ An example:
 
 {{< figure src="1*AcHwFPeBhMABqmUfxLAEUg.png" >}}
 
-Firstly, we need to take a look at how BERT construct its input (in the pretraining stage). An input sequences consists of two “sentences”(explained below), each ends with a *[SEP]* token. And a *[CLS]* token is added to the head, whose corresponding hidden states are used to make the next sentence prediction.
+Firstly, we need to take a look at how BERT construct its input (in the pretraining stage). An input sequences consists of two “sentences”(explained below), each ends with a _[SEP]_ token. And a _[CLS]_ token is added to the head, whose corresponding hidden states are used to make the next sentence prediction.
 
 > To generate each training input sequence, we sample **two spans of text from the corpus, which we refer to as “sentences”** even though they are typically much longer than single sentences (but can be shorter also). [1]
 
@@ -78,7 +78,7 @@ And this is the above input sequence with the second sentence replaced by the de
 
 I first tried using the pretrained model without any fine-tuning, and it already worked great. The dataset consists of 2,719 articles from the New York Times RSS feeds, with articles with no or very short descriptions removed.
 
-For the correct pairs (the title and description came from the same article), only **2.5%** of them were give a lower than 50% next sentence score by the pretrained model (*BERT-base-uncased*). **97.3%** of them has a scores above 90%. The following is an example that was predicted negative:
+For the correct pairs (the title and description came from the same article), only **2.5%** of them were give a lower than 50% next sentence score by the pretrained model (_BERT-base-uncased_). **97.3%** of them has a scores above 90%. The following is an example that was predicted negative:
 
 > Title: Meanwhile: For a Knife, Dagger, Sword, Machete or Zombie-Killer, Just Ask These Ladies
 >

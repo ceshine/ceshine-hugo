@@ -4,7 +4,7 @@ date: 2020-07-11T00:00:00.000Z
 title: "[Tip] TorchScript Supports Half Precision"
 description: "Speeding up inference for models trained with mixed precision"
 tags:
-  - deep_learning
+  - deep-learning
   - pytorch
   - tips
 keywords:

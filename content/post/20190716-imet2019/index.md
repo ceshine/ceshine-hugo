@@ -6,7 +6,7 @@ description: "Overview; Augmentation; Training Models on Kaggle"
 tags:
   - kaggle
   - machine_learning
-  - deep_learning
+  - deep-learning
   - computer_vision
 keywords:
   - kaggle
@@ -55,7 +55,7 @@ I mainly focus on the first two part post-competition. Post-processing is more p
 
 Finetuning strategies shared includes:
 
-1. Using *knowlodge distillation (teacher/student)* technique to compress a large ensemble of models into a smaller one. [5]
+1. Using _knowlodge distillation (teacher/student)_ technique to compress a large ensemble of models into a smaller one. [5]
 1. Use the input from the last two (Resnet) layers instead of the last one. [6]
 1. Unfreeze only the last two (Resnet) layers. [6]
 1. Hard-negative mining (samples 5% of samples with the biggest loss on the previous epoch to current). [2]
@@ -71,13 +71,13 @@ Image preprocessing and augmentation will be discussed in a later section.
 
 # Preprocessing and Augmentation
 
-This is the data pipeline I used in my competition submission (it uses [*albumentations*](https://albumentations.readthedocs.io/en/latest/) package[19]):
+This is the data pipeline I used in my competition submission (it uses [_albumentations_](https://albumentations.readthedocs.io/en/latest/) package[19]):
 
 {{< gist ceshine 4687b4c959946b1e3f58ac8eb91dd4b2 >}}
 
-(For those who are not familiar with *albumentations*, In addition to the official documentation[8], there is also a [live demo page]((https://albumentations.ml/))[11] for you to explore.)
+(For those who are not familiar with _albumentations_, In addition to the official documentation[8], there is also a [live demo page](<(https://albumentations.ml/)>)[11] for you to explore.)
 
-This pipeline is rather aggressive, and uses stochastic TTA(test-time augmentation). The image size *256x256* is chosen mainly with the speed of training in mind (discussed in more details in the next section).
+This pipeline is rather aggressive, and uses stochastic TTA(test-time augmentation). The image size _256x256_ is chosen mainly with the speed of training in mind (discussed in more details in the next section).
 
 I split the data into ten folds, and randomly select one of se-resnext50, se-resnext10, and densenet161 models for each fold. The final submission is a simple rank average of the predictions from the 10 models.
 
@@ -85,7 +85,7 @@ After the competition ends, I tried the pipeline used in the first place solutio
 
 {{< gist ceshine 7f593c25863095001826622e26febc7d >}}
 
-Beside using a much larger image size (*320x320*), it only crop when necessary (those with very marginal aspect ratios), and use `resize` to transform the image into a square one. The TTA becomes deterministic, with one run with horizontal flipping off, and one with flipping on.
+Beside using a much larger image size (_320x320_), it only crop when necessary (those with very marginal aspect ratios), and use `resize` to transform the image into a square one. The TTA becomes deterministic, with one run with horizontal flipping off, and one with flipping on.
 
 The following are some examples that are more demonstrative of the differences between the data pipelines:
 
@@ -101,8 +101,8 @@ By switching to this new pipeline, I managed to achieve the same private leaderb
 
 ## Future work
 
-1. Try resizing to smaller sizes (e.g. *256x256*).
-2. Try *padding to square* instead of *resizing to square* (similar method used in [4]).
+1. Try resizing to smaller sizes (e.g. _256x256_).
+2. Try _padding to square_ instead of _resizing to square_ (similar method used in [4]).
 3. Ablation study of Mixup augmentation. (The 1st place solution did not mention using Mixup, but I used Mixup in every setups.)
 4. Try cutout/random-erasing.
 5. Try SGDM optimizer[7] instead of AdamW.
@@ -133,7 +133,7 @@ The first step is the zip the source code, upload to Kaggle as a Dataset, along 
 1. The inference kernel does not allow Internet connection (so no `pip install`)
 2. even if the package is preinstalled in Kaggle kernel, Kaggle might upgrade the package at any time and potentially breaks your code. My inference kernels were broken when Kaggle upgrade the version PyTorch to 1.1. It's relatively harder to (re-)install PyTorch yourself in Kaggle Kernel, but you can avoid the same problem for all other smaller packages.
 
-Now you can train models as in this Kernel: [iMet Trainer](https://www.kaggle.com/ceshine/imet-trainer/). Note that I use *delegator* to simplify interaction with the system shell, but you can use the built-in *subprocess* to achieve the same thing. Download the trained model to your local folder.
+Now you can train models as in this Kernel: [iMet Trainer](https://www.kaggle.com/ceshine/imet-trainer/). Note that I use _delegator_ to simplify interaction with the system shell, but you can use the built-in _subprocess_ to achieve the same thing. Download the trained model to your local folder.
 
 Upload the trained model to Kaggle as a new Dataset: [Public iMet 2019 Models](https://www.kaggle.com/ceshine/public-imet-2019-models).
 

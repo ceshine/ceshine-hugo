@@ -10,7 +10,7 @@ images:
   - 0*8KTX2sKSL9KNNCBG.png
 tags:
   - machine_learning
-  - deep_learning
+  - deep-learning
   - pytorch
   - nlp
 keywords:
@@ -28,7 +28,7 @@ url: /post/multilingual-similarity-search/
 
 Previously I’ve demonstrated how to use pretrained BERT model to create a similarity measure between two documents in this post: **[News Topic Similarity Measure using Pretrained BERT Model](https://medium.com/the-artificial-impostor/news-topic-similarity-measure-using-pretrained-bert-model-1dbfe6a66f1d)**.
 
-However, to find similar entries to* N* documents in corpus A of size *M*, we need to run *N*M* feed-forwards. A more efficient and widely used method is to use neural networks to generate sentence/document embeddings, and calculate cosine similarity scores between these embeddings.
+However, to find similar entries to* N* documents in corpus A of size _M_, we need to run *N*M\* feed-forwards. A more efficient and widely used method is to use neural networks to generate sentence/document embeddings, and calculate cosine similarity scores between these embeddings.
 
 The [LASER (Language-Agnostic SEntence Representations) project](https://github.com/facebookresearch/LASER) released by Facebook provides a pretrained sentence encoder that can handle 92 different languages. Sentences from all languages are mapped into the same embedding space, so embeddings from different languages are comparable.
 
@@ -48,7 +48,7 @@ You can write your own implementation, though. The training data used is publicl
 
 The core encoder itself only depends on PyTorch 1.0, but tokenization, BPE, similarity search requires some third-party libraries. Follow the [official installation instructions](https://github.com/ceshine/LASER#installation) to install tokenization scripts from Moses encoder and FastBPE. And install FAISS （a library for efficient similarity search and clustering of dense vectors） [via conda or from source](https://github.com/facebookresearch/faiss/blob/master/INSTALL.md).
 
-I recommend using my fork of LASER since the original one requires you to install [*transliterate](https://pypi.org/project/transliterate)* package, which is only used for Greek, no matter you actually use Greek or not. My fork made it an optional dependency: **[ceshine/LASER](https://github.com/ceshine/LASER)**.
+I recommend using my fork of LASER since the original one requires you to install [\*transliterate](https://pypi.org/project/transliterate)\* package, which is only used for Greek, no matter you actually use Greek or not. My fork made it an optional dependency: **[ceshine/LASER](https://github.com/ceshine/LASER)**.
 
 # Model Overview
 
@@ -64,7 +64,7 @@ The pretraining model architecture is not very different from the traditional se
 
 1. The pooled states are concatenated to the decoder input at every time step.
 
-The sentence in the source language is encoded by the encoder, and then translated to the target language (English and Spanish) by the decoder. The encoder doesn’t know what the target language is. The target language is specified in the inputs (L*_*id) to the decoder.
+The sentence in the source language is encoded by the encoder, and then translated to the target language (English and Spanish) by the decoder. The encoder doesn’t know what the target language is. The target language is specified in the inputs (L*\_*id) to the decoder.
 
 After pretraining, the encoder is extracted and used as-is (without any fine-tuning). It is proven to be quite useful in zero-shot transfer tasks (training data in one language, testing data in another).
 
@@ -260,12 +260,12 @@ We did not evaluate zero-shot transfer tasks in this post because I haven’t th
 
 # References
 
-1. Mikel Artetxe and Holger Schwenk, [*Massively Multilingual Sentence Embeddings for Zero-Shot Cross-Lingual Transfer and Beyond](https://arxiv.org/abs/1812.10464)* arXiv, 26 Dec 2018.
+1. Mikel Artetxe and Holger Schwenk, [\*Massively Multilingual Sentence Embeddings for Zero-Shot Cross-Lingual Transfer and Beyond](https://arxiv.org/abs/1812.10464)\* arXiv, 26 Dec 2018.
 
 1. [Zero-shot transfer across 93 languages: Open-sourcing enhanced LASER library](https://code.fb.com/ai-research/laser-multilingual-sentence-embeddings/)
 
 1. [Ilya Sutskever, Oriol Vinyals, and Quoc V. Le. 2014. Sequence to Sequence Learning with Neural Net- works.](https://papers.nips.cc/paper/5346-sequence-to-sequence-learning-with-neural-networks.pdf)
 
-1. Alexis Conneau, Guillaume Lample, Ruty Rinott, Adina Williams, Samuel R. Bowman, Holger Schwenk and Veselin Stoyanov, [*XNLI: Cross-lingual Sentence Understanding through Inference](https://aclweb.org/anthology/D18-1269)*, EMNLP, 2018.
+1. Alexis Conneau, Guillaume Lample, Ruty Rinott, Adina Williams, Samuel R. Bowman, Holger Schwenk and Veselin Stoyanov, [\*XNLI: Cross-lingual Sentence Understanding through Inference](https://aclweb.org/anthology/D18-1269)\*, EMNLP, 2018.
 
-1. Holger Schwenk and Xian Li, [*A Corpus for Multilingual Document Classification in Eight Languages](http://www.lrec-conf.org/proceedings/lrec2018/pdf/658.pdf)*, LREC, pages 3548–3551, 2018.
+1. Holger Schwenk and Xian Li, [\*A Corpus for Multilingual Document Classification in Eight Languages](http://www.lrec-conf.org/proceedings/lrec2018/pdf/658.pdf)\*, LREC, pages 3548–3551, 2018.

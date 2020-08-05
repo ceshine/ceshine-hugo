@@ -4,7 +4,7 @@ date: 2019-06-21T00:07:25.807Z
 title: "Smaller Docker Image using Multi-Stage Build"
 description: "Example: CUDA-enabled PyTorch + Apex Image"
 tags:
-  - deep_learning
+  - deep-learning
   - pytorch
   - docker
 keywords:
@@ -78,8 +78,8 @@ RUN conda install -y python=$PYTHON_VERSION && \
     conda clean -tipsy
 ```
 
-
 Then we install NVIDIA Apex:
+
 ```
 # Install apex
 WORKDIR /tmp/

@@ -5,7 +5,7 @@ title: "Implementing Beam Search - Part 1"
 description: "A Source Code Analysis of OpenNMT-py"
 tags:
   - machine_learning
-  - deep_learning
+  - deep-learning
   - nlp
   - python
 keywords:
@@ -40,11 +40,11 @@ The number below each node is the log probability of the sequence thus far. The 
 
 # How to Do Beam Search Efficiently
 
-After kick-start the search with N nodes at the first level, the naive way is to run the model N times with each of these nodes as the decoder input. If the maximum length of the output sequence is T, we’ll have to run the model *N\*T* times in the worst case.
+After kick-start the search with N nodes at the first level, the naive way is to run the model N times with each of these nodes as the decoder input. If the maximum length of the output sequence is T, we’ll have to run the model _N\*T_ times in the worst case.
 
 The smarter way is to put these N nodes into a batch and feed it to the model. It’ll be much faster since we can parallelize the computation, especially when using a CUDA backend.
 
-We’ll soon see that an even better way is to do multiple beam searches at the same time. If we’re trying to generate output sequences for **M** input sequences, the effective batch size would become ***N \* M***. You’ll need this number to estimate whether the batch will fit into your system memory.
+We’ll soon see that an even better way is to do multiple beam searches at the same time. If we’re trying to generate output sequences for **M** input sequences, the effective batch size would become **_N \* M_**. You’ll need this number to estimate whether the batch will fit into your system memory.
 
 # The OpenNMT-py Implementation
 
@@ -52,14 +52,14 @@ We’ll soon see that an even better way is to do multiple beam searches at the 
 
 The start point is [translate.py](https://github.com/OpenNMT/OpenNMT-py/tree/49185121e46c4f65d68101590bad231a8dd73e4f/translate.py) (the script for making inferences/predictions), which contains:
 
-{{< highlight python >}}
+```python
 translator = build_translator(opt, report_score=True)
 translator.translate(src_path=opt.src,
                      tgt_path=opt.tgt,
                      src_dir=opt.src_dir,
                      batch_size=opt.batch_size,
                      attn_debug=opt.attn_debug)
-{{< /highlight >}}
+```
 
 It leads us to [onmt/translate/translator.py](https://github.com/OpenNMT/OpenNMT-py/tree/49185121e46c4f65d68101590bad231a8dd73e4f/onmt/translate/translator.py), which contains the function `build_translator` and the class `Translator`. `Translator.translate` method uses `Translator.translate_batch` method to generate output sequences (translation) for a batch.
 
@@ -67,7 +67,7 @@ There are two modes of the `translate_batch` method (`fast` = True/False). We’
 
 Finally, in `Translator._translate_batch` we see the following statement:
 
-{{< highlight python >}}
+```python
 beam = [
     onmt.translate.Beam(beam_size, n_best=self.n_best,
                         cuda=self.cuda,
@@ -81,30 +81,30 @@ beam = [
                         exclusion_tokens=exclusion_tokens)
     for __ in range(batch_size)
 ]
-{{< /highlight >}}
+```
 
 The statement creates a `Beam` object for each one of the input sequences. It leads us to the final piece of the puzzle — [onmt/translate/beam.py](https://github.com/OpenNMT/OpenNMT-py/tree/49185121e46c4f65d68101590bad231a8dd73e4f/onmt/translate/beam.py).
 
 (We’re going to ignore some advanced features, such as copy attention, length and coverage penalties for now to simplify things. They will be covered in the next part of this series.)
 
-## The Big Picture (_translate_batch method)
+## The Big Picture (\_translate_batch method)
 
-For demonstrative purpose, suppose we have a batch of size 3, each with length 4 (can already be padded). The three input sequences are denoted as *a*, *b*, and *c*:
+For demonstrative purpose, suppose we have a batch of size 3, each with length 4 (can already be padded). The three input sequences are denoted as _a_, _b_, and _c_:
 
 {{< figure src="1*iRgFCWVwN_FB2bXMZCpxQw.png" caption="A 3x4 input tensor for the encoder." >}}
 
-The _translate_batch method [first feed the input sequences to the encoder](https://github.com/OpenNMT/OpenNMT-py/tree/49185121e46c4f65d68101590bad231a8dd73e4f/onmt/translate/translator.py#L604), and get the final hidden states and outputs at each time step in return:
+The \_translate_batch method [first feed the input sequences to the encoder](https://github.com/OpenNMT/OpenNMT-py/tree/49185121e46c4f65d68101590bad231a8dd73e4f/onmt/translate/translator.py#L604), and get the final hidden states and outputs at each time step in return:
 
-{{< highlight python >}}
+```python
 src, enc_states, memory_bank, src_lengths = self._run_encoder(
     batch, data_type)
-{{< /highlight >}}
+```
 
 Suppose the model has four encoder hidden states for each sequence/example, and we want to do a beam search with a size of four. [The following statement](https://github.com/OpenNMT/OpenNMT-py/tree/49185121e46c4f65d68101590bad231a8dd73e4f/onmt/translate/translator.py#L616):
 
-{{< highlight python >}}
-self.model.decoder.map_state(_repeat_beam_size_times)
-{{< /highlight >}}
+```python
+self.model.decoder.map_state(\_repeat_beam_size_times)
+```
 
 expands the final encoder hidden states:
 
@@ -120,13 +120,13 @@ It set up the decoder to run 3x4 sequences at a time (i.e. use a batch size of 1
 
 Then it enters a loop that runs at most `self.max_length` times. At the start of each iteration, right after checking the stopping condition, it creates the decoder inputs by collecting the predictions from the last time step (which will be a Beginning-of-Sentence/BOS token if it’s at the first time step):
 
-{{< highlight python >}}
+```python
 # Construct batch x beam_size nxt words.
 # Get all the pending current beam words and arrange for forward.
 inp = var(
     torch.stack([b.get_current_state() for b in beam]
 ).t().contiguous().view(1, -1))
-{{< /highlight >}}
+```
 
 The above statement is very important, so let’s take closer look. Let the prediction for input sequences (a, b, c) at the previous time step be (A, B, C). The expression `torch.stack([b.get_current_state() for b in beam])` creates a 3x4 tensor:
 
@@ -144,36 +144,36 @@ Note that the sequences are repeated in the same pattern as in Fig 2 for hidden 
 
 The predictions are then [fed into the decoder](https://github.com/OpenNMT/OpenNMT-py/tree/49185121e46c4f65d68101590bad231a8dd73e4f/onmt/translate/translator.py#L639) as inputs:
 
-{{< highlight python >}}
+```python
 dec_out, attn = self.model.decoder(inp, memory_bank,
     memory_lengths=memory_lengths,
     step=i)
-{{< /highlight >}}
+```
 
 The decoder outputs are fed into a generator model to get the final (log) probability outputs (`self.model.generator.forward`). The probabilities are then converted into a **4x3x(num_words)** tensor ([with](https://github.com/OpenNMT/OpenNMT-py/tree/49185121e46c4f65d68101590bad231a8dd73e4f/onmt/translate/translator.py#L659) and [without](https://github.com/OpenNMT/OpenNMT-py/tree/49185121e46c4f65d68101590bad231a8dd73e4f/onmt/translate/translator.py#L650) copy-attention mechanism).
 
 For each input sequence, the corresponding (log) probability outputs are passed to its Beam object (`b.advance`):
 
-{{< highlight python >}}
+```python
 for j, b in enumerate(beam):
     b.advance(out[:, j],
         beam_attn.data[:, j, :memory_lengths[j]])
     select_indices_array.append(
-        b.get_current_origin() * batch_size + j)
-{{< /highlight >}}
+b.get_current_origin() \* batch_size + j)
+```
 
 The list `select_indices_array` records the nodes on which the Beam object has expanded.
 
-`b.get_current_origin()` returns the local indices of the nodes (the number part minus 1 in Fig 5). And `b.get_current_origin() * batch_size + j` recovers its corresponding position in the decoder input (expanded batch). For example, for the ***second input sequence (j=1)***, if the beam selected the ***second node*** to expand, the formula would be evaluated as (2–1) * 3 + 1= 4, which points to ***B2*** in Fig 5.
+`b.get_current_origin()` returns the local indices of the nodes (the number part minus 1 in Fig 5). And `b.get_current_origin() * batch_size + j` recovers its corresponding position in the decoder input (expanded batch). For example, for the **_second input sequence (j=1)_**, if the beam selected the **_second node_** to expand, the formula would be evaluated as (2–1) \* 3 + 1= 4, which points to **_B2_** in Fig 5.
 
 The list `select_indices_array` is then collated into a 3x4 tensor, flipped, and finally flatten, just like in Fig 3–5.
 
 Because it’s possible that only some of the nodes are expanded, and the order of node can be changed, we need to [re-align the hidden state of the decoder](https://github.com/OpenNMT/OpenNMT-py/tree/49185121e46c4f65d68101590bad231a8dd73e4f/onmt/translate/translator.py#L677) for the next time step using `select_indices_array`:
 
-{{< highlight python >}}
+```python
 self.model.decoder.map_state(
     lambda state, dim: state.index_select(dim, select_indices))
-{{< /highlight >}}
+```
 
 As an example, consider this set of hidden states of a decoder (the final index is the node index):
 
@@ -185,79 +185,77 @@ Suppose the first sequence expanded on node [1, 3, 2, 1], the second on [2, 3, 1
 
 After the stopping condition has been met, the method [collect the final predictions from each Beam object](https://github.com/OpenNMT/OpenNMT-py/tree/49185121e46c4f65d68101590bad231a8dd73e4f/onmt/translate/translator.py#L681) (and also the attention vectors), and return the results to the caller:
 
-{{< highlight python >}}
-ret = self._from_beam(beam)
-{{< /highlight >}}
+```python
+ret = self.\_from_beam(beam)
+```
 
 ## What Happens inside a Beam object?
 
-The two most important instance variables are `next_ys` and `prev_ks`, retrievable by invoking `.get_current_state` and `.get_current_origin` methods, respectively. The top (*beam_size*) predictions for the next decoder output at each time step are stored in `next_ys`(they are the nodes in the search tree). Information about which nodes from the previous step have the `next_ys` been based on is stored in `prev_ks`. They are both required to reconstruct the output sequence from the search tree.
+The two most important instance variables are `next_ys` and `prev_ks`, retrievable by invoking `.get_current_state` and `.get_current_origin` methods, respectively. The top (_beam_size_) predictions for the next decoder output at each time step are stored in `next_ys`(they are the nodes in the search tree). Information about which nodes from the previous step have the `next_ys` been based on is stored in `prev_ks`. They are both required to reconstruct the output sequence from the search tree.
 
 Most of the operations are done inside the method `.advance`. It takes the (log) probability outputs and attention vectors from the generator (which takes the output from the decoder) as arguments.
 
 If the decoder is not at the first time step, then [the method sums up the (log) probability outputs with the previous scores](https://github.com/OpenNMT/OpenNMT-py/tree/49185121e46c4f65d68101590bad231a8dd73e4f/onmt/translate/beam.py#L96), which are also log probabilities. It represents the probability of the output sequence (remember that log probabilities are additive):
 
-{{< highlight python >}}
+```python
 beam_scores = word_probs + \
     self.scores.unsqueeze(1).expand_as(word_probs)
-{{< /highlight >}}
+```
 
 Suppose in our example we have a target vocabulary with a size of 10000, then beam_scores would be a 4x10000 tensor. It represents 40000 possible sequences and their (log) probabilities of occurence.
 
 The method then [makes sure that it doesn’t expand on EOS nodes](https://github.com/OpenNMT/OpenNMT-py/tree/49185121e46c4f65d68101590bad231a8dd73e4f/onmt/translate/beam.py#L99) by setting the probabilities of the sequences that expand on the nodes to be a very small value:
 
-
-{{< highlight python >}}
+```python
 for i in range(self.next_ys[-1].size(0)):
     if self.next_ys[-1][i] == self._eos:
         beam_scores[i] = -1e20
-{{< /highlight >}}
+```
 
-The scores/probabilities tensor [is flattened, and topk method is used](https://github.com/OpenNMT/OpenNMT-py/tree/49185121e46c4f65d68101590bad231a8dd73e4f/onmt/translate/beam.py#L126) to extract the most possible (*beam_size*) sequences. They are the new nodes to be added to the search tree:
+The scores/probabilities tensor [is flattened, and topk method is used](https://github.com/OpenNMT/OpenNMT-py/tree/49185121e46c4f65d68101590bad231a8dd73e4f/onmt/translate/beam.py#L126) to extract the most possible (_beam_size_) sequences. They are the new nodes to be added to the search tree:
 
-{{< highlight python >}}
+```python
 flat_beam_scores = beam_scores.view(-1)
 best_scores, best_scores_id = flat_beam_scores.topk(self.size, 0,
     True, True)
-{{< /highlight >}}
+```
 
 The method needs to [recover the node indices and token indices](https://github.com/OpenNMT/OpenNMT-py/tree/49185121e46c4f65d68101590bad231a8dd73e4f/onmt/translate/beam.py#L133) from `best_score_id`, in order to update `prev_ks` and `next_ys`, respectively:
 
-{{< highlight python >}}
+```python
 # best_scores_id is flattened beam x word array, so calculate which
 # word and beam each score came from
 prev_k = best_scores_id / num_words
 self.prev_ks.append(prev_k)
 self.next_ys.append((best_scores_id - prev_k * num_words))
-{{< /highlight >}}
+```
 
 (20181106 Update: I forgot to mention how the method deal with EOS tokens at the end of the sequences. Added a paragraph below to fix this.)
 
 Now the method [examines these new nodes to see if any of them is an EOS token](https://github.com/OpenNMT/OpenNMT-py/blob/195f5ae17f572c22ff5229e52c2dd2254ad4e3db/onmt/translate/beam.py#L141) (which completes the output sequence). If so, the sequence is added to a list `self.finished` as output candidates:
 
-{{< highlight python >}}
+```python
 for i in range(self.next_ys[-1].size(0)):
     if self.next_ys[-1][i] == self._eos:
         global_scores = self.global_scorer.score(self, self.scores)
         s = global_scores[i]
         self.finished.append((s, len(self.next_ys) - 1, i))
-{{< /highlight >}}
+```
 
 Finally, it checks the stopping condition (if an EOS token is at the end of the **most possible** sequence) and set the `eos_top` flag:
 
-{{< highlight python >}}
+```python
 # End condition is when top-of-beam is EOS and no global score.
 if self.next_ys[-1][0] == self._eos:
     self.all_scores.append(self.scores)
     self.eos_top = True
-{{< /highlight >}}
-
+```
 
 That’s it! We’ve covered the whole beam search process (admittedly, omitted a few details and advanced features).
 
 One last interesting thing I’ll add is the `Beam.get_hyp` method, which reconstructs an output sequence ending at kth node at time timestep (if you consider the BOS token is located at time step 0)(it does not return BOS):
 
-{{< highlight python >}}
+```python
 def get_hyp(self, timestep, k):
     """
     Walk back to construct the full hypothesis.
@@ -268,7 +266,7 @@ def get_hyp(self, timestep, k):
         attn.append(self.attn[j][k])
         k = self.prev_ks[j][k]
     return hyp[::-1], torch.stack(attn[::-1])
-{{< /highlight >}}
+```
 
 ## To Be Continued…
 

@@ -4,7 +4,7 @@ date: 2020-07-06T00:00:00.000Z
 title: "Self-Supervised Domain Adaptation"
 description: "Preliminary experiments show great promise"
 tags:
-  - deep_learning
+  - deep-learning
   - pytorch
   - cv
   - transfer_learning

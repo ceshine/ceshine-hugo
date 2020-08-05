@@ -17,7 +17,7 @@ images:
   - 1*Sla_yn0RRQoDr85V0q1Uzg.png
 tags:
   - machine_learning
-  - deep_learning
+  - deep-learning
   - nlp
   - pytorch
 keywords:
@@ -35,7 +35,7 @@ url: /post/neural-language-models/
 
 I was reading this paper titled “[Character-Level Language Modeling with Deeper Self-Attention](https://arxiv.org/abs/1808.04444)” by Al-Rfou et al., which describes some ways to use [Transformer](https://arxiv.org/abs/1706.03762) self-attention models to solve the language modeling problem. One big problem of Transformer models in this setting is that they cannot pass information from one batch to the next, so they have to make predictions based on limited contexts.
 
-It becomes a problem when we have to compare the results with “traditional” RNN-based models, and what Al-Rfou et al. proposed is to use only the outputs at the last position in the sequence from the Transformers when evaluating. If we ignore the first batch, a sequence of length *N* will require *N* batches to predict for Transformers, and only *(N / M)* batches *for* RNN models (M being the sequence length of a batch).
+It becomes a problem when we have to compare the results with “traditional” RNN-based models, and what Al-Rfou et al. proposed is to use only the outputs at the last position in the sequence from the Transformers when evaluating. If we ignore the first batch, a sequence of length _N_ will require _N_ batches to predict for Transformers, and only _(N / M)_ batches _for_ RNN models (M being the sequence length of a batch).
 
 As I read the paper, I’d found that I was not really sure about some implementation details of RNN-based language models. It really bugged me, so I went back to the official PyTorch example and figured it out. The following sections are the notes I took during the process.
 
@@ -57,9 +57,9 @@ Basically a language model tries to predict the next token given the previous to
 
 # Source Code
 
-I forked the *pytorch/examples* Github repo, made some tiny changes, and added two notebooks. Here’s the link:
+I forked the _pytorch/examples_ Github repo, made some tiny changes, and added two notebooks. Here’s the link:
 
-[*ceshine/examples*](https://github.com/ceshine/examples/tree/master/word_language_model)
+[_ceshine/examples_](https://github.com/ceshine/examples/tree/master/word_language_model)
 
 # Dataset Preparation
 
@@ -91,7 +91,7 @@ In line 3 we have `nbatch = 38 // 4 = 9`. In line 5 we have `nbatch * bsz = 36`,
 
 This example uses very basic GRU/LSTM/RNNmodels you can learn from any decent tutorials on the topic of recurrent neural networks. We’re not going to cover it in detail. You can read the source code here:
 
-[*ceshine/examples/word_language_model/model.py*](https://github.com/ceshine/examples/blob/master/word_language_model/model.py)
+[_ceshine/examples/word_language_model/model.py_](https://github.com/ceshine/examples/blob/master/word_language_model/model.py)
 
 # Training: Iterating Through Batches
 
@@ -117,7 +117,7 @@ Because we reuse the hidden states, the recurrent unit that are fed the sequence
 
 We then train this batch and repackage the hidden states just like the first batch. And here comes the tricky part — the third and final batch.
 
-In line 9 we have `seq_len = min(args.bptt, len(source) — 1 — i)`. After dealing with the second batch, `i` would be 6, and `len(source) — 1 — i `would be **2**, less than our `bptt`(3). This is because we need to have a proper target tensor for the supervised model.
+In line 9 we have `seq_len = min(args.bptt, len(source) — 1 — i)`. After dealing with the second batch, `i` would be 6, and `len(source) — 1 — i`would be **2**, less than our `bptt`(3). This is because we need to have a proper target tensor for the supervised model.
 
 {{< figure src="1*VSjQB5HR9Beka5bMbDi-yQ.png" caption="Yellow — The third batch: **input** tensor (4 x 2). Green — inputs that have been seen by the model." >}}
 
@@ -151,7 +151,7 @@ Thanks to Google Colab, we can run the entire training and evaluation process fo
 
 I’ve provided bash commands and training log in the notebook below:
 
-[*01_Training.ipynb*](https://colab.research.google.com/github/ceshine/examples/blob/master/word_language_model/notebooks/01_Training.ipynb)
+[_01_Training.ipynb_](https://colab.research.google.com/github/ceshine/examples/blob/master/word_language_model/notebooks/01_Training.ipynb)
 
 (The perplexity given in the [README](https://github.com/ceshine/examples/blob/master/word_language_model/README.md) seems to be from the PTB dataset, and is lower than the one we get from the wikitext2 dataset.)
 
@@ -166,7 +166,7 @@ Maybe you’ll have better luck. Try replicate the example or train a bigger mod
 
 I’ve also provided a notebook that loads and evaluate the mode:
 
-[*02_Inference.ipynb*](https://colab.research.google.com/github/ceshine/examples/blob/master/word_language_model/notebooks/02_Inference.ipynb)
+[_02_Inference.ipynb_](https://colab.research.google.com/github/ceshine/examples/blob/master/word_language_model/notebooks/02_Inference.ipynb)
 
 It reruns the evaluation process for the test dataset, to make sure we have loaded the correct model. It also contains code that displays predictions for humans to examine by eye, and code that generates texts based on the given contexts.
 

@@ -6,7 +6,7 @@ description: "A Case Study"
 tags:
   - python
   - pytorch
-  - deep_learning
+  - deep-learning
   - tips
 keywords:
   - python

@@ -5,7 +5,7 @@ title: "Implementing Beam Search - Part 2"
 description: "Advance Features that Regularize the Translator"
 tags:
   - machine_learning
-  - deep_learning
+  - deep-learning
   - nlp
   - python
 keywords:
@@ -20,9 +20,9 @@ url: /post/implementing-beam-search-part-2/
 
 Part one gave an overview on how OpenNMT-py produces output sequences for a batch of input sequences (`Translator._translate_batch` method), and how it conducts beam searches (`Beam` objects):
 
-[*Implementing Beam Search (Part 1) - A Source Code Analysis of OpenNMT-py*](/post/implementing-beam-search-part-1/)
+[_Implementing Beam Search (Part 1) - A Source Code Analysis of OpenNMT-py_](/post/implementing-beam-search-part-1/)
 
-Now we turn our attention to some of the details we skipped through in part one — the advanced features that influence how the translator produce output candidates/hypotheses. They can be put into two categories: ***rule-based*** and ***number-based***.
+Now we turn our attention to some of the details we skipped through in part one — the advanced features that influence how the translator produce output candidates/hypotheses. They can be put into two categories: **_rule-based_** and **_number-based_**.
 
 More concretely, what these features aim to achieve includes:
 
@@ -58,7 +58,7 @@ This is controlled by these command line arguments of `translator.py`: [-block_n
 
 This one is a bit more involved. [The checking only happens](https://github.com/OpenNMT/OpenNMT-py/blob/576a666f9dafa5bed66dc58769ac7a2e0e3da0fa/onmt/translate/beam.py#L104) when the Beam object already has at least one step worth of sequence predicted (`len(self.prev_ks) > 0`).
 
-One interesting line is line 14. `self.exclusion_tokens` is a set that contains all the exception tokens, so the `&` operator here is not the regular logical AND operator, but a *set intersection* operator. It’ll return a set with non-zero size if any of the exception tokens appears in the list `gram`.
+One interesting line is line 14. `self.exclusion_tokens` is a set that contains all the exception tokens, so the `&` operator here is not the regular logical AND operator, but a _set intersection_ operator. It’ll return a set with non-zero size if any of the exception tokens appears in the list `gram`.
 
 If any repetition occurs in the sequence so far, line 20 will set all next-token probabilities derived from that sequence to very low. This essentially prevents the last node of that sequence from expanding in the search tree.
 
@@ -76,13 +76,13 @@ This is controlled by these command line arguments of `translator.py`: [-length_
 
 {{< figure src="1*wbYSw6m118tFw5ovC4jV8A.png" caption="|*Y*| is the current target length*; α* is the length normalization coefficient ([source](http://opennmt.net/OpenNMT/translation/beam_search/)[1])" >}}
 
-Recall from part one that a probability of a sequence `a_1, a_2, a_3 `can be calculated as a conditional probability `P(a_1, a_2, a_3) = P(a_1)P(a_2|a_1)P(a_3|a_1, a_2)`. If we add a new token `a_4` to this sequence, the probability of this new sequence is then `P(a_1)P(a_2|a_1)P(a_3|a_1, a_2)P(a_4|a_1, a_2, a_3)`. We can see that the probability will only go exponentially lower as the sequence extends, especially when vocabulary is large and uncertainty is high.
+Recall from part one that a probability of a sequence `a_1, a_2, a_3`can be calculated as a conditional probability `P(a_1, a_2, a_3) = P(a_1)P(a_2|a_1)P(a_3|a_1, a_2)`. If we add a new token `a_4` to this sequence, the probability of this new sequence is then `P(a_1)P(a_2|a_1)P(a_3|a_1, a_2)P(a_4|a_1, a_2, a_3)`. We can see that the probability will only go exponentially lower as the sequence extends, especially when vocabulary is large and uncertainty is high.
 
-We may want to **slow the decay** to a certain degree, hence the length normalization/penalty. The results of the *lp* function will be used to divide the log probability of the sequence. With *1> α > 0*, the longer sequences are penalized less heavily when ***α*** **is larger** (i.e. **longer sequences are more likely to be picked** as the final output). (Log probabilities are negative numbers, so a log probability divided by a number > 1 will becomes larger.)
+We may want to **slow the decay** to a certain degree, hence the length normalization/penalty. The results of the _lp_ function will be used to divide the log probability of the sequence. With _1> α > 0_, the longer sequences are penalized less heavily when **_α_** **is larger** (i.e. **longer sequences are more likely to be picked** as the final output). (Log probabilities are negative numbers, so a log probability divided by a number > 1 will becomes larger.)
 
 {{< gist ceshine e33871c686dda58cd357b256b742e2dc >}}
 
-Theoretically *α* can be larger than 1 or less than 0, but I haven’t yet seen evidences that it’ll be beneficial to the results.
+Theoretically _α_ can be larger than 1 or less than 0, but I haven’t yet seen evidences that it’ll be beneficial to the results.
 
 ## Coverage normalization
 
@@ -96,15 +96,15 @@ The formula used in “summary” version:
 
 {{< figure src="1*g-DW3WclwM_GL_jANN4rSg.png" >}}
 
-The *β* here are actually the `-beta` argument multiplied by -1.
+The _β_ here are actually the `-beta` argument multiplied by -1.
 
 The differences between these two formulae:
 
-1. the *log* function in the first formula
+1. the _log_ function in the first formula
 
-1. Once the sum of p_*ij* over *j* reaches one, the penalty on position *i* in the source will become zero for formula 1.
+1. Once the sum of p\__ij_ over _j_ reaches one, the penalty on position _i_ in the source will become zero for formula 1.
 
-1. The penalty will start to grow once the sum of p_*ij* over *j* reaches one for formula 2.
+1. The penalty will start to grow once the sum of p\__ij_ over _j_ reaches one for formula 2.
 
 So we can see that formula 1 encourage the decoder to **cover all time steps** in the input; formula 2 on the other hand discourage the decoder of **focusing too much on the same set of time steps** in the input. Formula 1 is suitable for translation tasks; while formula 2 can be used for summarization tasks.
 
@@ -114,7 +114,7 @@ It can be really helpful if we calculate the penalty at every decoder time step 
 
 The first thing [Beam.advance](https://github.com/OpenNMT/OpenNMT-py/blob/576a666f9dafa5bed66dc58769ac7a2e0e3da0fa/onmt/translate/beam.py#L87) method does is to apply coverage penalty if `stepwise_penalty` is set to True:
 
-```
+```python
 if self.stepwise_penalty:
     self.global_scorer.update_score(self, attn_out)
 ```
@@ -123,7 +123,7 @@ if self.stepwise_penalty:
 
 It removes the (coverage) penalty from the last time step, recalculate a new one, and then subtract it from the log probabilities.
 
-`Beam.advance` [invokes `GNMTGlobalScorer.update_global_state` method](https://github.com/OpenNMT/OpenNMT-py/blob/576a666f9dafa5bed66dc58769ac7a2e0e3da0fa/onmt/translate/beam.py#L139) after it added a new set the new nodes to the search tree. The method keeps track of the sums of p_*ij* over *j* in `beam.global_state['coverage']`, and save the current coverage penalty for `GNMTGlobalScorer.update_score` to use later.
+`Beam.advance` [invokes `GNMTGlobalScorer.update_global_state` method](https://github.com/OpenNMT/OpenNMT-py/blob/576a666f9dafa5bed66dc58769ac7a2e0e3da0fa/onmt/translate/beam.py#L139) after it added a new set the new nodes to the search tree. The method keeps track of the sums of p\__ij_ over _j_ in `beam.global_state['coverage']`, and save the current coverage penalty for `GNMTGlobalScorer.update_score` to use later.
 
 {{< gist ceshine a6be11e4c6cc8a325a4106dd4bff9a43 >}}
 

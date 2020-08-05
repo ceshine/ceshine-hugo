@@ -1,12 +1,12 @@
 +++
 Description = "Does it benefits those who still use Pascal consumer cards?"
-Tags = ["pytorch", "deep_learning"]
+Tags = ["pytorch", "deep-learning"]
 Categories = ["Machine Learning"]
 date = "2019-03-26T19:54:30+08:00"
 title = "Use NVIDIA Apex for Easy Mixed Precision Training in PyTorch"
 +++
 
-![](/images/apex/featuredImage.jpeg)*Photo by [Sam Power](https://unsplash.com/photos/6aP9EGsYE3s?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)*
+![](/images/apex/featuredImage.jpeg)_Photo by [Sam Power](https://unsplash.com/photos/6aP9EGsYE3s?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)_
 
 The Apex project from NVIDIA is touted as a PyTorch extension that let developers do mixed precision and distributed training “[with 4 or fewer line changes to the existing code](https://news.developer.nvidia.com/introducing-apex-pytorch-extension-with-tools-to-realize-the-power-of-tensor-cores/?ncid=--43654)”. It’s been out for a while (circa June 2018) and seems to be well received ([huggingface/pytorch-pretrained-BERT](https://github.com/huggingface/pytorch-pretrained-BERT) uses Apex to do 16-bit training). So I decided to give it a try. This post documents what I’ve learned.
 
@@ -22,7 +22,6 @@ Generally GPUs are good at doing 32-bit(single precision) math, not at 16-bit(ha
 By switching to 16-bit, we’ll be using half the memory and theoretically less computation at the expense of the available number range and precision. However, pure 16-bit training creates a lot of problems for us (imprecise weight updates, gradient underflow and overflow). Mixed precision training alleviate these problems.
 
 {{< single_tweet 1105528663133511680 >}}
-
 
 For a more technical introduction, refer to [“Mixed-Precision Training of Deep Neural Networks” by Paulius Micikevicius](https://devblogs.nvidia.com/mixed-precision-training-deep-neural-networks/).
 
@@ -79,23 +78,23 @@ Honestly I did not write tests to check if learning rate schedulers works the sa
 # Experiments
 
 I tried to train some models on the Cifar10 dataset with Apex. The GPU used is a GTX 1070 (Pascal architecture). The code is not really publication-ready yet, but here’s the link for those who are interested:
-[*ceshine/apex_pytorch_cifar_experiment*](https://github.com/ceshine/apex_pytorch_cifar_experiment).
+[_ceshine/apex_pytorch_cifar_experiment_](https://github.com/ceshine/apex_pytorch_cifar_experiment).
 
 Some not-rigorous-at-all statistics:
 
-* se_resnext50_32x4d, FP32, Adam: *79.71%* validation accuracy *9m1s* training time *3142MB* GPU memory usage
+- se_resnext50_32x4d, FP32, Adam: _79.71%_ validation accuracy _9m1s_ training time _3142MB_ GPU memory usage
 
-* se_resnext50_32x4d, O1, Adam: *79.82%* validation accuracy *10m19s* training time *2514MB* GPU memory usage
+- se_resnext50_32x4d, O1, Adam: _79.82%_ validation accuracy _10m19s_ training time _2514MB_ GPU memory usage
 
-* se_resnext50_32x4d, O2, Adam: *80.20%* validation accuracy *9m35s* training time *2615MB* GPU memory usage
+- se_resnext50_32x4d, O2, Adam: _80.20%_ validation accuracy _9m35s_ training time _2615MB_ GPU memory usage
 
-* se_resnext50_32x4d, O3/FP16, SGD: *79.71%* validation accuracy *9m54s* training time *2490MB* GPU memory usage
+- se_resnext50_32x4d, O3/FP16, SGD: _79.71%_ validation accuracy _9m54s_ training time _2490MB_ GPU memory usage
 
-* Densenet161, FP32 (Batch Size **512** Epochs: 25): *85.32% 29m32s 4170MB*
+- Densenet161, FP32 (Batch Size **512** Epochs: 25): _85.32% 29m32s 4170MB_
 
-* Densenet161, O2 (Batch Size **1024** Epochs: 50): *85.92% 37m15s* *4242MB*
+- Densenet161, O2 (Batch Size **1024** Epochs: 50): _85.92% 37m15s_ _4242MB_
 
-So no speed gain by switching to FP16 or O1/O2, but the memory usage did drop significantly. This is consistent with the numbers reported in [*znxlwm/pytorch-apex-experiment*](https://github.com/znxlwm/pytorch-apex-experiment) which conducted extensive experiments on different GPUs and precision levels with a VGG16 model.
+So no speed gain by switching to FP16 or O1/O2, but the memory usage did drop significantly. This is consistent with the numbers reported in [_znxlwm/pytorch-apex-experiment_](https://github.com/znxlwm/pytorch-apex-experiment) which conducted extensive experiments on different GPUs and precision levels with a VGG16 model.
 
 <center>![[source](https://github.com/znxlwm/pytorch-apex-experiment)](/images/apex/0*AHjv6G_HeQ6Wf-fO.png) [source](https://github.com/znxlwm/pytorch-apex-experiment)</center>
 
@@ -105,7 +104,7 @@ For both Titan X and GTX 1080 Ti, the automatic mixed precision(Amp) trainings w
 
 ## Why the Discrepancy?
 
-NVIDIA introduced “Tensor Cores” in Volta architecture, which are optimized to do mixed precision computing. The later consumer [Turing architectur](https://en.wikipedia.org/wiki/Turing_(microarchitecture))e also have them. Reference:
+NVIDIA introduced “Tensor Cores” in Volta architecture, which are optimized to do mixed precision computing. The later consumer [Turing architectur](<https://en.wikipedia.org/wiki/Turing_(microarchitecture)>)e also have them. Reference:
 [Tensor Cores in NVIDIA Volta GPU Architecture](https://www.nvidia.com/en-us/data-center/tensorcore/).
 
 The following thread addressed the question quite well: [Do I need tensor cores to benefit from Mixed-Precision training? · Issue #76 · NVIDIA/apex](https://github.com/NVIDIA/apex/issues/76).
