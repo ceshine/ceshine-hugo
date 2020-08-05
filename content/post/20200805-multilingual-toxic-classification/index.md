@@ -51,7 +51,7 @@ The 1st place team[1] find pseudo labelling essential in their success. They use
 
 It seems that doing pseudo labelling on the multilingual model(XLM) does not work very well[4].
 
-## Post-processing of model
+## Post-processing
 
 Data in all six target languages are combined together to calculate in the AUC metric. This leaves some room for post-processing/optimization[1][3][5]. I don't really see how this would be helpful in real life. A more proper metric might be a weighed average of the individual AUC of each target language.
 
