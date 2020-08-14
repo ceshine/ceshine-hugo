@@ -1,0 +1,16 @@
+{{ if in .Permalink "/post/" }}
+<meta property="og:image" content="{{ .Permalink }}featuredImage.jpg" />
+<meta property="og:type" content="article" />
+{{ else }}
+{{ if .Site.Params.twitterCardImage }}
+<meta property="og:image" content="{{ .Site.Params.twitterCardImage | absURL }}" />
+<meta property="og:type" content="website" />
+{{ end }}
+<meta property="og:image" content="https://file.veritable.pw/file/veritable/veritable_square_large.jpg" />
+<meta property="og:type" content="website" />
+{{ end }}
+<!-- Twitter Card data -->
+<meta property="og:title" content="{{ .Title }}" />
+<meta property="og:description" content="{{ with .Description }}{{ . }}{{ else }}{{if .IsPage}}{{ .Summary }}{{ else }}{{ with .Site.Params.description }}{{ . }}{{ end }}{{ end }}{{ end }}" />
+<meta property="og:url" content="{{ .Permalink }}" />
+<meta property="og:locale" content="en_US" />

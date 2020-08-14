@@ -1,6 +1,6 @@
 baseURL = "https://blog.ceshine.net/"
 languageCode = "en"
-title = "Life is short"
+title = "Veritable Tech Blog"
 theme = "cactus-plus"
 Paginate = 5
 googleAnalytics = "UA-24180048-3"
@@ -9,7 +9,7 @@ hasCJKLanguage = false
 [params]
    author = "Ceshine Lee"
    bio = "Technical Notes from a Data Geek."
-   description = "Life is Short"
+   description = "Veritable Tech Blog"
    twitter = "ceshine_en"
    enableRSS = true
    enableToc = true
