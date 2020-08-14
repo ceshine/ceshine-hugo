@@ -2,7 +2,7 @@
 slug: multilingual-toxic-classification
 date: 2020-08-05T00:00:00.000Z
 title: "[Notes] Jigsaw Multilingual Toxic Comment Classification"
-description: ""
+description: "The 3rd Jigsaw Text Classification Competition"
 tags:
   - nlp
   - deep-learning
