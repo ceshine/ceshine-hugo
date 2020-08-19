@@ -24,15 +24,15 @@ url: /post/notes-labse/
 
 Firstly, I want to point out something in the Google AI post that confuses me. In the first paragraph the auther stated:
 
-> While these existing multilingual approaches yield good overall performance across a number of languages, **they often underperform on high-resource languages compared to dedicated bilingual models**, which can leverage approaches like translation ranking tasks with translation pairs as training data to obtain more closely aligned representations. (emphasis mine)
+> While these existing multilingual approaches yield good overall performance across a number of languages, **they often underperform on high-resource languages compared to dedicated bilingual models**, which can leverage approaches like translation ranking tasks with translation pairs as training data to obtain more closely aligned representations. [emphasis mine]
 
 But in the result table, we don't see any improvement over LASER[2] in the 14 high-resource language group:
 
 {{< figure src="table-1.png" caption="[source](https://ai.googleblog.com/2020/08/language-agnostic-bert-sentence.html)" >}}
 
-Maybe they just want to mention a general characteristic of multilingual approaches. Nonetheless, the improvements in the low resource languages are significant, and might be attribute to the fine-tuning task or the improved capacity of the model (LASER uses at most 5 Bi-LSTM layers).
+Maybe they just want to mention a general characteristic of multilingual approaches. Nonetheless, the improvements in the low resource languages are significant, and might be attribute to the fine-tuning task ,the improved capacity of the model (LASER uses at most 5 Bi-LSTM layers), or the larger pre-train dataset.
 
-# The Model
+# The LaBSE Model
 
 ## Pretraining task
 
@@ -71,6 +71,22 @@ Note that the negative sampling is in-batch(i.e. taken from within the batch), s
 {{< figure src="sampling.png" caption="[source](http://arxiv.org/abs/2007.01852)[1]" >}}
 
 This constraint implies that you will likely not able to get good performance training on only one GPU or even one TPU device.
+
+# Additional Analysis
+
+## BUCC and UN task
+
+{{< figure src="bucc.png" caption="[source](http://arxiv.org/abs/2007.01852)[1]" >}}
+
+{{< figure src="un-task.png" caption="[source](http://arxiv.org/abs/2007.01852)[1]" >}}
+
+The LaBSE outperforms bilingual models on the BUCC mining task and UN parallel sentence retrieval task. Maybe this is the confusing statement of the Google AI Blog post is about.
+
+## Initialize Weights from Multilingual BERT
+
+This approach is to initialize weights from the multilingual BERT model, and then fine-tune as bidirectional dual encoders like before. The result model will perform well on high resource languages but poorly on low resource ones.
+
+> Our pre-training approach improves over multilingual BERT on tail languages due to a combination of reasons. We use **a much larger vocab** , 500k versus 30K, which has been shown to improve multilngual performance (Conneau et al., 2019). We also **include TLM** in addition to MLM as this has been shown to improve cross lingual transfer (Conneau and Lample, 2019). Finally, we pretrain on **common crawl which is much larger**, albeit noiser, than the wiki data multinlgual BERT is train on. [emphasis mine]
 
 # Using the Pre-trained Model
 
