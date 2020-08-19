@@ -1,11 +1,12 @@
 ---
 slug: synthetic-data-for-qa-model
 date: 2020-07-23T00:00:00.000Z
-title: "[Notes] Training Question Answering Models From Synthetic Data"
+title: "[Paper] Training Question Answering Models From Synthetic Data"
 description: "Generate questions and answers from both real and synthetic contexts"
 tags:
   - nlp
   - qa
+  - paper
 keywords:
   - transformer
   - nlp
