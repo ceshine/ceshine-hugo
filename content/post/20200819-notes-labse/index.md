@@ -20,9 +20,9 @@ url: /post/notes-labse/
 
 # The Google AI Blog post
 
-[This post on Google AI BLog](https://ai.googleblog.com/2020/08/language-agnostic-bert-sentence.html) explains the premise, background, and related works of this paper pretty well. I'm not gonna to repeat them in this post. Instead, I'll try to fill in some of the gaps I see as someone that is familiar with this topic but does not follow very closely with the latest development.
+[This post on Google AI BLog](https://ai.googleblog.com/2020/08/language-agnostic-bert-sentence.html) explains the premise, background, and related works of this paper pretty well. I'm not going to repeat them in this post. Instead, I'll try to fill in some of the gaps I see as someone that is familiar with this topic but does not follow very closely with the latest development.
 
-Firstly, I want to point out something in the Google AI post that confuses me. In the first paragraph the auther stated:
+Firstly, I want to point out something in the Google AI post that confuses me. In the first paragraph the authors stated:
 
 > While these existing multilingual approaches yield good overall performance across a number of languages, **they often underperform on high-resource languages compared to dedicated bilingual models**, which can leverage approaches like translation ranking tasks with translation pairs as training data to obtain more closely aligned representations. [emphasis mine]
 
@@ -30,7 +30,7 @@ But in the result table, we don't see any improvement over LASER[2] in the 14 hi
 
 {{< figure src="table-1.png" caption="[source](https://ai.googleblog.com/2020/08/language-agnostic-bert-sentence.html)" >}}
 
-Maybe they just want to mention a general characteristic of multilingual approaches. Nonetheless, the improvements in the low resource languages are significant, and might be attribute to the fine-tuning task ,the improved capacity of the model (LASER uses at most 5 Bi-LSTM layers), or the larger pre-train dataset.
+Maybe they just want to mention a general characteristic of multilingual approaches. Nonetheless, the improvements in the low resource languages are significant and might be attributed to the fine-tuning task, the improved capacity of the model (LASER uses at most 5 Bi-LSTM layers), or the larger pre-train dataset.
 
 # The LaBSE Model
 
@@ -80,23 +80,23 @@ This constraint implies that you will likely not able to get good performance tr
 
 {{< figure src="un-task.png" caption="[source](http://arxiv.org/abs/2007.01852)[1]" >}}
 
-The LaBSE outperforms bilingual models on the BUCC mining task and UN parallel sentence retrieval task. Maybe this is the confusing statement of the Google AI Blog post is about.
+The LaBSE outperforms bilingual models on the BUCC mining task and the UN parallel sentence retrieval task. Maybe this is the confusing statement of the Google AI Blog post is about.
 
 ## Initialize Weights from Multilingual BERT
 
-This approach is to initialize weights from the multilingual BERT model, and then fine-tune as bidirectional dual encoders like before. The result model will perform well on high resource languages but poorly on low resource ones.
+This approach is to initialize weights from the multilingual BERT model and then fine-tune as bidirectional dual encoders like before. The resulting model will perform well on high resource languages but poorly on low resource ones.
 
-> Our pre-training approach improves over multilingual BERT on tail languages due to a combination of reasons. We use **a much larger vocab** , 500k versus 30K, which has been shown to improve multilngual performance (Conneau et al., 2019). We also **include TLM** in addition to MLM as this has been shown to improve cross lingual transfer (Conneau and Lample, 2019). Finally, we pretrain on **common crawl which is much larger**, albeit noiser, than the wiki data multinlgual BERT is train on. [emphasis mine]
+> Our pre-training approach improves over multilingual BERT on tail languages due to a combination of reasons. We use **a much larger vocab** , 500k versus 30K, which has been shown to improve multilingual performance (Conneau et al., 2019). We also **include TLM** in addition to MLM as this has been shown to improve cross-lingual transfer (Conneau and Lample, 2019). Finally, we pretrain on **common crawl which is much larger**, albeit noisier, than the wiki data multilingual BERT is trained on. [emphasis mine]
 
 # Using the Pre-trained Model
 
-Because of the batch size constraint, we probably won't be able to train the model from scratch or even further fine-tune on the dual encoder task without a large distributed training environment. In most cases we'd directly use the pre-trained model released by the paper authors, which is available on TF Hub with code examples: [**LaBSE**](https://tfhub.dev/google/LaBSE/1).
+Because of the batch size constraint, we probably won't be able to train the model from scratch or even further fine-tune on the dual encoder task without a large distributed training environment. In most cases, we'd directly use the pre-trained model released by the paper authors, which is available on TF Hub with code examples: [**LaBSE**](https://tfhub.dev/google/LaBSE/1).
 
 I'd love to see the model get ported to the [huggingface/transformers package](https://github.com/huggingface/transformers), which is pretty much the standard package for transformer models nowadays. It'll make it easier to fine-tune the model on other tasks.
 
-Here's my thought on how to port the weights: There's already [a script exported weights from TF SavedModel to TF checkpoint](https://github.com/bojone/labse). The next step should be [load the checkpoint in huggingface/transformers](https://github.com/huggingface/transformers/blob/master/src/transformers/convert_bert_original_tf_checkpoint_to_pytorch.py). Then you can save the weights using the huggingface/transformers API so it can be used by both TensorFlow and PyTorch.
+Here's my thought on how to port the weights: There's already [a script exported weights from TF SavedModel to TF checkpoint](https://github.com/bojone/labse). The next step should be to [load the checkpoint in huggingface/transformers](https://github.com/huggingface/transformers/blob/master/src/transformers/convert_bert_original_tf_checkpoint_to_pytorch.py). Then you can save the weights using the huggingface/transformers API so it can be used by both TensorFlow and PyTorch.
 
-Currently I don't have the needs for this kind of fine-tuning. So I'll wait for someone else to do the porting.
+Currently, I don't need this kind of fine-tuning. So I'll wait for someone else to do the porting.
 
 # References
 
