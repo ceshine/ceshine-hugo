@@ -60,23 +60,23 @@ We simply inserted `torch.cuda.memory_allocated()` between model training statem
 When using batch sizes of 128, the GPU memory footprints of the training loop were:
 
 ```
-(1st epoch)
+(1st step)
 data: 524 MB
 forw: 1552 MB
 loss: 1552 MB
 back: 1044 MB
 step: 1044 MB
 ====================
-(2nd epoch)
+(2nd step)
 data: 1044 MB
 forw: 2072 MB
 loss: 2072 MB
 back: 1044 MB
 step: 1044 MB
-(The latter epochs are exactly the same as the second one.)
+(The latter steps are exactly the same as the second one.)
 ```
 
-The difference between the first and the latter epochs is probably due to gradients not being allocated until `loss.backward()` is called.
+The difference between the first and the latter steps is probably due to gradients not being allocated until `loss.backward()` is called.
 
 The peak memory usage happens right after the forward-propagation. As has been shown in the custom-op implementation of Swish, **some function requires PyTorch to save some forms of the input tensors to be able to back-propagate**. Those saved information are discarded after the backward phase. By this logic, we can guess that training with larger batch sizes will use more memory, and this intuition is confirmed by experiments:
 
