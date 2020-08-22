@@ -13,6 +13,9 @@ url: /post/pytorch-memory-swish/
 
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/people-friends-together-happy-4050698/)" >}}
 
+_Update on 2020-08-22_: using `torch.cuda.max_memory_allocated()` and `torch.cuda.reset_peak_memory_stats()` in the newer version (1.6+) of PyTorch is probably more accurate. [(reference)](https://pytorch.org/docs/stable/cuda.html#torch.cuda.max_memory_allocated)
+
+
 # Motivation
 
 Recently I've been trying out [_EfficientNet_ models implemented in PyTorch](https://github.com/lukemelas/EfficientNet-PyTorch). I've managed to successfully fine-tune pretrained EfficientNet models on my data set and reach accuracy on par with the mainstream ones like _SE-ResNeXt-50_. However, training the model from scratch has proven to be much harder.
