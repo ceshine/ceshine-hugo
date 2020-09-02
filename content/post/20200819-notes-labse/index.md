@@ -20,7 +20,7 @@ url: /post/notes-labse/
 
 # The Google AI Blog post
 
-[This post on Google AI BLog](https://ai.googleblog.com/2020/08/language-agnostic-bert-sentence.html) explains the premise, background, and related works of this paper pretty well. I'm not going to repeat them in this post. Instead, I'll try to fill in some of the gaps I see as someone that is familiar with this topic but does not follow very closely with the latest development.
+[This post on Google AI Blog](https://ai.googleblog.com/2020/08/language-agnostic-bert-sentence.html) explains the premise, background, and related works of this paper pretty well. I'm not going to repeat them in this post. Instead, I'll try to fill in some of the gaps I see as someone that is familiar with this topic but does not follow very closely with the latest development.
 
 Firstly, I want to point out something in the Google AI post that confuses me. In the first paragraph the authors stated:
 
@@ -33,6 +33,12 @@ But in the result table, we don't see any improvement over LASER[2] in the 14 hi
 Maybe they just want to mention a general characteristic of multilingual approaches. Nonetheless, the improvements in the low resource languages are significant and might be attributed to the fine-tuning task, the improved capacity of the model (LASER uses at most 5 Bi-LSTM layers), or the larger pre-train dataset.
 
 # The LaBSE Model
+
+## Datasets
+
+The monolingual data was collected from CommonCrawl and Wikipedia.
+
+The translation corpus is constructed from the web pages using a bitext mining system similar to the approach described in [Uszkoreit et al. (2010)](https://dl.acm.org/doi/10.5555/1873781.1873905).
 
 ## Pretraining task
 
@@ -51,6 +57,8 @@ Sentence embeddings are **extracted from the last hidden state of the encoder [C
 I did not see any similar ablation study in [1] and its predecessor [5]. Maybe this is something that can be tuned to further improve accuracy.
 
 ## Fine-tuning task
+
+(As the [Google AI Blog](https://ai.googleblog.com/2020/08/language-agnostic-bert-sentence.html) describes, the fine-tuning task is the translation ranking task. The objective is to find the true translation over a collection of sentences in the target language.)
 
 {{< figure src="dual-encoder.png" caption="[source](http://arxiv.org/abs/2007.01852)[1]" >}}
 
