@@ -108,7 +108,7 @@ Like in LIME, this approximation breaks the local accuracy and/or consistency, b
 
 The weighting kernel in LIME is heuristically chosen, while this Shapley kernel is analytically chosen.
 
-The sampling scheme is a bit mysterious, though. In LIME, the size of feature subset is uniformly sampled, and then the features are uniformly selected[3]. However, in most case we can just use the Python implementation without worrying this detail.
+The sampling scheme is a bit mysterious, though. In LIME, the size of feature subset is uniformly sampled, and then the features are uniformly selected[3]. However, in most case we can just use the Python implementation without worrying about this detail.
 
 # Other model-specific approximations
 
