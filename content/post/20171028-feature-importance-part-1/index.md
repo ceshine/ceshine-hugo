@@ -106,21 +106,12 @@ Update: [Part II has been published!](https://becominghuman.ai/feature-importanc
 ### References
 
 1. [Noise analysis of Porto Seguro’s features by olivier and its comment section.](https://www.kaggle.com/ogrellier/noise-analysis-of-porto-seguro-s-features) Kaggle.
-
 1. Alexis Perrie. [Feature Importance in Random Forests](https://alexisperrier.com/datascience/2015/08/27/feature-importance-random-forests-gini-accuracy.html).
-
 1. Miron B. Kursa, Witold R. Rudnicki (2010). [Feature Selection with the Boruta Package. ](https://www.jstatsoft.org/article/view/v036i11)Journal of Statistical Software, 36(11) , p. 1–13.
-
 1. [How are feature_importances in RandomForestClassifier determined? ](https://stackoverflow.com/questions/15810339/how-are-feature-importances-in-randomforestclassifier-determined)Stackoverflow.
-
 1. Andy Liaw. [Pacakge ‘randomForest’. p. 17.](https://cran.r-project.org/web/packages/randomForest/randomForest.pdf)
-
 1. Marvin N. Wright. [Pacakge ‘ranger’. p. 14.](https://cran.r-project.org/web/packages/ranger/ranger.pdf)
-
 1. Trevor Hastie, Robert Tibshirani, and Jerome Friedman. [The Element of Statistical Learning. p. 593.](https://web.stanford.edu/~hastie/ElemStatLearn/printings/ESLII_print12.pdf)
-
 1. [Estimating importance of variables in a multilayer perceptron. ](https://stats.stackexchange.com/questions/166767/estimating-importance-of-variables-in-a-multilayer-perceptron)CrossValidated.
-
 1. Daniel Homola. [BorutaPy — an all relevant feature selection method.](http://danielhomola.com/2015/05/08/borutapy-an-all-relevant-feature-selection-method/)
-
 1. Hooker, G., & Mentch, L. (2019). [Please Stop Permuting Features: An Explanation and Alternatives.](http://arxiv.org/abs/1905.03151)
