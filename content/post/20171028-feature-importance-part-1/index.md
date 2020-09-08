@@ -35,7 +35,7 @@ Here’s the list of measures we’re going to cover with their associated model
 
 Note that measure 2 and 3 are theoretically applicable to all tree-based models.
 
-{{< figure src="1*xxahsU68wsbXyMYAFTf-Eg.png" caption="Random Forest [(Source)](https://towardsdatascience.com/random-forest-learning-essential-understanding-1ca856a963cb)" >}}
+{{< figure src="1xxahsU68wsbXyMYAFTf-Eg.png" caption="Random Forest [(Source)](https://towardsdatascience.com/random-forest-learning-essential-understanding-1ca856a963cb)" >}}
 
 ## Gini Importance / Mean Decrease in Impurity (MDI)
 
@@ -79,7 +79,7 @@ Although Boruta is a feature selection algorithm, we can use the order of confir
 
 ## Feature Importance Measure in Gradient Boosting Models
 
-{{< figure src="1*LavbIYcMZsR1R1JHnmyKUA.png" caption="Gradient Boosting [(Source)](https://dimensionless.in/gradient-boosting/)" >}}
+{{< figure src="1LavbIYcMZsR1R1JHnmyKUA.jpeg" caption="Gradient Boosting [(Source)](https://dimensionless.in/gradient-boosting/)" >}}
 
 For Kagglers, this part should be familiar due to the extreme popularity of XGBoost and LightGBM. Both packages implement more of the same measures (XGBoost has one more):
 
