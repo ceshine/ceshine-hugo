@@ -63,7 +63,7 @@ Here’s permutation importance described in the Element of Statistical Learning
 
 > Random forests also use the OOB samples to construct a different _variable-importance_ measure, apparently to measure the prediction strength of each variable. When the **b**th tree is grown, the OOB samples are passed down the tree, and the prediction accuracy is recorded. Then the values for the **j**th variable are **randomly permuted in the OOB samples**, and the accuracy is again computed. **The decrease in accuracy as a result of this permuting is averaged over all trees**, and is used as a measure of the importance of variable **j** in the random forest. … The randomization effectively voids the effect of a variable, much like setting a coefficient to zero in a linear model (Exercise 15.7). This does not measure the effect on prediction were this variable not available, because if the model was refitted without the variable, other variables could be used as surrogates.
 
-For other tree models without bagging mechanism (hence no _OOB_), we can create a separate validation set (apart from the test set) and use it to evaluate the decrease in accuracy.
+For other tree models without bagging mechanism (hence no _OOB_), we can create a separate validation set and use it to evaluate the decrease in accuracy, or just use the training set [10].
 
 This algorithm gave me an impression that it should be model-agnostic (can be applied on any classifier/regressors), but I’ve not seen literatures discussing its theoretical and empirical implications on other models. The idea to use it on neural networks was briefly mentioned on the Internet. And the same source claimed the algorithm works well on SVM models [8].
 
@@ -121,3 +121,5 @@ Update: [Part II has been published!](https://becominghuman.ai/feature-importanc
 1. [Estimating importance of variables in a multilayer perceptron. ](https://stats.stackexchange.com/questions/166767/estimating-importance-of-variables-in-a-multilayer-perceptron)CrossValidated.
 
 1. Daniel Homola. [BorutaPy — an all relevant feature selection method.](http://danielhomola.com/2015/05/08/borutapy-an-all-relevant-feature-selection-method/)
+
+1. Hooker, G., & Mentch, L. (2019). [Please Stop Permuting Features: An Explanation and Alternatives.](http://arxiv.org/abs/1905.03151)
