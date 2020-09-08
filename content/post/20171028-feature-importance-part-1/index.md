@@ -67,7 +67,7 @@ For other tree models without bagging mechanism (hence no _OOB_), we can create 
 
 This algorithm gave me an impression that it should be model-agnostic (can be applied on any classifier/regressors), but I’ve not seen literatures discussing its theoretical and empirical implications on other models. The idea to use it on neural networks was briefly mentioned on the Internet. And the same source claimed the algorithm works well on SVM models [8].
 
-(20200908 Update: It's been shown that permutation importance can be very misleading when features are significantly correlated with each other. Please see [my latest post for more information and a few alternative measures](/post/please-stop-permuting-features/))
+(*20200908 Update*: It's been shown that permutation importance can be very misleading when the features are significantly correlated with each other. Please see [my latest post for more information and a few alternative measures](/post/please-stop-permuting-features/))
 
 ## Boruta
 
