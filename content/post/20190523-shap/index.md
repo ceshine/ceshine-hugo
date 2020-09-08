@@ -8,7 +8,7 @@ draft = false
 url= "/post/shap/"
 +++
 
-{{< figure src="cover.jpg" caption="[Photo Credit](https://pixabay.com/photos/tai-qi-activity-body-fitness-1583805/)" >}}
+{{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/tai-qi-activity-body-fitness-1583805/)" >}}
 
 Unlike other feature importance measures, SHAP values are fairly complicated and theoretically grounded. I kept forgetting the small details of how SHAP values works. These notes aim for making sure I understand the concept well enough and be something that I can refer back to once in a while. Hopefully it will also be helpful to you.
 
