@@ -17,7 +17,7 @@ url: /post/feature-importance-part-1/
 
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://unsplash.com/photos/h9gTB3OHMh4)" >}}
 
-**\*2018–02–20 Update:** Adds two images (random forest and gradient boosting).\*
+***2018–02–20 Update:*** Adds two images (random forest and gradient boosting).
 
 **_2019–05–25 Update:_** I’ve published a post covering another importance measure — **SHAP values** — [on my personal blog](https://blog.ceshine.net/post/shap/) and [on Medium](https://medium.com/@ceshine/notes-shap-values-a5fc8c844c9a).
 
@@ -83,7 +83,8 @@ Although Boruta is a feature selection algorithm, we can use the order of confir
 
 For Kagglers, this part should be familiar due to the extreme popularity of XGBoost and LightGBM. Both packages implement more of the same measures (XGBoost has one more):
 
-> [(LightGBM)](https://lightgbm.readthedocs.io/en/latest/Python-API.html#lightgbm.Booster.feature_importance) importance_type (string, optional (default=”split”)) — How the importance is calculated. If “split”, result contains** numbers of times the feature is used in a model**. If “gain”, result contains** total gains of splits which use the feature**.
+> [(LightGBM)](https://lightgbm.readthedocs.io/en/latest/Python-API.html#lightgbm.Booster.feature_importance) importance_type (string, optional (default=”split”)) — How the importance is calculated. If “split”, result contains** numbers of times the feature is used in a model**. If “gain”, result contains **total gains of splits which use the feature**.
+>
 > [(XGBoost)](https://xgboost.readthedocs.io/en/latest/python/python_api.html#xgboost.Booster.get_score) ‘weight’ — the **number of times a feature is used to split the data across all trees**. ‘gain’ — the **average gain of the feature when it is used in trees** ‘cover’ — **the average coverage **of the feature when it is used in trees**,** where coverage is defined as** the number of samples affected by the split**
 
 First measure is split-based and is very similar with the one given by [1] for Gini Importance. But it doesn’t take the number of samples into account.
