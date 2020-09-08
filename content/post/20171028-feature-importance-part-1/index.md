@@ -83,9 +83,9 @@ Although Boruta is a feature selection algorithm, we can use the order of confir
 
 For Kagglers, this part should be familiar due to the extreme popularity of XGBoost and LightGBM. Both packages implement more of the same measures (XGBoost has one more):
 
-> [(LightGBM)](https://lightgbm.readthedocs.io/en/latest/Python-API.html#lightgbm.Booster.feature_importance) importance_type (string, optional (default=”split”)) — How the importance is calculated. If “split”, result contains** numbers of times the feature is used in a model**. If “gain”, result contains **total gains of splits which use the feature**.
+> [(LightGBM)](https://lightgbm.readthedocs.io/en/latest/Python-API.html#lightgbm.Booster.feature_importance) importance_type (string, optional (default=”split”)) — How the importance is calculated. If “split”, result contains **numbers of times the feature is used in a model**. If “gain”, result contains **total gains of splits which use the feature**.
 >
-> [(XGBoost)](https://xgboost.readthedocs.io/en/latest/python/python_api.html#xgboost.Booster.get_score) ‘weight’ — the **number of times a feature is used to split the data across all trees**. ‘gain’ — the **average gain of the feature when it is used in trees** ‘cover’ — **the average coverage **of the feature when it is used in trees**,** where coverage is defined as** the number of samples affected by the split**
+> [(XGBoost)](https://xgboost.readthedocs.io/en/latest/python/python_api.html#xgboost.Booster.get_score) ‘weight’ — the **number of times a feature is used to split the data across all trees**. ‘gain’ — the **average gain of the feature when it is used in trees** ‘cover’ — **the average coverage** of the feature when it is used in trees, where coverage is defined as **the number of samples affected by the split**
 
 First measure is split-based and is very similar with the one given by [1] for Gini Importance. But it doesn’t take the number of samples into account.
 
