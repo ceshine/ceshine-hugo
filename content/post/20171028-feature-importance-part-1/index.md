@@ -47,7 +47,7 @@ However, Gilles Louppe gave a different version in [4]. Instead of counting spli
 
 > In scikit-learn, we implement the importance as described in [1] (often cited, but unfortunately rarely read…). It is sometimes called “gini importance” or “mean decrease impurity” and is defined as the **total decrease in node impurity** (weighted by the probability of reaching that node (which is approximated by the proportion of samples reaching that node)) averaged over all trees of the ensemble.
 
-In R package `randomForest`, [the implementation](https://cran.r-project.org/web/packages/randomForest/randomForest.pdf) seems to be consistent with what Gilles Louppe described [5] (another popular package, `ranger`, also seems to be doing the same) [6]:
+In R package `randomForest`, [the implementation](https://cran.r-project.org/web/packages/randomForest/randomForest.pdf) seems to be consistent with what Gilles Louppe described (another popular package, `ranger`, also seems to be doing the same) [5][6]:
 
 > The last column is the mean decrease in Gini index.
 
@@ -71,7 +71,7 @@ This algorithm gave me an impression that it should be model-agnostic (can be ap
 
 Boruta is the name of an R package that implements a novel feature selection algorithm. It randomly permutes variables like Permutation Importance does, but performs on all variables at the same time and concatenates the shuffled features with the original ones. The concatenated result is used to fit the model.
 
-Daniel Homola, who also wrote the Python version of Boruta(BorutaPy), gave an wonderful overview of the Boruta algorithm in [his blog post](http://danielhomola.com/2015/05/08/borutapy-an-all-relevant-feature-selection-method/) [7].
+Daniel Homola, who also wrote the Python version of Boruta(BorutaPy), gave an wonderful overview of the Boruta algorithm in [his blog post](http://danielhomola.com/2015/05/08/borutapy-an-all-relevant-feature-selection-method/) [9].
 
 The shuffled features (a.k.a. shadow features) are basically noises with identical marginal distribution w.r.t the original feature. We count the times a variable performs better than the “best” noise and calculate the confidence towards it being better than noise (the p-value) or not. Features which are confidently better are marked “confirmed”, and those which are confidently on par with noises are marked “rejected”. Then we remove those marked features and repeat the process until all features are marked or a certain number of iteration is reached.
 
@@ -79,7 +79,7 @@ Although Boruta is a feature selection algorithm, we can use the order of confir
 
 ## Feature Importance Measure in Gradient Boosting Models
 
-{{< figure src="1*LavbIYcMZsR1R1JHnmyKUA.jpeg" caption="Gradient Boosting [(Source)](https://dimensionless.in/gradient-boosting/)" >}}
+{{< figure src="1*LavbIYcMZsR1R1JHnmyKUA.png" caption="Gradient Boosting [(Source)](https://dimensionless.in/gradient-boosting/)" >}}
 
 For Kagglers, this part should be familiar due to the extreme popularity of XGBoost and LightGBM. Both packages implement more of the same measures (XGBoost has one more):
 
