@@ -34,7 +34,7 @@ There's one exception — if your dataset is small enough to fit into memory, Te
 
 # The Solution
 
-Here's how to do it. I'll convert this Colab notebook that trains an image classification model using TFRecord files into two notebooks. [The first one](https://colab.research.google.com/drive/1eaQK111A4e5ZMPR_8jObbfgTqA3ju8Ye?usp=sharing) downloads a subset of the TFRecords files from Cloud Storage and converts them into Numpy arrays. [The second one] loads the Numpy arrays and train them on TPU.
+Here's how to do it. I'll convert [this Colab notebook](https://colab.research.google.com/notebooks/tpu.ipynb) that trains an image classification model using TFRecord files into two notebooks. [The first one](https://colab.research.google.com/drive/1eaQK111A4e5ZMPR_8jObbfgTqA3ju8Ye?usp=sharing) downloads a subset of the TFRecords files from Cloud Storage and converts them into Numpy arrays. [The second one](https://colab.research.google.com/drive/1JK2BZwi5GYNNoY7oTGGOcIED1xmmfzV4?usp=sharing) loads the Numpy arrays and train them on TPU.
 
 (You don't have to read from TFRecords or use the `tf.data` API in the first notebook. You can read raw image files using PIL or OpenCV and convert them into numpy arrays as well. Anything that converts the dataset into numpy arrays will do.)
 
