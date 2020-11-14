@@ -46,7 +46,11 @@ The customized annotation tool I built does these things:
 
 I don't remember exactly where I got the idea of a React front-end working with a Python back-end from. I think it was from a tweet by Ines Montani, but here's a more recent reminder by Joel Grus:
 
-{{< single_tweet 1143951419151540225 >}}
+<!--  1143951419151540225 -->
+
+> unsolicited data science career advice: learn Flask + just enough React to be able to build functional front-ends for your DS work + just enough CSS to make it look not-horrible, it's like having a superpower (and it's not that hard)
+>
+> — joelgrus 😷 (@joelgrus) June 26, 2019
 
 Having React in your arsenal is very empowering. You don't need to attend a boot camp or spend a couple of months. Just learn the basics and start building stuffs. Granted, the results can be very ugly (in terms of both presentation and code), but as long as it works reasonably well, it's still better than nothing. (You'll still probably need professional help if you want to build any customer-facing applications.)
 
