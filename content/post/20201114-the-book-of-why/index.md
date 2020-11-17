@@ -33,3 +33,27 @@ One thing to bear in mind — **you won't be able to actually do causal modeling
 ## Conclusion
 
 As someone who was trained in mostly classical and also a bit Bayesian statistics, this book brings a fresh perspective of how we can model the world. The frustration of statisticians wrestling with confounders and causal effects because of the lack of vocabulary in the statistics language strongly resonates with me. I give this book a 5/5 rating because of the impact it has on me (I'd give it a 3.5/5 if based purely on the style and presentation of writing).
+
+## Update (20201117)
+
+For a different perspective, read Andrew Gelman's (who, incidentally, was a student of Donald Rubin) [review on The Book of Why](https://statmodeling.stat.columbia.edu/2019/01/08/book-pearl-mackenzie/). His review was one of my motivations to read The Book of Why, just so I can understand what the article is saying.
+
+Gelman agrees with Pearl and Mackenzie that both qualitative modeling and quantitative modeling are important, and thinks that the examples in the book are quite engaging (as do I):
+
+> And that brings me to the examples in the book. These are great. I find some of the reasoning hard to follow, and Pearl and Mackenzie’s style is different from mine, but that’s fine. The examples are interesting and they engage the reader—at least, they engage me—and I think they are a big part of what makes the book work.
+
+However, as an academic statistician, he finds that some of the characterizations of statistician and social scientist by Pearl and Mackenzie are unfair:
+
+> As noted above, Pearl and Mackenzie have a habit of putting down statisticians in a way that seems to reflect ignorance of our field.
+> ...
+> ...In any case, I find it unfortunate that they feel the need to keep putting down statisticians and social scientists. If they were accurate in their putdowns, I’d have no problem. But that’s not what’s happening here. Kevin Gray makes a similar point here, from the perspective of a non-academic statistician.
+
+He pointed out some of the inaccurate comments on statistical methods in the book. Some of them I am not familiar enough to comprehend, but I did find the remark on Latin square in the book not making much sense.
+
+I guess my professors in statistics would be disappointed by me not finding Pearl's characterization of statistician grossly offending. There indeed tends to be some oversimplification and exaggeration in Pearl's writing. But I do feel that the statistics education I received focused too much on quantitative methods (with possibly one exception for the data visualization course, which was brilliant), and I appreciate the simplicity and effectiveness of causal diagrams in specifying our prior belief to the world. It's possible that I did not pay enough attention in past courses to notice that the professors did try to convey the ways to understand causal effects correctly. Nonetheless, Pearl's approach is refreshing to me.
+
+I'm currently reading Pearl's [Causal Inference in Statistics: A Primer](https://www.goodreads.com/book/show/27164550-causal-inference-in-statistics). It's as the title says, an introductory textbook, and is fairly easy to read. I only have the counterfactual chapter left before finishing the book. It is a very complementary read for The Book of Why. A lot of technical definitions and theorems that are left out in the book can be found here. However, I must admit that the "do" operator still does not fully make sense to me (Gelman doesn't think it makes sense as a general construct). I get that it's removing the incoming edges to the variable in the causal diagram, but I failed to find a way to build the intuition or explaining it coherently in plain English (the explanations I've seen so far all are too obscure in my view).
+
+I'm interested to learn more about other approaches to causal inference by statisticians, some of them mentioned in Gelman's article. Maybe it's true that statisticians have already developed methods to handle causal relationships more formally, but I barely see any mention of causal relationships in the field of machine learning.
+
+For example, a video recommender based on a nonlinear model may recommend a video to someone because their friends like it, but "my friends like it" and "I like it" may be confounded by "this video promotes a conspiracy theory". We can use tools such as [SHAP values](https://blog.ceshine.net/post/shap/) to estimate how much the conspiracy theory part contributed to the recommendation. However, the estimates can be inaccurate when such confounding exists, and we need a succinct way to raise and answer the question “is the reason behind this recommendation is really because it promotes a conspiracy theory, not because my friends like it?” (Don't get me wrong. The question is probably somewhat answerable by analyzing the model or plotting the relationship between the two covariates, but it'll be nice to have a diagram and a system of methods to help us do that.)
