@@ -118,9 +118,11 @@ batch.expect_column_values_to_be_between(
 
 ### The character counts of the country names should be between 2 to 10
 
+```python
 batch.expect_column_value_lengths_to_be_between(
     column="country", max_value=10, min_value=2
 )
+```
 
 ## Create a Checkpoint
 
