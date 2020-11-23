@@ -2,7 +2,7 @@
 slug: 538-model-2020
 date: 2020-11-23T00:00:00.000Z
 title: "Weird Behavior in the FiveThirtyEight 2020 Election Model"
-description: "A Preliminary Book Review"
+description: "Some Thoughts"
 tags:
   - forecasting
 keywords:
