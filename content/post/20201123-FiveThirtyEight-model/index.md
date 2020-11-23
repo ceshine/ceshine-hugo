@@ -29,7 +29,9 @@ One possible reason for unintended negative correlations is accidentally using [
 [Divalent on the comment section](https://statmodeling.stat.columbia.edu/2020/10/24/reverse-engineering-the-problematic-tail-behavior-of-the-fivethirtyeight-presidential-election-forecast/#comment-1562579) of Gelman's blog provided one possible explanation:
 
 > It would appear that this NJ/AK “error” is due _not_ to the model trying to answer the Q “if _Donald Trump_, _Republican_, wins NJ, what is his odds of winning Alaska?”, but rather “What are the odds of the winner of NJ (whoever it might be) also winning Alaska?”
+>
 > ...
+>
 > I suspect that if you look at presidential elections over the past 60 years, the winner of NJ was less likely to also win AK (and vice versa). So in a sense, that component would be “directionally correct”. (and given the output their model generates, they probably should reduce the weight of this particular component.
 
 In my interpretation of this scenario, the collider is "the winner of NJ". My causal diagram would be `AK Votes -> AK Winner <- Party Affiliation -> NJ Winner <- NJ Votes` (party affiliation is unknown here). The logic goes like — NJ winner tends to be a Democrat, and Democrat tends to lose AK, so they'll likely to get fewer votes in AK. We shouldn't condition on the winner of NJ and allow this flow of information from votes in NJ to votes in AK (as the AK votes should decide the AK winner, not the other way around). (The party affiliation also confounds the AK and NJ votes, but it doesn't affect this analysis.)
