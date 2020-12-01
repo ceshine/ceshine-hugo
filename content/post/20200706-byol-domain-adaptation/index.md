@@ -30,7 +30,7 @@ Inspired by the recent development in self-supervised learning in CV, I speculat
 
 (Note: a similar approach is already widely used in NLP, in which we take a language model pre-trained a large corpus, and then train the language model further in a corpus from the same domain as the downstream task.)
 
-My preliminary experiments show visible improvements from the self-supervised domain adaptation approach using images from the downstream task. With longer pre-training and bigger unlabelled dataset, we can probably get further improvements.
+My preliminary experiments show visible improvements from the self-supervised domain adaptation approach using images from the downstream task. With longer pre-training and bigger unlabelled datasets, we can probably get further improvements.
 
 # Experiments
 

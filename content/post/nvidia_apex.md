@@ -82,13 +82,13 @@ I tried to train some models on the Cifar10 dataset with Apex. The GPU used is a
 
 Some not-rigorous-at-all statistics:
 
-- se_resnext50_32x4d, FP32, Adam: _79.71%_ validation accuracy _9m1s_ training time _3142MB_ GPU memory usage
+- se*resnext50_32x4d, FP32, Adam: \_79.71%* validation accuracy _9m1s_ training time _3142MB_ GPU memory usage
 
-- se_resnext50_32x4d, O1, Adam: _79.82%_ validation accuracy _10m19s_ training time _2514MB_ GPU memory usage
+- se*resnext50_32x4d, O1, Adam: \_79.82%* validation accuracy _10m19s_ training time _2514MB_ GPU memory usage
 
-- se_resnext50_32x4d, O2, Adam: _80.20%_ validation accuracy _9m35s_ training time _2615MB_ GPU memory usage
+- se*resnext50_32x4d, O2, Adam: \_80.20%* validation accuracy _9m35s_ training time _2615MB_ GPU memory usage
 
-- se_resnext50_32x4d, O3/FP16, SGD: _79.71%_ validation accuracy _9m54s_ training time _2490MB_ GPU memory usage
+- se*resnext50_32x4d, O3/FP16, SGD: \_79.71%* validation accuracy _9m54s_ training time _2490MB_ GPU memory usage
 
 - Densenet161, FP32 (Batch Size **512** Epochs: 25): _85.32% 29m32s 4170MB_
 
