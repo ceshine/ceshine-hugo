@@ -22,7 +22,7 @@ This article argues that instead of relying on the statistical inference on an i
 
 Let's see the reasoning behind this claim.
 
-# Introduction
+## Introduction
 
 First, Tong makes clear what “statistical inferences” are:
 
@@ -38,7 +38,7 @@ Tong tries to distinguish **exploratory** and **confirmatory** objectives of a s
 
 And the lack of this distinction in the current use of inferential methods in science has enabled biased statistical inference and encouraged a _Cult of the Isolated_ Study that short-circuits the iterative nature of research.
 
-# Statistical Inference and the Optimism Principle
+## Statistical Inference and the Optimism Principle
 
 As Efron and Hastie stated in their new book "Computer-Age Statistical Inference: Algorithms, Evidence, and Data Science":
 
@@ -62,7 +62,7 @@ This kind of bias would lead to an underestimation of the uncertainty because we
 
 > Chatfield (1995) used the term **_model selection bias_** to describe the distorted inferences that result when using the same data that determines the form of the final model to also produce inferences from that model.
 
-# Exploratory and Confirmatory Objectives in Scientific Research
+## Exploratory and Confirmatory Objectives in Scientific Research
 
 > The obvious way to avoid the difficulties of overfitting and produce valid statistical inferences is to completely prespecify the study design and statistical analysis plan prior to the start of data collection.
 
@@ -78,7 +78,7 @@ And it doesn't mean the result from exploratory studies shouldn't be published.
 
 > If the result is important and exciting, we want to publish exploratory studies, but at the same time make clear that they are generally statistically underpowered, and need to be reproduced.
 
-# From the Cult of the Isolated Study to Triangulation
+## From the Cult of the Isolated Study to Triangulation
 
 > The treatment of statistical inferences from exploratory research as if they were confirmatory enables what Nelder (1986) called **_The Cult of the Isolated Study_**, so that
 > The effects claimed may never be checked by painstaking reproduction of the study elsewhere, and when this absence of checking is combined with the possibility that the original results would not have been reported unless the effects could be presented as significant, the result is a procedure which hardly deserves the attribute ‘scientific.
@@ -91,7 +91,7 @@ The notorious example of the report by the OPERA collaboration shows the importa
 
 > A particular weakness of the Isolated Study is that systematic errors may contaminate an entire study but remain hidden if no further research is done.
 
-# Technical Solutions and Their Deficiencies
+## Technical Solutions and Their Deficiencies
 
 > The most widely known class of such methods is based on adjusting for multiple inferences. These range from the simple Bonferroni inequality to the modern methods of false discovery rate and false coverage rate (e.g., Dickhaus 2014).
 
@@ -109,7 +109,7 @@ Tong also discussed another widely advocated solution — _model averaging_. Tho
 
 > Only through the iterative learning process, using multiple lines of evidence and many sets of data, can systematic error be discovered, and model refinement be continually guided by new data.
 
-# More Thoughtful Solutions
+## More Thoughtful Solutions
 
 > One strategy requires preregistering both the research hypotheses to be tested and the statistical analysis plan prior to data collection, much as in a late-stage clinical trial (e.g., Nosek et al. 2018).
 
@@ -117,7 +117,7 @@ However, the fact that most scientific research cannot fit the above paradigm is
 
 > A variation on this theme is preregistered replication, where a replication study, rather than the original study, is subject to strict preregistration (e.g., Gelman 2015). A broader vision of this idea (Mogil andMacleod 2017) is to carry out a whole series of exploratory experiments without any formal statistical inference, and summarize the results by descriptive statistics (including graphics) or even just disclosure of the raw data.
 
-# Enabling Good Science
+## Enabling Good Science
 
 Tong adapts a taxonomy of statistical activity by Cox (1957) and Moore (1992):
 
@@ -127,7 +127,7 @@ Tong adapts a taxonomy of statistical activity by Cox (1957) and Moore (1992):
 
 > The first step of statistical thinking is to understand the objective of the study, its context, and its constraints, so that planning for study design and analysis can be fit for purpose.
 
-## Data Production
+### Data Production
 
 > Feller (1969) pronounced that “The purpose of statistics in laboratories should be to save labor, time, and expense by efficient experimental designs” rather than null hypothesis significance testing.
 
@@ -139,7 +139,7 @@ And other research degrees of freedom that is related to decisions around experi
 
 > Other researcher degrees of freedom can affect study design and execution. An instructive example for the latter is the decision to terminate data collection. Except in clinical trials, where this decision is tightly regulated and accounted for in the subsequent analysis (e.g., Chow and Chang 2012), many researchers have no formal termination rule, stopping when funding is exhausted, lab priorities shift, apparent statistical significance is achieved (or becomes clearly hopeless), or for some other arbitrary reason, often involving unblinded interim looks at the data.
 
-## Data Description
+### Data Description
 
 > Moses (1992)warned us that
 > Good statistical description is demanding and challenging work: it requires sound conceptualization, and demands insightfully organizing the data, and effectively communicating the results; not one of those tasks is easy. To mistakenly treat description as ‘routine’ is almost surely to botch the job.
@@ -152,7 +152,7 @@ Something like Tukey's (1977) five number summary (the minimum, first quartile, 
 
 > Though we might not quantify uncertainty using probability statements, we can attempt to convey the observed variability of the data at hand, while acknowledging that it does not fully capture uncertainty... However, the use of such data summaries is not free of assumptions (e.g., unimodality, in some cases symmetry), so they are descriptive only in relation to these assumptions, not in an absolute sense.
 
-## Disciplined Data Exploration
+### Disciplined Data Exploration
 
 > According to Tukey (1973), exploratory analysis of the data is not “just descriptive statistics,” but rather an “actively incisive rather than passively descriptive” activity, “with a real emphasis on the discovery of the unexpected.”
 
@@ -164,7 +164,7 @@ Tong also cites the warning of Diaconis (1985) about the danger of undisciplined
 
 > If such patterns are accepted as gospel without considering that they may have arisen by chance, he considers it magical thinking, which he defines as“our inclination to seek and interpret connections and events around us, together with our disinclination to revise belief after further observation.”
 
-## Statistical Thinking
+### Statistical Thinking
 
 > Statistical thinking begins with a relentless focus on fitness for purpose (paraphrasing Tukey 1962: seeking approximate answers to the right questions, not exact answers to the wrong ones), sound attitudes about data production and its pitfalls, and good habits of data display and disciplined data exploration.
 
@@ -177,7 +177,7 @@ Statistical thinking also involves a keen awareness of the pitfalls of data anal
 - Simpson’s paradox, and the ecological fallacy.
 - The curse of dimensionality
 
-## Discussion
+### Discussion
 
 > There is no scientifically sound way to quantify uncertainty from a single set of data, in isolation from other sets of data comprising an exploratory/learning process.
 > This brings to mind an observation made about certain research in materials science: “Even if the studies had reported an error value, the trustworthiness of the result would not depend on that value alone” (Wenmackers and Vanpouke 2012).

@@ -17,7 +17,7 @@ url: /post/tf21-quest/
 
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/the-side-of-the-road-snow-mountains-4259510/)" >}}
 
-# Executive Summary
+## Executive Summary
 
 - **TensorFlow has become much easier to use**: As an experience PyTorch developer who only knows a bit of TensorFlow 1.x, I was able to pick up TensorFlow 2.x in my spare time in 60 days and do competitive machine learning.
 - **TPU has never been more accessible**: The new interface to TPU in TensorFlow 2.1 works right out of the box in most cases and greatly reduces the development time required to make a model TPU-compatible. Using TPU drastically increases the iteration speed of experiments.
@@ -28,13 +28,13 @@ url: /post/tf21-quest/
   - [High-level library TF-HelperBot](https://github.com/ceshine/tf-helper-bot/) to provide more flexibility than the Keras interface.
 - (TensorFlow 2.1 and TPU are also a very good fit for CV applications. A case study of solving an image classification problem will be published in about a month.)
 
-# Acknowledgment
+## Acknowledgment
 
 I was granted free access to Cloud TPUs for 60 days via TensorFlow Research Cloud. It was for the [TensorFlow 2.0 Question Answering](https://www.kaggle.com/c/tensorflow2-question-answering) competition. I chose to do this simpler [Google QUEST Q&A Labeling](https://www.kaggle.com/c/google-quest-challenge) competition first but unfortunately couldn't find enough time to go back and do the original one (sorry!).
 
 I was also granted \$300 credits for the [TensorFlow 2.0 Question Answering](https://www.kaggle.com/c/tensorflow2-question-answering) competition and had used those to develop a [PyTorch baseline](https://github.com/ceshine/kaggle-tf2qa). They also covered the costs of Cloud Compute VM and Cloud Storage used to train models on TPU.
 
-# Introduction
+## Introduction
 
 Google was handing out free TPU access to competitors in the [TensorFlow 2.0 Question Answering](https://www.kaggle.com/c/tensorflow2-question-answering) competition, as an incentive for them to try out the newly added TPU support in TensorFlow 2.1 (then RC). Because the preemptible GPUs on GCP are barely usable at the time, I decided to give it a shot. It all began with this tweet:
 
@@ -44,7 +44,7 @@ Turns out that the TensorFlow model in [huggingface/transformers](https://github
 
 I missed the post-processing trick in the QUEST competition because I spent most of my limited time wrestling with TF and TPU. After applying the post-processing trick, my final model would be somewhat competitive at around 65th place (silver medal) on the final leaderboard. **The total training time of my 5-fold models using TPUv2 on Colab was about an hour**. This is a satisfactory result in my opinion, given the time constraint.
 
-## TensorFlow 2.x
+### TensorFlow 2.x
 
 The TensorFlow 2.x has become much more approachable, and the customizable training loops provide a swath of opportunities to do creative things. I think I'll be able to re-implement top solutions of the competition in TensorFlow without banging my head on the door (at least less frequently).
 
@@ -58,7 +58,7 @@ One of the solutions is to limit the GPU memory usage, and here's a confusingly 
 
 {{< single_tweet 1227289971368685568 >}}
 
-## TPU Support
+### TPU Support
 
 Despite all the drawbacks, the TPU support in TF 2.1 is fantastic and has become my main reason for using TF 2.1+. It’s pretty impressive that the once extremely unstable TPU support in Keras has evolved into this good piece of engineering.
 
@@ -72,29 +72,29 @@ One potentially interesting comparison would be using two V100 GPUs, which combi
 
 (I know that PyTorch has [its own TPU support](https://github.com/pytorch/xla) now, but it is still quite hard to use last time I checked, and it is not supported in Google Colab. Maybe I'll take another look in the next few weeks.)
 
-# Case Study and Code Snippets
+## Case Study and Code Snippets
 
 This section will briefly describe my solution to the QUEST Q&A Labeling competition, and discuss some parts of the code that I think are most helpful for those to come from PyTorch as I did. This section assumes that you already have a basic understanding of TensorFlow 2.x. If you're not sure, please refer to the official tutorial [Effective TensorFlow 2](https://www.tensorflow.org/guide/effective_tf2).
 
-## Source Code
+### Source Code
 
 - [Codebase](https://github.com/ceshine/kaggle-quest)
 - [Colab TPU training notebook](https://gist.github.com/ceshine/752c77742973a013320a9f20384528a1)
 - [Kaggle Inference Kernel](https://www.kaggle.com/ceshine/quest-roberta-inference/data?scriptVersionId=28553401)
 - [High-level library TF-HelperBot](https://github.com/ceshine/tf-helper-bot/) to provide more flexibility than the Keras interface.
 
-## Roadmap
+### Roadmap
 
 1. TF-Helper-Bot: this is a simple high-level wrapper of TensorFlow I wrote to improve code reusability.
 2. Input Formulation and TFRecords Preparation.
 3. TPU-compatible Data Loading.
 4. The Siamese Encoder Network.
 
-## TF-Helper-Bot
+### TF-Helper-Bot
 
 [TF-Helper-Bot](https://github.com/ceshine/tf-helper-bot/) is a simple high-level wrapper of TensorFlow and is basically a port of my other project — [PyTorch-Helper-Bot](https://github.com/ceshine/pytorch-helper-bot)(which is heavily inspired by the fast.ai library). It handles custom training loops, distributed training (TPU), metric evaluation, checkpoints, and some other useful stuff for you.
 
-### BaseBot
+#### BaseBot
 
 The central component of TF-Helper-Bot is the `BaseBot` class. It would normally be inherited and adapted for each new project. Think of it as a robot butler. Give her/him a model, an optimizer, a loss function, and other optional goodies via `__init__()`, and call `train()`. The robot will have your model trained and ready. You can also call `eval()` to do validation or testing, and call `predict()` to make predictions.
 
@@ -156,7 +156,7 @@ class BaseBot:
 - Even decorating the bland `predict_batch` can improve the performance significantly. Without this, I couldn't get the inference kernel to finish within the time limit in another CV competition.
 - The `get_gradient` method supports mixed-precision training, which isn't covered in this post.
 
-### BaseDistributedBot
+#### BaseDistributedBot
 
 If we want to do distributed training (TPU has 8 cores), we'll need some specialized interfaces to do that. We accommodate these by subclassing `BaseBot`([source code location](https://github.com/ceshine/kaggle-quest/blob/795d94c70f7c97fd2c0a5f383fdf52571f9bb0ed/tf-helper-bot/tf_helper_bot/bot.py#L249)):
 
@@ -213,7 +213,7 @@ def prepare_tpu():
 
 The TPU will be initialized if it exists. It'll return a dummy strategy when using a single GPU or CPU. (I haven't tested it with multiple GPU yet.)
 
-## Preparing TFRecord Files
+### Preparing TFRecord Files
 
 The QUEST training dataset contains just over 6,000 question-answer pairs. There are only around 3,500 unique questions. Each question has a title and a body field.
 
@@ -273,7 +273,7 @@ def _write_tfrecords(inputs, labels, output_filepath):
         output_filepath, len(inputs)))
 ```
 
-## Data Loading
+### Data Loading
 
 TensorFlow as a [tf.data](https://www.tensorflow.org/api_docs/python/tf/data) module specifically for creating input pipelines. It is especially useful when writing pipelines that will be compiled into graphs (which is required by TPU). The following is how I use it to load the data from TFRecord files (with some details omitted)([source code location](https://github.com/ceshine/kaggle-quest/blob/795d94c70f7c97fd2c0a5f383fdf52571f9bb0ed/quest/dataset.py#L7)):
 
@@ -330,7 +330,7 @@ def tfrecord_dataset(filename, batch_size, strategy, is_train: bool = True):
 - `cache()` method is called to save the parsed data into memory. This prevents the loader from reading and parsing the same file multiple times. (You don't want to call `cache()` after the shuffle, as it can potentially make the dataset only get shuffled once.)
 - This is one of the less tuned parts of the codebase, I mostly just followed the documentation and its recommendations. You could probably get better throughput by tinkering with the pipeline.
 
-### Dynamic Batching?
+#### Dynamic Batching?
 
 One neat trick to increase the training speed in PyTorch is to group sequences with similar lengths, pick a batch of them from this group, and then pad to the maximum length of that batch. It is sometimes called a "sortish sampler". This often greatly reduces the padding required and the average sequence length after padding.
 
@@ -351,7 +351,7 @@ features_description = {
 }
 ```
 
-### Distributed Dataset
+#### Distributed Dataset
 
 Distributed training with a custom training loop requires converting a `tf.data.Dataset` instance into a distributed dataset:
 
@@ -364,7 +364,7 @@ valid_dist_ds = strategy.experimental_distribute_dataset(
 
 If you're using the Keras `fit()` API, you won't need to do this conversion.
 
-## The Siamese Encoder Network
+### The Siamese Encoder Network
 
 Finally, let's take a look at the neural network model that put tags on the input pair of question and answer. The tokenized question and answer are fed to the same RoBERTa encoder (a.k.a. Siamese network). The hidden states of the last layer of the encoder are put through an average pooling layer. Here's the code of the encoder([source code location](https://github.com/ceshine/kaggle-quest/blob/795d94c70f7c97fd2c0a5f383fdf52571f9bb0ed/quest/models.py#L38)):
 
@@ -463,7 +463,7 @@ PyTorch developer should find the above quite similar to a PyTorch model.
 
 (This is a form of [multitask learning](https://ruder.io/multi-task/). I've seen some of the top solutions chose to train two or three separate models instead. The latter approach also helps to alleviate the problem of some questions appearing multiple times in the dataset.)
 
-# Wrapping Up
+## Wrapping Up
 
 In this post, we briefly discussed how the learning curve of TensorFlow has been significantly improved in the 2.x release, and how the TPU has become more accessible than ever. We also present a case study of solving a Q&A labeling problem by fine-tuning RoBERTa-base model from _huggingface/transformer_ library and with it some code snippets that could be useful to those who are more familiar with PyTorch.
 

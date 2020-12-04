@@ -26,7 +26,7 @@ url: /post/news-topic-similarity-measure/
 
 In this post we establish a topic similarity measure among the news articles collected from the [New York Times RSS feeds](https://archive.nytimes.com/www.nytimes.com/services/xml/rss/index.html). The main purpose is to familiarized ourselves with the (PyTorch) BERT implementation and pretrained model(s).
 
-# What is BERT?
+## What is BERT?
 
 BERT stands for **B**idirectional **E**ncoder **R**epresentations from **T**ransformers. It comes from a paper published by Google AI Language in 2018[1]. It is based on the idea that fine-tuning a pretrained language model can help the model achieve better results in the downstream tasks[2][3].
 
@@ -36,7 +36,7 @@ Here is a great series on BERT. If you’re already familiar with language model
 
 We’ve also covered the OpenAI before in this post: **[[Notes] Improving Language Understanding by Generative Pre-Training](https://medium.com/the-artificial-impostor/notes-improving-language-understanding-by-generative-pre-training-4c9d4214369c)**.
 
-# Problem Description
+## Problem Description
 
 The New York Times [RSS feed](https://www.wikiwand.com/en/RSS) provide us with the a list of of news articles, and their titles, descriptions, published dates, links, and categories. Given an article, we want to automatically find other articles covering the same topic without relying on the category information (so we can apply the algorithm to multiple sources in the future).
 
@@ -46,7 +46,7 @@ An example:
 >
 > Description: Transportation Security Administration officers checking passengers at Pittsburgh International Airport last week. The agency’s employees have called out sick in increased numbers across the country since the shutdown began.
 
-## Next Sentence Prediction
+### Next Sentence Prediction
 
 {{< figure src="1*AcHwFPeBhMABqmUfxLAEUg.png" >}}
 
@@ -56,7 +56,7 @@ Firstly, we need to take a look at how BERT construct its input (in the pretrain
 
 The pretrained BERT model, according to the paper[1], achieves 97%~98% accuracy at this task with a balanced dataset.
 
-## Proposed Solution
+### Proposed Solution
 
 We fill the first sentence with the title of the article, and the second with the description. Ideally, the title-description pairs that came from the same article should have a high next sentence score from a pretrained models (i.e. the description is deemed highly likely the next sentence of the title). If not, we’ll need to fine-tune the pretrained model (train the model further with the new data).
 
@@ -74,7 +74,7 @@ And this is the above input sequence with the second sentence replaced by the de
 [CLS] what is and isn ’ t affected by the government shut ##down [SEP] gr ##udge ##s can be good . they are one habit that humans have evolved to keep ourselves from the pain of breakup ##s and also from eating mo ##zza ##rella sticks for every meal . [SEP]
 ```
 
-## Results
+### Results
 
 I first tried using the pretrained model without any fine-tuning, and it already worked great. The dataset consists of 2,719 articles from the New York Times RSS feeds, with articles with no or very short descriptions removed.
 
@@ -104,7 +104,7 @@ Top 5 Descriptions Matching this Title: **What Is and Isn’t Affected by the Go
 
 Interestingly, the actual description from the article did not make top 5 nor top 10. But still, the predicted descriptions seem reasonably good.
 
-## Source Code
+### Source Code
 
 The code is based on the PyTorch implementation of BERT by Hugging Face: **[huggingface/pytorch-pretrained-BERT](https://github.com/huggingface/pytorch-pretrained-BERT)**.
 
@@ -114,7 +114,7 @@ The Jupyter Notebook used for this post: **[ceshine/pytorch-pretrained-BERT](htt
 
 The notebook used some preprocessing functions from **[the example script for sentence classification fine-tuning](https://github.com/ceshine/pytorch-pretrained-BERT/blob/master/examples/run_classifier.py)**.
 
-# Conclusions and Future Work
+## Conclusions and Future Work
 
 In this post we’ve demonstrated that the next sentence prediction task in BERT pretraining stage successfully captured semantic information in sentences, and can be used to determine the similarity of two articles.
 
@@ -122,11 +122,11 @@ In fact, one of the downstream task BERT was evaluated upon is Quora Question Pa
 
 Other more efficient way (in terms of computation required) way to measure document or sentence similarity is doing [sentence embeddings](https://www.wikiwand.com/en/Sentence_embedding). In contrast to RNN and its variants (e.g. LSTM and GRU), extracting sentence embeddings from transformer models is not as straight forward ([see this discussion](https://github.com/google-research/bert/issues/276)).
 
-## 2019/03/23 Update
+### 2019/03/23 Update
 
 Here is an awesome project that use BERT to generate sentence embeddings and serve the model in scale: **[hanxiao/bert-as-service](https://github.com/hanxiao/bert-as-service)**.
 
-# References
+## References
 
 1. Devlin, J., Chang, M.-W., Lee, K., & Toutanova, K. (2018). [BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding](http://arxiv.org/abs/1810.04805).
 
@@ -138,6 +138,6 @@ Here is an awesome project that use BERT to generate sentence embeddings and ser
 
 1. [Z. Chen, H. Zhang, X. Zhang, and L. Zhao. 2018. Quora question pairs.](https://data.quora.com/First-Quora-Dataset-Release-Question-Pairs)
 
-# Related Post of Mine
+## Related Post of Mine
 
 - **[Multilingual Similarity Search Using Pretrained Bidirectional LSTM Encoder](https://medium.com/the-artificial-impostor/multilingual-similarity-search-using-pretrained-bidirectional-lstm-encoder-e34fac5958b0)**

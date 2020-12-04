@@ -16,7 +16,7 @@ url: /post/spacy-sentencizer/
 
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/cat-sweet-kitty-animals-feline-323262/)" >}}
 
-# The Problem
+## The Problem
 
 Often in natural language processing(NLP), we would want to split a large document into sentences, so we can analyze the individual sentences and the relationship between them.
 
@@ -45,7 +45,7 @@ Spacy splits it into two sentences:
 
 The problem seems to be somewhat alleviated in the latest _2.1.0_ model, but still, the solution provided below will be helpful.
 
-# The Solution
+## The Solution
 
 According to [Spacy's documentation](https://spacy.io/usage/linguistic-features#sbd-custom), we can add custom rules as a _custom pipeline component_ (before the dependency parser) that specifies the sentence boundaries. The later dependency parser will respect the `Token.is_sent_start` attribute set by this component.
 
@@ -57,6 +57,6 @@ Now Spacy will correctly identify the previous two examples as full sentences.
 
 **_20190822 Update_**: Added rules that improves the handling of curly quotes.
 
-# Source Code
+## Source Code
 
 {{< gist ceshine 7741974cf14d838c7a3b3e2c1031d8c7 >}}

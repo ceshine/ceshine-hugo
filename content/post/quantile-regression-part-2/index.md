@@ -29,7 +29,7 @@ url: /post/quantile-regression-part-2/
 
 We’ve discussed what quantile regression is and how does it work in Part 1. In this Part 2 we’re going to explore how to train quantile regression models in deep learning models and gradient boosting trees.
 
-# Source Code
+## Source Code
 
 The source code to this post is provided in this repository: **[ceshine/quantile-regression-tensorflow](https://github.com/ceshine/quantile-regression-tensorflow)**. It is a fork of [strongio](https://github.com/strongio)/[quantile-regression-tensorflow](https://github.com/strongio/quantile-regression-tensorflow), with following modifcations:
 
@@ -45,13 +45,13 @@ The source code to this post is provided in this repository: **[ceshine/quantile
 
 1. In addition to .ipynb notebook files, provide a .py copy for command line reading.
 
-# Tensorflow
+## Tensorflow
 
 The most important piece of the puzzle is the loss function, as introduced in Part 1:
 
 {{< figure src="1*Is3CINEjFT2N2bOCbh8aOg.png" caption="Loss Function of Quantile Regression ([Source](https://www.wikiwand.com/en/Quantile_regression))" >}}
 
-The tricky part is how to deal with the indicator function. Using if-else statement on each example would be very inefficient. The smarter way to do it is to calculate both y * τ and y * (τ-1) and take element-wise maximums (this pair will always have one positive and one negative number except when y=0. τ is in (0, 1) range.).
+The tricky part is how to deal with the indicator function. Using if-else statement on each example would be very inefficient. The smarter way to do it is to calculate both y _ τ and y _ (τ-1) and take element-wise maximums (this pair will always have one positive and one negative number except when y=0. τ is in (0, 1) range.).
 
 The following implementation is directly copied from [strongio/quantile-regression-tensorflow](https://github.com/strongio/quantile-regression-tensorflow) by [@jacobzweig](https://github.com/jacobzweig):
 
@@ -74,7 +74,7 @@ The fitted model would look like this:
 
 {{< figure src="1*Gk8fmhqed7A1GFzRMh__TA.png" caption="Tensorflow Implementation" >}}
 
-# PyTorch
+## PyTorch
 
 The loss function is implemented as a class:
 
@@ -106,11 +106,11 @@ It expects the predictions to come in one tensor of shape (N, Q). The final `tor
 
 {{< figure src="1*f0W4ZyhGc0NL3A9m0Uk4Ew.png" caption="PyTorch Implementation" >}}
 
-## Batch Normalization
+### Batch Normalization
 
 One interesting I noticed is that adding batch normalization makes the PyTorch model severely under-fit, but the Tensorflow model seems to fare better. Maybe it’s the very small size of batches(10) and the small training dataset (100 examples) that’s causing problems. The final version has batch normalization from both model removed. Training models on a larger real-world dataset, which has yet to be done, should help me figuring it out.
 
-## Monte Carlo dropout
+### Monte Carlo dropout
 
 I’ve covered Monte Carlo dropout previously in this post: **[[Learning Note] Dropout in Recurrent Networks — Part 1: Theoretical Foundations](https://becominghuman.ai/learning-note-dropout-in-recurrent-networks-part-1-57a9c19a2307)**.
 
@@ -124,17 +124,17 @@ As we can see, the credible interval is much narrower than the prediction interv
 
 In Osband’s comment, “the posterior distribution for an outcome” is used to construct the prediction interval, and “posterior distribution for what you think is the mean of an outcome” is used to construct the credible interval. He also gave an clever example to demonstrate their differences:
 
-> A fair coin, that you *know* is a fair coin.
+> A fair coin, that you _know_ is a fair coin.
 > You can be 100% sure that the expected outcome is 0.5. This is the posterior distribution for the mean — a dirac at 0.5.
 > On the other hand, for any single flip the distribution of outcomes is 50% at 0 and 50% at 1. The two distributions are completely distinct.
 
 I think you’ll have to find some way to sample from the posterior distribution of the error term to create prediction intervals with MC dropout. Not sure how to do it yet. Maybe we can estimate the distribution by collecting the errors when sampling the target (I need to do more research here).
 
-# LightGBM
+## LightGBM
 
 For tree models, it’s not possible to predict more than one value per model. Therefore what we do here is essentially training Q independent models which predict one quantile.
 
-Scikit-learn is the baseline here. What you need to do is pass `loss=’quantile’` and `alpha=ALPHA`, where` ALPHA `((0,1) range) is the quantile we want to predict:
+Scikit-learn is the baseline here. What you need to do is pass `loss=’quantile’` and `alpha=ALPHA`, where`ALPHA`((0,1) range) is the quantile we want to predict:
 
 {{< figure src="1*Cj2tRfMExP-vRkqQYAnqoQ.png" caption="Scikit-Learn GradientBoostingRegressor" >}}
 
@@ -158,6 +158,6 @@ One special parameter to tune for LightGBM — **`min_data_in_leaf`**. It defaul
 
 Not much to say here. The gradients of the loss function are handled inside the library. We only need to pass the correct parameter. However, unlike neural networks, we cannot easily get confidence interval nor credible interval from tree models.
 
-# The End
+## The End
 
 Thank you for reading this far! Please consider give this post some claps to show your support. It’ll be much appreciated.

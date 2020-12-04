@@ -14,7 +14,7 @@ url: /post/gcp-shutdown-script/
 
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/panda-red-panda-bear-cat-4546244/)" >}}
 
-# Motivation
+## Motivation
 
 I was recently given a $300 credit to [Google Cloud Platform](https://cloud.google.com/) from Google to participate in a Kaggle competition. This gives me free access to the powerful GPUs (T4, P100, even V100) to train models and thus opens the window to many new possibilities. However, the problem is that $300 can be used up rather quickly. For example, [one Tesla P100 GPU cost \$1.46 per hour](https://cloud.google.com/compute/gpus-pricing), so \$300 can only give me 200 hours or 8.5 days. Don't forget there are still other costs from CPU, memory, and disk storage.
 
@@ -24,12 +24,12 @@ Resumable training is essential when using pre-emptible instances. Regularly sav
 
 The last piece of puzzle is **getting a notification when your preemptible instance is being preempted**. Otherwise, you will have to stare at the terminal or the browser tab (if you're using Jupyter notebook) during training to know when to restart the instance and resume training. This short post will introduce a way to do this via shutdown scripts.
 
-# Solution
+## Solution
 
 [Google Cloud Compute](https://cloud.google.com/compute/) allows users to run [startup script](https://cloud.google.com/compute/docs/startupscript) and [shutdown script](https://cloud.google.com/compute/docs/shutdownscript) via its [metadata server](https://cloud.google.com/compute/docs/storing-retrieving-metadata). Preemptible instances will have 30 seconds to run the shutdown script after the shutdown process begins, which is more than enough for our use case — sending a notification.
 
 ```python
-#!/home/ceshine/miniconda3/envs/pytorch/bin/python
+##!/home/ceshine/miniconda3/envs/pytorch/bin/python
 import socket
 import telegram
 
@@ -69,7 +69,7 @@ gcloud compute instances create example-instance --scopes storage-ro \
     --metadata shutdown-script-url=gs://bucket/startupscript.sh
 ```
 
-## Shutdown script invocation
+### Shutdown script invocation
 
 According to the GCP documentation, a shutdown script runs as part of the following actions:
 
@@ -82,7 +82,7 @@ According to the GCP documentation, a shutdown script runs as part of the follow
 
 So the shutdown script will be invoked even when you manually shut down the instance, i.e., you'll get a Telegram notification of your instance being shut down. That shouldn't be a big problem because you already know you are shutting down the instance.
 
-# Conclusion
+## Conclusion
 
 This post describes a way to configure shutdown scripts so you'll be notified when one of your instances is being preempted. This simple time-saving trick can help you minimize the time wasted between the preemption and the resuming of training.
 

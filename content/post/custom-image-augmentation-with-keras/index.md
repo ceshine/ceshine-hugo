@@ -30,18 +30,18 @@ I wrote [an article benchmarking the TPU on Google Colab with the Fashion-MNIST 
 
 It turns out that implementing a custom image augmentation pipeline is fairly easy in the newer Keras. We could give up some flexibility in PyTorch in exchange of the speed up brought by TPU, which is not yet supported by PyTorch yet.
 
-# Source Code
+## Source Code
 
-* [GPU version](https://colab.research.google.com/drive/1zTYNJ3xtPeNsa5ARBw4Ufj8crPZJx-cp) (with a Tensorboard interface powered by `ngrok`)
+- [GPU version](https://colab.research.google.com/drive/1zTYNJ3xtPeNsa5ARBw4Ufj8crPZJx-cp) (with a Tensorboard interface powered by `ngrok`)
 
-* [TPU version](https://colab.research.google.com/drive/1hFFzWabe5sI3vO92AIqPi4P-0DoYDN0U)
+- [TPU version](https://colab.research.google.com/drive/1hFFzWabe5sI3vO92AIqPi4P-0DoYDN0U)
 
 The notebooks are largely based on the work by [Jannik Zürn](https://medium.com/@jannik.zuern) described in this post:
 **[Using a TPU in Google Colab](https://medium.com/@jannik.zuern/using-a-tpu-in-google-colab-54257328d7da)**.
 
 I updated the model architecture from [the official Keras example](https://github.com/keras-team/keras/blob/master/examples/cifar10_resnet.py) and modified some of the data preparation code.
 
-# Custom Augmentation using the Sequence API
+## Custom Augmentation using the Sequence API
 
 From the Keras documentation:
 
@@ -49,7 +49,7 @@ From the Keras documentation:
 
 Most Keras tutorials use the [ImageDataGenerator](https://keras.io/preprocessing/image/) class to generate batch and do image augmentation. But it doesn’t leave much room for customization (unless you spend some time reading the source code and extend the class) and the augmentation toolbox might not be comprehensive or [fast enough](https://github.com/albu/albumentations#benchmarking-results) for you.
 
-## Class Definition
+### Class Definition
 
 Fortunately, there’s a `Sequence` class (`keras.utils.Sequence`) in Keras that is very similar to [`Dataset`](https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset) class in PyTorch (although Keras doesn’t seem to have its own [`DataLoader`](https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader)). We can construct our own data augmentation pipeline like this:
 
@@ -59,13 +59,13 @@ Note the one major difference between `Sequence` and `Dataset` is that `Sequence
 
 In this example, the data has already been read in as `numpy` arrays. For larger datasets, you can store paths to the image files and labels in the file system in the class constructor, and read the images dynamically in the `__getitem__` method via one of the two methods:
 
-* OpenCV:`cv2.cvtColor(cv2.imread(filepath), cv2.COLOR_RGB2BGR)`
+- OpenCV:`cv2.cvtColor(cv2.imread(filepath), cv2.COLOR_RGB2BGR)`
 
-* PIL: `np.array(Image.open(filepath))`
+- PIL: `np.array(Image.open(filepath))`
 
 Reference: [An example pipeline that uses torchvision](https://github.com/albu/albumentations/blob/master/notebooks/migrating_from_torchvision_to_albumentations.ipynb).
 
-## Albumentations
+### Albumentations
 
 Now we use albumentations to define a set of augmentations to be applied randomly to training set and a (deterministic) set for the test and validation sets:
 
@@ -75,7 +75,7 @@ Now we use albumentations to define a set of augmentations to be applied randoml
 
 **[`ToFloat(max_value=255)`](https://albumentations.readthedocs.io/en/latest/api/augmentations.html#albumentations.augmentations.transforms.ToFloat)** transforms the array from [0, 255] range to [0, 1] range. If you are tuning a pretrained model, you’ll want to use **[`Normalize`](https://albumentations.readthedocs.io/en/latest/api/augmentations.html#albumentations.augmentations.transforms.Normalize)** to set `mean` and `std`.
 
-## Training and Validating
+### Training and Validating
 
 Just pass the sequence instances to the `fit_generator` method of an initialized model, Keras will do the rest for you:
 
@@ -85,7 +85,7 @@ By default Keras will shuffle the batches after one epoch. You can also choose t
 
 That’s it. You now have a working customized image augmentation pipeline.
 
-# TPU on Google Colab
+## TPU on Google Colab
 
 {{< figure src="1*S_IXy4CSKSCTLHj_X9lGWQ.png" caption="Model used: [Resnet101 v2 in the official example](https://github.com/keras-team/keras/blob/master/examples/cifar10_resnet.py)" >}}
 
@@ -97,7 +97,7 @@ Notes to the table:
 
 The batch size used by Colab TPU is increased to utilize the significantly larger memory size (64GB) and TPU cores (8). Each core will received 1/8 of the batch.
 
-## Converting Keras Models to use TPU
+### Converting Keras Models to use TPU
 
 Like before, one single command is enough to do the conversion:
 
@@ -123,12 +123,12 @@ The corresponding solutions:
 
 1. This one unfortunately I couldn’t find good way to avoid it. The reason why the model get compiled four times is because the last batch has a different size from the previous ones. We could reduce the number to three if we just drop the last batch in training (I couldn’t find a way to do that properly in Keras). Or reduce the number to two if we pick a batch size that is a divisor to the size of the dataset, which is not always possible or efficient. You could just throw away some data to make things easier if your dataset is large enough.
 
-# Summary
+## Summary
 
 The TPU (TPUv2 on Google Colab) greatly reduces the time needed to train an adequate model, albeit its overhead. But get ready to deal with unexpected problems since everything is really still experimental. It was really frustrating for me when the TPU backend kept crashing for no obvious reason.
 
 The set of augmentations used here is relatively mild. There are a lot more options in the `albumentations` library (e.g. [Cutout](https://albumentations.readthedocs.io/en/latest/api/augmentations.html#albumentations.augmentations.transforms.Cutout)) for you to try.
 
-If you found TPU working great for you, [the current pricing of TPU ](https://cloud.google.com/tpu/docs/pricing)is quite affordable for a few hours of training (Regular $4.5 per hour and preemptible **$1.35** per hour). (I’m not affiliated with Google.)
+If you found TPU working great for you, [the current pricing of TPU ](https://cloud.google.com/tpu/docs/pricing)is quite affordable for a few hours of training (Regular $4.5 per hour and preemptible **$1.35\*\* per hour). (I’m not affiliated with Google.)
 
 In the future I’ll probably try to update the notebooks to Tensorflow 2.0 alpha or the later RC and report back anything interesting.

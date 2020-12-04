@@ -17,13 +17,13 @@ url: /post/text-annotation-1/
 
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/quotes-excerpts-writing-airbrushed-2608205/)" >}}
 
-# Introduction
+## Introduction
 
 In my previous post, [Fine-tuning BERT for Similarity Search](https://blog.ceshine.net/post/finetune-sentence-bert/), I mentioned that I annotated 2,000 pair of sentence pairs, but did not describe how I did it and what tool I used. Now in this two-part series, we'll see how I created a customized text annotation tool that greatly speeds up the annotation process.
 
 The entire stack was developed in two days. You can probably do it a lot faster if you are familiar with the technology (the actual time I spent on it is about 6 hours top).
 
-## Why Build Your Own Annotation Tool
+### Why Build Your Own Annotation Tool
 
 You might ask, why build your own tool? Why not just use Excel or open-source/proprietary tools? There are several reasons:
 
@@ -42,7 +42,7 @@ The customized annotation tool I built does these things:
 
 {{< figure src="screenshot.png" caption="Our Annotation Interface. Need some work aesthetically, but useful enough IMO." >}}
 
-## Inspiration and Learning Resources
+### Inspiration and Learning Resources
 
 I don't remember exactly where I got the idea of a React front-end working with a Python back-end from. I think it was from a tweet by Ines Montani, but here's a more recent reminder by Joel Grus:
 
@@ -58,13 +58,13 @@ The learning resources in the following Twitter thread by Ines Montani are very 
 
 {{< single_tweet 1144173215293591555 >}}
 
-# The API Server
+## The API Server
 
 We're going to use [FastAPI](https://github.com/tiangolo/fastapi) to build our back-end API server. It's created by Sebastián Ramírez (tiangolo) and is built on top of [Starlette](https://www.starlette.io/). The other popular alternative is to use [Flask](https://www.palletsprojects.com/p/flask/). I had experience using both, and IMO FastAPI is better if you just want to build an API server (without any no front-end logic).
 
 The source code can be found at [veritable-tech/text-annotation-api-server/server.py](https://github.com/veritable-tech/text-annotation-api-server/blob/blog-post/server.py). The codebase could use some refactoring, but this state represents how I quickly put together all the necessary parts in the first place.
 
-## Creating Session
+### Creating Session
 
 (I'm going to skip the non-essential lines here to save space. Please refer to the source code for the full implementation).
 
@@ -119,7 +119,7 @@ def submit_batch(batch: BatchAnnotated, request: Request):
         )
 ```
 
-## Loading the Dataset
+### Loading the Dataset
 
 This is how I prepare the dataset: I have 8,000+ very short paragraphs (in Traditional Chinese), and an existing baseline model (Multilingual Universal Sentence Encoder or a fine-tuned model). I use the model to collect the 20 ~ 30 most similar paragraphs and another 20 ~ 30 random paragraphs for each paragraph. I save the result into a CSV file with four fields — "text_1", "text_2", "similarity", "similarity_raw". (The "similarity_raw" field is the score before the optional linear transformation. It is there just for reference.)
 
@@ -136,7 +136,7 @@ if __name__ == '__main__':
     uvicorn.run(APP, host='0.0.0.0', port=PORT)
 ```
 
-## Preparing a Batch
+### Preparing a Batch
 
 This is how each batch is prepared:
 
@@ -180,7 +180,7 @@ The `GLOBAL_CACHE[uid]["submitted"]` stores `page -> output_path` key/value pair
 
 The `find_page_to_annotate` function finds the first page that hasn't been annotated yet.
 
-## Accepting a Batch Submission
+### Accepting a Batch Submission
 
 When a user finished annotating the received batch, they submit the results via a POST request. Only the ID of the pair and the annotated similarity score is submitted (as we already have the corresponding text in the memory):
 
@@ -227,7 +227,7 @@ def submit_batch(batch: BatchAnnotated, request: Request):
 
 The code should be quite straightforward to read. We create a copy of a slice of the Pandas data frame, do some data validation to make sure the pair IDs and the page are matched, and update the slice with the submitted labels. If the submitted page already has been submitted before, we overwrite the previous output; if not, we create a new output file.
 
-## Potential Improvements
+### Potential Improvements
 
 We now already have a functioning back-end server with just about 150 lines of code. There are many potential improvements, including:
 
@@ -238,7 +238,7 @@ We now already have a functioning back-end server with just about 150 lines of c
 
 Some of these are relatively easy to implement. Readers are encouraged to implement them as exercises.
 
-# To Be Continued
+## To Be Continued
 
 We've covered the back-end API server in this post. In the next post, we'll describe how to write a fairly basic React front-end to interact with both the user and the back-end server.
 

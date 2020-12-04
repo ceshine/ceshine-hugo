@@ -23,7 +23,7 @@ url: /post/umap-on-rapids-15x-speedup/
 
 {{< figure src="featuredImage.jpeg" caption="[A_Different_Perspective](https://pixabay.com/users/A_Different_Perspective-2135817/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=3648832) from [Pixabay](https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=3648832)" >}}
 
-# RAPIDS
+## RAPIDS
 
 [RAPIDS](https://rapids.ai/) is a collection of Python libraries from NVIDIA that enables the users to do their data science pipelines entirely on GPUs. The two main components are `cuDF` and `cuML`. The `cuDF` library provides Pandas-like data frames, and `cuML` mimics `scikit-learn`. There’s also a `cuGRAPH` graph analytics library that have been introduced in the latest release ([0.6 on March 28](https://medium.com/rapids-ai/the-road-to-1-0-building-for-the-long-haul-657ae1afdfd6)).
 
@@ -35,7 +35,7 @@ This NeurIPS 2018 talk provides an overview and vision of RAPIDS when it was lau
 
 The RAPIDS project also provides [some example notebook](https://github.com/rapidsai/notebooks). Most prominently [the cuDF + Dask-XGBoost Mortgage example](https://github.com/rapidsai/notebooks/blob/branch-0.6/mortgage/E2E.ipynb). (The link to the dataset in the notebook is broken. [Here’s the correct one](https://rapidsai.github.io/datasets/).)
 
-# Does RAPIDS Help in Smaller Scales?
+## Does RAPIDS Help in Smaller Scales?
 
 The mortgage datasets are huge. The 17-year one takes 195 GB, and the smallest 1-year one takes 3.9 GB. The parallel processing advantage of GPUs is obvious for larger datasets. I wonder if smaller datasets can benefit from RAPIDS as well?
 
@@ -53,9 +53,9 @@ The visualization shows the end products from CPU and RAPIDS implementation are 
 
 The RAPIDS implementation lacks some features, though. For example, the random state cannot be set, and the distance metric is fixed (it is not stated in the documentation. I assume it is Euclidean.). But if you don’t need those features, RAPIDS can save you a lot of time.
 
-## Source Code and Environment Setup
+### Source Code and Environment Setup
 
-I used the [official Docker image](https://docs.rapids.ai/containers/rapids-demo) (*rapidsai/rapidsai:0.6-cuda10.0-runtime-ubuntu18.04-gcc7-py3.7*) to run the following notebook.
+I used the [official Docker image](https://docs.rapids.ai/containers/rapids-demo) (_rapidsai/rapidsai:0.6-cuda10.0-runtime-ubuntu18.04-gcc7-py3.7_) to run the following notebook.
 
 {{< gist ceshine f0a09fa24ddc10cef4ddc2a41b18e53d >}}
 
@@ -72,7 +72,6 @@ $ docker run --runtime=nvidia \
 (rapids) root@container:/rapids/notebooks# bash utils/start-jupyter.sh`
 ```
 
-
-# Fin
+## Fin
 
 Thanks for reading! This is a short post introducing RAPIDS and presents a simple experiments showing how RAPIDS can help you speed up the UMAP algorithm. RAPIDS is still a very young project, and very new to me. I’ll try to use RAPIDS in my future data analytics projects and maybe write more posts about it. Stay tuned!

@@ -18,7 +18,7 @@ url: /post/torchserve/
 
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://unsplash.com/photos/TlwP9KxNT18)" >}}
 
-# Introduction
+## Introduction
 
 AWS recently released [TorchServe](https://github.com/pytorch/serve), an open-source model serving library for PyTorch. The production-readiness of Tensorflow has long been one of its competitive advantages. TorchServe is PyTorch community's response to that. It is supposed to be the PyTorch counterpart of [Tensorflow Serving](https://www.tensorflow.org/tfx/guide/serving). So far, it seems to have a very strong start.
 
@@ -28,9 +28,9 @@ AWS recently released [TorchServe](https://github.com/pytorch/serve), an open-so
 
 In this post,we will deploy an EfficientNet model from the [rwightman/gen-efficientnet-pytorch](https://github.com/rwightman/gen-efficientnet-pytorch) repo. The server accepts images as arrays in Numpy binary format and returns the corresponding class probabilities. (The reason for using Numpy binary format is that in this use case the images are already read into memory on the client-side, the network bandwidth is cheap and we don't have strict latency requirements, so re-encoded it into JPEG or PNG format doesn't make sense.)
 
-# Case Study
+## Case Study
 
-## Preparing the EfficientNet Model
+### Preparing the EfficientNet Model
 
 TorchServe can load models from PyTorch checkpoints (`.state_dict()`) or [exported TorchScript programs](https://pytorch.org/docs/stable/jit.html#creating-torchscript-code). I'd recommend using TorchScript when possible, as it doesn't require you to install extra libraries (e.g., gen-efficientnet-pytorch) and provide a model definition file.
 
@@ -55,15 +55,15 @@ model.save("cache/b4.pt")
 
 Please note that the `geffnet.config.set_scriptable(True)` line is essential. Without it the model won't be able to be compiled with TorchScript.
 
-## The Custom Handler
+### The Custom Handler
 
 TorchServe comes with [four default handlers](https://github.com/pytorch/serve/blob/1f16a7e5989e046f0e5ce5a9f4c73182f63c4573/docs/default_handlers.md) that define the input and output of the deployed service. We are deploying an image classification model in this example, and the corresponding default handler is `image_classifier`. If you read its [source code](https://github.com/pytorch/serve/blob/1f16a7e598/ts/torch_handler/image_classifier.py), you'll find that it accepts a binary image input, resize, center crop, and normalize it, and returns the top 5 predicted classes. Most of these don't fit our use case, so we'll have to write our own handler. You can refer to [this documentation on how to create non-standard services](https://github.com/pytorch/serve/blob/1f16a7e598/docs/custom_service.md#example-custom-service-file).
 
-### Batch Inference
+#### Batch Inference
 
 In this example, we'll have thousands of images per minute to predict, so batch processing is essential. For more information on batch inference with TorchServe, please refer to [this documentation](https://github.com/pytorch/serve/blob/1f16a7e598/docs/batch_inference_with_ts.md).
 
-### Final Result
+#### Final Result
 
 The code is based on the [resnet_152_batch example](https://github.com/pytorch/serve/blob/master/examples/image_classifier/resnet_152_batch/resnet152_handler.py), with some simplification (e.g., we don't need to handle PyTorch checkpoints). By the way, [the MNIST example](https://github.com/pytorch/serve/blob/master/examples/image_classifier/mnist/mnist_handler.py) used a confusing way to load model and model file, the one in resnet_152_batch makes much more sense (by using the `manifest['model']['serializedFile']` and `manifest['model']['modelFile']` property).
 
@@ -77,9 +77,9 @@ Highlights:
 
 This handler cannot handle malformed inputs (as all the example handlers I've seen). If that's inevitable in your use case, you'll probably need to find some way to identify those inputs, ignore that in the `inference` method, and return proper error messages in the `postprocess` method.
 
-## Deployment
+### Deployment
 
-### Create the Model Archive
+#### Create the Model Archive
 
 TorchServe requires the user to package all model artifacts into a single model archive file. It's fairly straight-forward in our case. Please refer to [the documentation](https://github.com/pytorch/serve/tree/1f16a7e5989e046f0e5ce5a9f4c73182f63c4573/model-archiver#creating-a-model-archive) if in doubt.
 
@@ -90,7 +90,7 @@ torch-model-archiver --model-name b4 --version 1.0 \
     --export-path model-store
 ```
 
-### Start the TorchServe service
+#### Start the TorchServe service
 
 I use a shell script to start the TorchServe server and register the model:
 
@@ -119,7 +119,7 @@ If you updated your model, create the model archive at the same path, and rerun 
 
 Stop the server by running `torchserve --stop`.
 
-### Client Requests Example
+#### Client Requests Example
 
 Here's an example of making multiple requests to the server via [asyncio](https://docs.python.org/3/library/asyncio.html):
 
@@ -142,7 +142,7 @@ async def predict_batch(cache):
     return probs
 ```
 
-# Conclusion
+## Conclusion
 
 Thanks for reading! I hope this post makes it easier for you to understand and use TorchServe. TorchServe creates an API for your model and does most of the heavy-lifting involved in handling HTTP requests. It shows great promise in the production environment support of PyTorch.
 

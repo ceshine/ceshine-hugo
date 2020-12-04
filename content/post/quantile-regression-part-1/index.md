@@ -32,11 +32,11 @@ For example, consider historical sales of an item under a certain circumstance a
 
 In this series we’re going to learn about how quantile regression works, and how to train quantile regression models in Tensorflow, Pytorch, LightGBM, and Scikit-learn. It has been an enlightening experience for me, as I discovered a lot of concepts which I thought I understand but actually didn’t.
 
-# Prediction Interval v.s. Confidence Interval [1]
+## Prediction Interval v.s. Confidence Interval [1]
 
 {{< figure src="1*vcbjVR7uesKhVM1eD9IbEg.png" caption="[Source](https://www.researchgate.net/publication/267958281_Teacher_Certification_Exams_Predicting_Failure_on_the_TExES_History_8-12_Content_Exam_A_Nonparametric_Approach_using_Classification_Trees/figures?lo=1)" >}}
 
-*Confidence interval* is a Frequentist idea. The Bayesian counterpart is *credible interval*. These two are interchangeable here as they represent the same kind of uncertainty.
+_Confidence interval_ is a Frequentist idea. The Bayesian counterpart is _credible interval_. These two are interchangeable here as they represent the same kind of uncertainty.
 
 1. Confidence interval: predicts the **distribution of estimates** of the true population mean or other quantity of interest that cannot be observed.
 
@@ -54,7 +54,7 @@ And its prediction interval is[3]:
 
 We can see that the variance of the prediction interval is just the variance of the confidence interval plus the mean square error, which is an estimate of the data scatter.
 
-# Quantile Regression
+## Quantile Regression
 
 Quantile regression is an expansion to least absolute deviations[4], which tries to minimize the sum of absolute values of the residuals:
 
@@ -78,11 +78,11 @@ To minimize it, take the derivatives of the both side and set the left side to z
 
 {{< figure src="1*K9On8y0_UAtLRIbZuM6x5Q.png" >}}
 
-The first integration yields *F(q)* and the second one yields *1-F(q)*, which lead to:
+The first integration yields _F(q)_ and the second one yields _1-F(q)_, which lead to:
 
 {{< figure src="1*bjEpf5B5KjjI92oaZK4NxA.png" >}}
 
-Therefore the solution *q_τ* is exactly the τth quantile of Y:
+Therefore the solution _q_τ_ is exactly the τth quantile of Y:
 
 {{< figure src="1*2NcM4OD8I8fSCdmOKu4YAg.png" >}}
 
@@ -90,13 +90,13 @@ Therefore the solution *q_τ* is exactly the τth quantile of Y:
 
 With τ = 0.5, this shows that the solution of least absolute deviations is the median of the target variable.
 
-## To Be Continued
+### To Be Continued
 
 We’ve discuss the theoretical aspect of quantile regression. In the next post we’re going to see how to implement it in Tensorflow, PyTorch, LightGBM and scikit-learn.
 
 [Part 2 - An Overview of Tensorflow, Pytorch, LightGBM implementations](https://medium.com/the-artificial-impostor/quantile-regression-part-2-6fdbc26b2629)
 
-# References
+## References
 
 1. [(Wikipedia) Prediction interval](https://www.wikiwand.com/en/Prediction_interval)
 

@@ -22,7 +22,7 @@ url: /post/finetune-sentence-bert/
 
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/paris-the-river-seine-eiffel-tower-4627143/)" >}}
 
-# Synopsis
+## Synopsis
 
 I have the task of finding similar entries among 8,000+ pieces of news, using their title and edited short descriptions in Traditional Chinese. I tried LASER[1] first but later found Universal Sentence Encoder[2] seemed to work slightly better. Results from these unsupervised approaches are already acceptable, but still have occasional confusion and hiccups.
 
@@ -30,7 +30,7 @@ Not entirely satisfied with the unsupervised approaches, I collected and annotat
 
 Collecting domain-specific training examples, albeit small in size, can be crucial in improving the model performance. The result in this post provides some evidence to this argument.
 
-# Background
+## Background
 
 The Sentence-BERT paper[3] demonstrated that fine-tune the BERT[4] model on NLI datasets can create very competitive sentence embeddings. Further fine-tuning the model on STS (Semantic Textual Similarity) is also shown to perform even better in the target domain.
 
@@ -38,9 +38,9 @@ The Sentence-BERT paper[3] demonstrated that fine-tune the BERT[4] model on NLI 
 
 I reviewed BERT and Sentence-BERT in this previous post: [Zero Shot Cross-Lingual Transfer with Multilingual BERT](https://blog.ceshine.net/post/zero-shot-bert-sent-emb/). Readers are also advised to read that post for more information about the advantages of using sentence embeddings instead of directly feeding sentence pairs to BERT.
 
-# Experiments
+## Experiments
 
-## Dataset
+### Dataset
 
 Each pair of news is annotated with one of these scores — {0, 0.25, 0.5, 0.75, 1.0}, according to these general rules:
 
@@ -52,7 +52,7 @@ Each pair of news is annotated with one of these scores — {0, 0.25, 0.5, 0.75,
 
 The 2,000 annotated pairs were split into three parts: training (1,400 pairs), validation (300 pairs), and test (300 pairs).
 
-## Supervised Model
+### Supervised Model
 
 The model setup is basically the same as in [3]. The cosine similarity between the sentence embeddings is used to calculate the regression loss (MSE is used in this post).
 
@@ -60,7 +60,7 @@ Since we only care about relative rankings, I also tried applying a learnable li
 
 The model with the best validation result is picked as the final model.
 
-## Results
+### Results
 
 {{< figure src="table.png">}}
 
@@ -70,7 +70,7 @@ Interestingly, converting the text from Traditional Chinese to Simplified Chines
 
 I fixed the validation and test set, and sampled the training set to see how the supervised performs in low resource settings. The experiments show that it can already beat the unsupervised models with 350 examples, and more examples steadily improve the performance.
 
-## Things that didn't work
+### Things that didn't work
 
 1. Using Sentence-BERT fine-tuned on XNLI dataset.
 1. Using Sentence-BERT fine-tuned on LCQMC dataset[6].
@@ -82,11 +82,11 @@ Among these three, the model fine-tuned on news classification dataset is the be
 
 The failure of this approach to improve the performance can probably be attributed to the relatively large domain mismatch and the low quality of the machine-translated XNLI training set.
 
-# Fin
+## Fin
 
 As stated in the synopsis, I think that collecting domain-specific training examples, albeit small in size, can be crucial in improving the model performance. Although dull and boring at times, collecting and annotating your own dataset can be a very rewarding experience. Knowing your data is one of the most underrated aspects of data science IMHO.
 
-# References
+## References
 
 1. [Artetxe, M. (2018). Massively Multilingual Sentence Embeddings for Zero-Shot Cross-Lingual Transfer and Beyond.](http://arxiv.org/abs/1812.10464)
 1. [Yang, Y., Cer, D., Ahmad, A., Guo, M., Law, J., Constant, N., … Kurzweil, R. (2019). Multilingual Universal Sentence Encoder for Semantic Retrieval.](http://arxiv.org/abs/1907.04307)

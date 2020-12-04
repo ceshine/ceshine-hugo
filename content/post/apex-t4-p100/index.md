@@ -18,7 +18,7 @@ url: /post/apex-t4-p100/
 
 **tl;dr: the power of Tensor Cores is real. Also, make sure the CPU does not become the bottleneck.**
 
-# Motivation
+## Motivation
 
 I've written about Apex in this previous post: [Use NVIDIA Apex for Easy Mixed Precision Training in PyTorch](/post/nvidia_apex/). At that time I only have my GTX 1070 to experiment on. And as we've learned in that post, pre-Volta nVidia cards does not benefit from half-precision arithmetic in terms of speed. It only saves some GPU memory. Therefore, I wasn't able to personally evaluate how much speed boost we can get from mixed precision with Tensor Cores.
 
@@ -26,9 +26,9 @@ Recently, Google Colab starts to allocate [Tesla T4](https://www.nvidia.com/en-u
 
 Kaggle also just replaced K80 with P100 in their Kernel offerings. We've mentioned [a source claiming](https://github.com/NVIDIA/apex/issues/76) P100 can benefit from half-precision arithmetic for certain networks. So we're also going to give it a try.
 
-# Experiments
+## Experiments
 
-## Setup
+### Setup
 
 - Dataset: Cifar-10
 - Batch size 128
@@ -39,7 +39,7 @@ Kaggle also just replaced K80 with P100 in their Kernel offerings. We've mention
 
 Github repo: [ceshine/apex_pytorch_cifar_experiment](https://github.com/ceshine/apex_pytorch_cifar_experiment/tree/2019-june-post).
 
-## Google Colab
+### Google Colab
 
 Notebook snapshots stored in [colab_snapshots](https://github.com/ceshine/apex_pytorch_cifar_experiment/tree/2019-june-post/colab_snapshots) subfolder.
 
@@ -51,7 +51,7 @@ Notebook snapshots stored in [colab_snapshots](https://github.com/ceshine/apex_p
 | O3 (Pure FP16)       | T4  | N/A         | 4347 MB    | Not Converged.      |
 | O0 (Pure FP32)       | K80 | 1h 43min 7s | 6786 MB    | 88.44%              |
 
-## Kaggle Kernel
+### Kaggle Kernel
 
 Kaggle Kernel used: [APEX Experiment - Cifar 10](https://www.kaggle.com/ceshine/apex-experiment-cifar-10).
 
@@ -61,7 +61,7 @@ Kaggle Kernel used: [APEX Experiment - Cifar 10](https://www.kaggle.com/ceshine/
 | [O1 (Mixed Precision)](https://www.kaggle.com/ceshine/apex-experiment-cifar-10?scriptVersionId=15544647) | 47min 34s | 6283 MB    | 88.51%              |
 | [O2 (Mixed Precision)](https://www.kaggle.com/ceshine/apex-experiment-cifar-10?scriptVersionId=15556913) | 45min 34s | 5665 MB    | 87.74%              |
 
-## Remarks
+### Remarks
 
 1. Since the model was only trained 10 epochs to save time, the validation accuracy does not have any important meanings other than indicating whether the model is converging or not.
 1. Training with mixed precision on **T4** is almost **twice as fast** as with single precision, and consumes consistently less GPU memory.

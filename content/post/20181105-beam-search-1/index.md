@@ -22,7 +22,7 @@ It turned out that writing this post was much harder than I imagined. I found it
 
 I feel much more confident in my knowledge of Beam Search after writing this post. I hope you can feel the same after reading it. :)
 
-# A Quick Review of Seq2Seq and Beam Search
+## A Quick Review of Seq2Seq and Beam Search
 
 {{< figure src="1*75Jb0q3sX1GDYmJSfl-gOw.gif" caption="An seq2seq feed-forward example ([source](https://github.com/google/seq2seq))" >}}
 
@@ -38,7 +38,7 @@ The following is an example of beam search of size 5:
 
 The number below each node is the log probability of the sequence thus far. The probability of a sequence `a_1, a_2, a_3` can be calculated as a conditional probability `P(a_1, a_2, a_3) = P(a_1)P(a_2|a_1)P(a_3|a_1, a_2)`. Take natural log of that and it becomes **additive**. The search ends when end-of-sentence/end-of-sequence (EOS) token appears as the most possible prediction, and we have a complete sequence generated.
 
-# How to Do Beam Search Efficiently
+## How to Do Beam Search Efficiently
 
 After kick-start the search with N nodes at the first level, the naive way is to run the model N times with each of these nodes as the decoder input. If the maximum length of the output sequence is T, we’ll have to run the model _N\*T_ times in the worst case.
 
@@ -46,9 +46,9 @@ The smarter way is to put these N nodes into a batch and feed it to the model. I
 
 We’ll soon see that an even better way is to do multiple beam searches at the same time. If we’re trying to generate output sequences for **M** input sequences, the effective batch size would become **_N \* M_**. You’ll need this number to estimate whether the batch will fit into your system memory.
 
-# The OpenNMT-py Implementation
+## The OpenNMT-py Implementation
 
-## How I Find Where to Look
+### How I Find Where to Look
 
 The start point is [translate.py](https://github.com/OpenNMT/OpenNMT-py/tree/49185121e46c4f65d68101590bad231a8dd73e4f/translate.py) (the script for making inferences/predictions), which contains:
 
@@ -87,7 +87,7 @@ The statement creates a `Beam` object for each one of the input sequences. It le
 
 (We’re going to ignore some advanced features, such as copy attention, length and coverage penalties for now to simplify things. They will be covered in the next part of this series.)
 
-## The Big Picture (\_translate_batch method)
+### The Big Picture (\_translate_batch method)
 
 For demonstrative purpose, suppose we have a batch of size 3, each with length 4 (can already be padded). The three input sequences are denoted as _a_, _b_, and _c_:
 
@@ -189,7 +189,7 @@ After the stopping condition has been met, the method [collect the final predict
 ret = self.\_from_beam(beam)
 ```
 
-## What Happens inside a Beam object?
+### What Happens inside a Beam object?
 
 The two most important instance variables are `next_ys` and `prev_ks`, retrievable by invoking `.get_current_state` and `.get_current_origin` methods, respectively. The top (_beam_size_) predictions for the next decoder output at each time step are stored in `next_ys`(they are the nodes in the search tree). Information about which nodes from the previous step have the `next_ys` been based on is stored in `prev_ks`. They are both required to reconstruct the output sequence from the search tree.
 
@@ -268,7 +268,7 @@ def get_hyp(self, timestep, k):
     return hyp[::-1], torch.stack(attn[::-1])
 ```
 
-## To Be Continued…
+### To Be Continued…
 
 Thanks for reading!
 

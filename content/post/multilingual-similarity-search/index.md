@@ -24,7 +24,7 @@ url: /post/multilingual-similarity-search/
 
 {{< figure src="featuredImage.jpeg" caption="Photo by [Steven Wei](https://unsplash.com/photos/FITXkgVQJ9M?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)" >}}
 
-# Introduction
+## Introduction
 
 Previously I’ve demonstrated how to use pretrained BERT model to create a similarity measure between two documents in this post: **[News Topic Similarity Measure using Pretrained BERT Model](https://medium.com/the-artificial-impostor/news-topic-similarity-measure-using-pretrained-bert-model-1dbfe6a66f1d)**.
 
@@ -36,7 +36,7 @@ The [LASER (Language-Agnostic SEntence Representations) project](https://github.
 
 In this post we’ll try to reproduce the mapping between English and Chinese Mandarin sentences using the Tatoeba dataset created by [1]. After confirming we have the same results as reported in the paper, we’ll test if LASER can find the corresponding English titles to some (translated) articles from the New York Times Chinese version.
 
-## A Big Caveat
+### A Big Caveat
 
 LASER is licensed under [Attribution-NonCommercial 4.0 International,](https://github.com/facebookresearch/LASER/blob/master/LICENSE) so you can not do anything commercial with it.[ An update to the license seems to be upcoming](https://github.com/facebookresearch/LASER/issues/11), but not timetable is given yet.
 
@@ -44,13 +44,13 @@ You can write your own implementation, though. The training data used is publicl
 
 > Our implementation is based on [fairseq](https://github.com/pytorch/fairseq), and we make use of its multi-GPU support to train on 16 NVIDIA V100 GPUs with a total batch size of 128,000 tokens. Unless otherwise specified, we train our model for 17 epochs, which takes about 5 days. [1]
 
-# Installation Notes
+## Installation Notes
 
 The core encoder itself only depends on PyTorch 1.0, but tokenization, BPE, similarity search requires some third-party libraries. Follow the [official installation instructions](https://github.com/ceshine/LASER#installation) to install tokenization scripts from Moses encoder and FastBPE. And install FAISS （a library for efficient similarity search and clustering of dense vectors） [via conda or from source](https://github.com/facebookresearch/faiss/blob/master/INSTALL.md).
 
 I recommend using my fork of LASER since the original one requires you to install [\*transliterate](https://pypi.org/project/transliterate)\* package, which is only used for Greek, no matter you actually use Greek or not. My fork made it an optional dependency: **[ceshine/LASER](https://github.com/ceshine/LASER)**.
 
-# Model Overview
+## Model Overview
 
 {{< figure src="1*oBOUeMjU0jbD1IyPLHPb5Q.png" caption="Taken from [1]" >}}
 
@@ -70,7 +70,7 @@ After pretraining, the encoder is extracted and used as-is (without any fine-tun
 
 {{< figure src="0*8KTX2sKSL9KNNCBG.png" caption="Left: monolingual embedding space. Right: shared embedding space. [Taken from [2]](https://code.fb.com/ai-research/laser-multilingual-sentence-embeddings/)." >}}
 
-# Tatoeba English-Mandarin dataset
+## Tatoeba English-Mandarin dataset
 
 **[Tatoeba Notebook](https://github.com/ceshine/LASER/blob/master/notebooks/Tatoeba.ipynb)**.
 
@@ -186,7 +186,7 @@ correct: i don 't like him any more than he lik@@ es me .
 
 Most predictions in these cases are actually not far from the correct one. In some cases they are almost semantically identical (e.g., “you should go to bed” and “you should sleep”). The results were quite impressive.
 
-# Chinese to English Mapping of Article Titles (the New York Times)
+## Chinese to English Mapping of Article Titles (the New York Times)
 
 **[NYTimes Notebook](https://github.com/ceshine/LASER/blob/master/notebooks/New%20York%20Times%20Multilingual%20Titles.ipynb)**.
 
@@ -250,7 +250,7 @@ Predict(3): Personal Stories Behind the ‘Green Book’
 
 The Chinese titles are mostly not the direct translation of the English one, so it’s understandable the encoder pretrained on translation tasks did not see them as almost the same. That being said, the predictions can be really off sometimes, as in the last case.
 
-# Conclusions and Future Work
+## Conclusions and Future Work
 
 LASER provides a pretrained LSTM encoder that can take inputs from 92 languages (and close siblings in the language families) and map them to a shared embedding space.
 
@@ -258,7 +258,7 @@ The pretrained encoder itself already is quite useful in doing similarity search
 
 We did not evaluate zero-shot transfer tasks in this post because I haven’t thought of any interesting dataset I’d like to try on (except for the XNLI[4] and MLDoc[5] the paper had used [1].) I might write another post if I manage to find one.
 
-# References
+## References
 
 1. Mikel Artetxe and Holger Schwenk, [\*Massively Multilingual Sentence Embeddings for Zero-Shot Cross-Lingual Transfer and Beyond](https://arxiv.org/abs/1812.10464)\* arXiv, 26 Dec 2018.
 

@@ -17,9 +17,9 @@ url: /post/failed-to-distill-transformer-into-rnn/
 
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://unsplash.com/photos/RARH8b7N-fw)" >}}
 
-# Overview
+## Overview
 
-## Motivation
+### Motivation
 
 Transformer models[1] have been taking over the NLP field since the advent of BERT[2]. However, the high numbers of parameters and the quadratically scaled self attention that is expensive both in computation and memory[3] make the modern transformer models barely fit into a single consumer-grade GPU. Efforts have been made to alleviate this problem[3][4][5], but they are still far from ideal:
 
@@ -37,28 +37,28 @@ In Tang et al.[6], they state the reasons for using data augmentation as:
 
 Their single-layer BiLSTM is relatively simple. I wondered if I can do better with more sophisticated without using data augmentation, which is quite complicated in NLP. (Spoiler — I failed.)
 
-## Experiment Setup
+### Experiment Setup
 
 1. SST-2 from the GLUE benchmark is used as the downstream task (binary classification).
-    + Because the test set of SST-2 does not come with labels, I create my own test set from the dev set using a f50/50 random split.
+   - Because the test set of SST-2 does not come with labels, I create my own test set from the dev set using a f50/50 random split.
 2. A BERT-base-uncased model is finetuned on the training set. The final model is picked via the dev set.
 3. The predicted logits of the training set from the BERT model are recorded and stored in a file.
 4. An LSTM/GRU model is created and trained on the logits using an MSE objective as in [6]. There are several deviations from [6]:
-    + It shares the tokenizer with the BERT model, i.e, they see exactly the same input sequences.
-    + The embedding matrix of the fine-tuned BERT model is copied into the LSTM/GRU model and frozen during training (not updated). The vocabulary size of BERT is too large for SST-2 to be fine-tuned (empirically gets lower accuracies).
-    + It uses two to four layers of LSTM/GRU units with input, layer-to-layer, embedding, weight/variational dropouts.
-    + It uses an attention layer slightly modified from DeepMoji[8].
+   - It shares the tokenizer with the BERT model, i.e, they see exactly the same input sequences.
+   - The embedding matrix of the fine-tuned BERT model is copied into the LSTM/GRU model and frozen during training (not updated). The vocabulary size of BERT is too large for SST-2 to be fine-tuned (empirically gets lower accuracies).
+   - It uses two to four layers of LSTM/GRU units with input, layer-to-layer, embedding, weight/variational dropouts.
+   - It uses an attention layer slightly modified from DeepMoji[8].
 5. A baseline LSTM/GRU model is created using the same hyper-parameters and trained on the labels using a cross-entropy objective.
-    + It copies and freezes the embedding matrix of BERT the fine-tuned BERT model as in the last step.
+   - It copies and freezes the embedding matrix of BERT the fine-tuned BERT model as in the last step.
 
-## Experiment Results
+### Experiment Results
 
-+ The baseline and the distill models were getting **basically the same accuracy** (86%~89% dev and 84%~87% test comparing to 92% dev and 94% test of BERT).
-+ The distill version was more likely to get marginally better accuracies, but they are almost indistinguishable in practice.
-+ The accuracies were very sensitive to hyper-parameters.
-+ The LSTM model is 1 / 3 the size of the BERT model but trains almost 8 times faster.
+- The baseline and the distill models were getting **basically the same accuracy** (86%~89% dev and 84%~87% test comparing to 92% dev and 94% test of BERT).
+- The distill version was more likely to get marginally better accuracies, but they are almost indistinguishable in practice.
+- The accuracies were very sensitive to hyper-parameters.
+- The LSTM model is 1 / 3 the size of the BERT model but trains almost 8 times faster.
 
-### Analysis
+#### Analysis
 
 One of the reasons behind the lack of improvement from distillation is probably the BERT softmax distribution on the training set:
 
@@ -66,7 +66,7 @@ One of the reasons behind the lack of improvement from distillation is probably 
 
 The BERT model is too confident in its prediction, so the logits do not provide much more information than the labels. Training on the softmax output directly and tuning the temperature[9] might be helpful, but has not yet been experimented.
 
-# Implementation Details
+## Implementation Details
 
 The source code and the notebooks used in this post is [published on Github](https://github.com/ceshine/transformer_to_rnn/tree/20200616-blog-post).
 
@@ -75,7 +75,7 @@ The source code and the notebooks used in this post is [published on Github](htt
 - [huggingface/nlp](https://github.com/huggingface/nlp/tree/5353490e9bceb25b662a2c5c407c087baca37028) was used to load the SST-2 dataset.
 - The BERT-base-uncased model was loaded using [huggingface/transformers](https://github.com/huggingface/transformers/tree/f9f8a5312e92541ff9a5f483fc4907ec87da876e).
 
-# References
+## References
 
 1. Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., … Polosukhin, I. [Attention Is All You Need.](https://arxiv.org/abs/1706.03762)
 1. Devlin, J., Chang, M.-W., Lee, K., & Toutanova, K. (2018). [BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding.](http://arxiv.org/abs/1810.04805)

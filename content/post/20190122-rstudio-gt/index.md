@@ -29,41 +29,41 @@ Tables can be an effective way of communicating data. Though not as powerful in 
 
 I’ve come across this new R package **[gt](https://github.com/rstudio/gt)** (Easily generate information-rich, publication-quality tables from R) and decided to give it a try.
 
-> With the gt package, anyone can make wonderful-looking tables using the R programming language. The gt philosophy: we can construct a wide variety of useful tables with a cohesive set of table parts. These include the *table header*, the *stub*, the *stub head*, the *column labels*, the *table body*, and the *table footer*.
+> With the gt package, anyone can make wonderful-looking tables using the R programming language. The gt philosophy: we can construct a wide variety of useful tables with a cohesive set of table parts. These include the _table header_, the _stub_, the _stub head_, the _column labels_, the _table body_, and the _table footer_.
 
 {{< figure src="1*Buow_6AAbHiq8B5xYAPXAg.png" caption="" >}}
 
 Admittedly, the tables in my attempt might not be the optimal way of presentation. They serve as a demonstration of what **gt** can do, and maybe also helpful enough for analyst in constructing their stories about this dataset ([The Movies Dataset](https://www.kaggle.com/rounakbanik/the-movies-dataset) on Kaggle).
 
-[*(kaggle.com) The Movies Dataset*: *Metadata on over 45,000 movies. 26 million ratings from over 270,000 users.*](https://www.kaggle.com/rounakbanik/the-movies-dataset)
+[_(kaggle.com) The Movies Dataset_: _Metadata on over 45,000 movies. 26 million ratings from over 270,000 users._](https://www.kaggle.com/rounakbanik/the-movies-dataset)
 
-# Cheat Sheet
+## Cheat Sheet
 
 {{< figure src="1*KzI4xEmvRo2oiU02jVJmgA.png" caption="[source](https://raw.githubusercontent.com/rstudio/gt/master/man/figures/gt_functions.svg?sanitize=true)" >}}
 
-# Source Code (Rendered RMarkdown)
+## Source Code (Rendered RMarkdown)
 
 You can find the full source code here:
 
-[*(rpubs.com) RPubs — Movie Genre Overlappings, Ratings by Genre and Year*](https://rpubs.com/ceshine/movies_dataset_gt_experiment)
+[_(rpubs.com) RPubs — Movie Genre Overlappings, Ratings by Genre and Year_](https://rpubs.com/ceshine/movies_dataset_gt_experiment)
 
 Or this Github Repo:
 
-[*ceshine/movies_dataset_eda*](https://github.com/ceshine/movies_dataset_eda)
+[_ceshine/movies_dataset_eda_](https://github.com/ceshine/movies_dataset_eda)
 
 The Github repo contains a Dockerfile and `packrat `configurations. Please refer to this previous post for more information:
 
-[*More Portable, Reproducible R Development Environment*](/post/more-portable-reproducible-r-development-environment/)
+[_More Portable, Reproducible R Development Environment_](/post/more-portable-reproducible-r-development-environment/)
 
 (Unfortunately, I couldn’t install`rstudio/gt` in Kaggle Kernel. Otherwise, it would be a great place to host the rendered document.)
 
-# Genre Statistics
+## Genre Statistics
 
 {{< figure src="1*DbXBt48YhbYWIeKZ3We_ZA.png" caption="" >}}
 
 {{< figure src="1*eqtSHonwdXr2RcdWEiJS3A.png" caption="" >}}
 
-*How to read the table*: For example, Drama (the first row) has 13008 movies (the first column), and 2639 of them are also under Comedy, which is 20.3% of the 13008 movies.
+_How to read the table_: For example, Drama (the first row) has 13008 movies (the first column), and 2639 of them are also under Comedy, which is 20.3% of the 13008 movies.
 
 The data in each section is symmetric, so I wasted almost half the data cells. A more clever way is to use one of the upper or lower triangles for raw counts, and the other for percentages.
 
@@ -73,38 +73,37 @@ Making texts in the diagonal cells in the “Genre Overlappings” section bold 
 
 {{< highlight r >}}
 tab_style(
-    style = cells_styles(
-      text_decorate = "underline",
-      text_weight = "bold"),
-    locations = list(
-        cells_data(columns=c(1), rows=c(1)),
-        cells_data(columns=c(2), rows=c(2)),
-        cells_data(columns=c(3), rows=c(3)),
-        cells_data(columns=c(4), rows=c(4)),
-        cells_data(columns=c(5), rows=c(5)),
-        cells_data(columns=c(6), rows=c(6))
-    ))
+style = cells_styles(
+text_decorate = "underline",
+text_weight = "bold"),
+locations = list(
+cells_data(columns=c(1), rows=c(1)),
+cells_data(columns=c(2), rows=c(2)),
+cells_data(columns=c(3), rows=c(3)),
+cells_data(columns=c(4), rows=c(4)),
+cells_data(columns=c(5), rows=c(5)),
+cells_data(columns=c(6), rows=c(6))
+))
 {{< /highlight >}}
-
 
 Displaying the numbers in the “Genre Overlappings(%)” section in percentage format:
 
 {{< highlight r >}}
 fmt_percent(
-    columns = vars(Drama.ratio, Comedy.ratio, Thriller.ratio,
-                   Romance.ratio, Action.ratio, Horror.ratio),
-    decimals = 1,
-    drop_trailing_zeros = F
-  )
+columns = vars(Drama.ratio, Comedy.ratio, Thriller.ratio,
+Romance.ratio, Action.ratio, Horror.ratio),
+decimals = 1,
+drop_trailing_zeros = F
+)
 {{< /highlight >}}
 
-# Movie Ratings by Genre
+## Movie Ratings by Genre
 
 {{< figure src="1*H_G4hTsPv3KlB8QfzC_PFA.png" caption="" >}}
 
-Surprisingly, the distributions of ratings are quite similar across all genres. Maybe *MovieLens* has done some normalization on the ratings?
+Surprisingly, the distributions of ratings are quite similar across all genres. Maybe _MovieLens_ has done some normalization on the ratings?
 
-# Movie Ratings by Genre and Year(Decade)
+## Movie Ratings by Genre and Year(Decade)
 
 {{< figure src="1*kv8lt2IhBIkXPpjAxFQ62A.png" caption="" >}}
 
@@ -114,19 +113,18 @@ Adding footnotes:
 
 {{< highlight r >}}
 tab_footnote(
-  footnote = "#: Number of movies",
-  cells_column_labels(columns = c(1, 5, 9))
+footnote = "#: Number of movies",
+cells_column_labels(columns = c(1, 5, 9))
 ) %>%
 tab_footnote(
-  footnote = "Avg #: Average number of ratings.",
-  cells_column_labels(columns = c(4, 8, 12))
+footnote = "Avg #: Average number of ratings.",
+cells_column_labels(columns = c(4, 8, 12))
 )
 {{< /highlight >}}
 
+_I did not find any way to change the text style of the footnotes, though._
 
-*I did not find any way to change the text style of the footnotes, though.*
-
-# Conclusion
+## Conclusion
 
 The `rstudio/gt` package is still in early development stage and hasn’t been released to CRAN yet. However, it already shows great promises and can be extremely helpful in creating beautiful tables in your reports and documents.
 

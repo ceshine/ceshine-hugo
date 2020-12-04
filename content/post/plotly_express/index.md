@@ -20,14 +20,14 @@ Plotly has a new high-level wrapper libaray for Python called [Plotly Express](h
 
 This post does not intend to cover all kind of plots. Only plots relevant to the particular dataset used here (basically bar charts) are covered.
 
-# Data and Source Code
+## Data and Source Code
 
 I used [Yet Another Chinese News Dataset](https://www.kaggle.com/ceshine/yet-another-chinese-news-dataset) I published on Kaggle. The two associated notebooks are also published on Kaggle:
 
 1. [[YACND] Starter Notebook v2](https://www.kaggle.com/ceshine/yacnd-starter-notebook-v2?scriptVersionId=13852976): Plotly Express API
 2. [Starter Kernel (Yet Another Chinese News Dataset)](https://www.kaggle.com/ceshine/starter-kernel-yet-another-chinese-news-dataset?scriptVersionId=12691089): Plotly.py API
 
-# Number of Entries by Source
+## Number of Entries by Source
 
 {{< figure src="plot1.png" >}}
 
@@ -41,7 +41,7 @@ Plotly Express:
 
 Honestly the code chunks are not much different from each other. But the Plotly Express API might seem more familiar for people who has worked with seaborn, matplotlib, or ggplot2.
 
-# Number of Entries by Date
+## Number of Entries by Date
 
 {{< figure src="plot2.png" >}}
 
@@ -55,7 +55,7 @@ Plotly Express:
 
 Again, not much different. But note that the Plotly.py API allows you to do data transformation inside the `iplot` call; the Plotly Express requires you to finish preparing the dataframe before the `px.bar` call.
 
-# Percentage of Titles Mentioning Trump and Xi Jinping by Souce
+## Percentage of Titles Mentioning Trump and Xi Jinping by Souce
 
 Now we hit a problem. The Plotly.py allows us to plot the two data frames simultaneously:
 
@@ -87,7 +87,7 @@ Plotly Express Attempt Two:
 
 Much better now. However, I did not find a way to change the facet labels ("poi=Trump" and "poi=Xi").
 
-# My Two Cents
+## My Two Cents
 
 I guess the Plotly team have receieved a lot of complaints about its API. The original/core API is arguably not very intuitive (for people with experiences of other visualization framworks). In response they developed Plotly Express.
 

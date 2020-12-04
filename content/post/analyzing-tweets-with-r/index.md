@@ -32,31 +32,31 @@ url: /post/analyzing-tweets-with-r/
 
 {{< figure src="featuredImage.jpg" caption="[Source](https://pixabay.com/en/book-dictionary-swedish-german-3101450/)" >}}
 
-# Introduction
+## Introduction
 
 NLP(Natural-language processing) is hard, partly because human is hard to understand. We need good tools to help us analyze texts. Even if the texts are eventually fed into a black box model, doing exploratory analysis is very likely to help you get a better model.
 
-I’ve heard great things about a R package *tidytext* and recently decided to give it a try. The package authors also wrote a book about it and kindly released it online: **[Text Mining with R: A guide to text analysis within the tidy data framework, using the tidytext package and other tidy tools](https://www.tidytextmining.com/)**.
+I’ve heard great things about a R package _tidytext_ and recently decided to give it a try. The package authors also wrote a book about it and kindly released it online: **[Text Mining with R: A guide to text analysis within the tidy data framework, using the tidytext package and other tidy tools](https://www.tidytextmining.com/)**.
 
-As the name suggests, *tidytext* aims to provide text processing capability in the [*tidyverse](https://www.tidyverse.org/)* ecosystem. I was more familiar with *data.table* and its way of data manipulation, and the way *tidyverse* handles data had always seemed tedious to me. But after working through the book, I’ve found the syntax of *tidyverse* very elegant and intuitive. I love it! All you need is some good examples to help you learn the ropes.
+As the name suggests, _tidytext_ aims to provide text processing capability in the [\*tidyverse](https://www.tidyverse.org/)* ecosystem. I was more familiar with *data.table* and its way of data manipulation, and the way *tidyverse* handles data had always seemed tedious to me. But after working through the book, I’ve found the syntax of *tidyverse\* very elegant and intuitive. I love it! All you need is some good examples to help you learn the ropes.
 
 Chapter 7 of the book provides a case study comparing tweet archives of the two authors. Since twitter only allows downloading the user’s own archive, it is hard for a reader without friends (i.e. me) to follow. So I found a way to download tweets of public figures and I’d like to share with you how to do it. This post also presents an example comparing tweets from Donald Trump and Barack Obama. The work flow is exactly the same as in the book.
 
-*Warning: The content of this post may seem very elementary to professionals.*
+_Warning: The content of this post may seem very elementary to professionals._
 
-## R tips
+### R tips
 
-* Use [Microsoft R Open](https://mran.microsoft.com/open) if possible. It comes with the multi-threaded math library (MKL) and *checkpoint* package.
+- Use [Microsoft R Open](https://mran.microsoft.com/open) if possible. It comes with the multi-threaded math library (MKL) and _checkpoint_ package.
 
-* But don’t hesitate to switch to regular R if you run into trouble. Microsoft R Open can have some bizarre problems in [my personal experiences](https://medium.com/@ceshine/cxx11-is-not-defined-problem-in-mro-3-4-e51f1d27da15). Don’t waste too much time on fixing them. Switching to regular R often solves the problem.
+- But don’t hesitate to switch to regular R if you run into trouble. Microsoft R Open can have some bizarre problems in [my personal experiences](https://medium.com/@ceshine/cxx11-is-not-defined-problem-in-mro-3-4-e51f1d27da15). Don’t waste too much time on fixing them. Switching to regular R often solves the problem.
 
-* Install regular R via CRAN ([Instructions for Ubuntu](https://cran.r-project.org/bin/linux/ubuntu/README.html)). [Install *checkpoint* to ensure reproducibility](https://mran.microsoft.com/documents/rro/reproducibility) (it is not a Microsoft R Open exclusive.)
+- Install regular R via CRAN ([Instructions for Ubuntu](https://cran.r-project.org/bin/linux/ubuntu/README.html)). [Install _checkpoint_ to ensure reproducibility](https://mran.microsoft.com/documents/rro/reproducibility) (it is not a Microsoft R Open exclusive.)
 
-* Use [RStudio](https://www.rstudio.com/) and make good use of its *Console* window. Some people hold strong feelings against R because of some of its uniqueness comparing to other major programming languages. In fact a lot of the confusion can be resolved with simple queries in the *Console*. Not sure whether the vector index starts from zero or one? `c(1,2,3)[1]` tells you it’s one. Querying `1:10` tells you the result includes 10 (unlike Python).
+- Use [RStudio](https://www.rstudio.com/) and make good use of its _Console_ window. Some people hold strong feelings against R because of some of its uniqueness comparing to other major programming languages. In fact a lot of the confusion can be resolved with simple queries in the _Console_. Not sure whether the vector index starts from zero or one? `c(1,2,3)[1]` tells you it’s one. Querying `1:10` tells you the result includes 10 (unlike Python).
 
 {{< figure src="1*YAvz5RgxqOMHOZ2aDjn6Jg.png" >}}
 
-# Getting the data and distribution of tweets
+## Getting the data and distribution of tweets
 
 First of all, follow the instruction of this article to obtain your own API key and access token, and install `twitteR` package: **[Accessing Data from Twitter API using R (part1)](https://medium.com/@GalarnykMichael/accessing-data-from-twitter-api-using-r-part1-b387a1c7d3e)**.
 
@@ -80,7 +80,7 @@ obama <- userTimeline("BarackObama", n=3200, includeRts=T)
 president.obama <- userTimeline("POTUS44", n=3200, includeRts=T)
 ```
 
-Now we have tweets from @realDonaldTrump, @BarackObama and @POTUS44 as *List* objects. We’ll now convert them to data frames:
+Now we have tweets from @realDonaldTrump, @BarackObama and @POTUS44 as _List_ objects. We’ll now convert them to data frames:
 
 ```R
 df.trump <- twListToDF(trump)
@@ -123,7 +123,7 @@ You could remove `scales = "free_y"` to have compare the absolute amount of twee
 
 (The lack of activity of @realDonaldTrump is from the 3200-tweet restriction) We can see that as a president, Donald Trump tweets a lot more than Barack Obama did.
 
-# Word frequencies
+## Word frequencies
 
 From this point we’ll enter the world of tidyverse:
 
@@ -168,7 +168,7 @@ ggplot(frequency.spread, aes(BarackObama, realDonaldTrump)) +
 
 (Because of the jitters, the text labels sometimes are far away from its corresponding data point. So far I don’t have a solution for this problem.) One observation from the above plot is the more frequent use of “republicans” , “republican”, and “democrats” by Trump.
 
-# Comparing word usage
+## Comparing word usage
 
 ```R
 word_ratios <- tidy_tweets %>%
@@ -200,7 +200,7 @@ Readers can find the dramatically different characteristics of the two president
 
 {{< figure src="1*vh8bQQL7p_g31a5Tq3HjvQ.png" caption="Most Distinctive Words (excluding hastags)" >}}
 
-# Changes in word use
+## Changes in word use
 
 This part is more involved, so I’ll skip the source code. The idea is to fit a glm model to predict the word frequency with the relative point of time. If the coefficient of the point of time is very unlikely to be zero (low p value), we say that the frequency of this word has changed over time. We plot the words with lowest p values for each president below:
 
@@ -210,9 +210,9 @@ This part is more involved, so I’ll skip the source code. The idea is to fit a
 
 For Barack Obama, only tweets from his presidency has been included because of the sparsity of the tweets in 2017 and beyond. Please check the book or the R Markdown link at the end of the post for source code and more information.
 
-# Favorites and retweets
+## Favorites and retweets
 
-We can count all the retweets and favorites and count which words are more likely to appear. Note it’s important to count each word only once in every tweet. We achieve this by grouping by *(id, word, screenName)* and *summarise* with a *first *function:
+We can count all the retweets and favorites and count which words are more likely to appear. Note it’s important to count each word only once in every tweet. We achieve this by grouping by _(id, word, screenName)_ and _summarise_ with a *first *function:
 
 ```R
 totals <- tweets %>%
@@ -257,7 +257,7 @@ Use the same code as above, but replace `retweetCount` with `favoriteCount`:
 
 There’s a interesting change of pattern between Trump’s retweets and favorites. It seems there are some tweets people would rather retweet than favorite, and vice versa.
 
-# The End
+## The End
 
 Thanks for reading! Please [support the author of the book](http://shop.oreilly.com/product/0636920067153.do?cmp=af-strata-books-video-product_cj_0636920067153_4428796) (I have no affiliation with them) if you like the `tidytext` package and the book.
 

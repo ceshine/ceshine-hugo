@@ -17,7 +17,7 @@ url: /post/feature-importance-part-1/
 
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://unsplash.com/photos/h9gTB3OHMh4)" >}}
 
-***2018–02–20 Update:*** Adds two images (random forest and gradient boosting).
+**_2018–02–20 Update:_** Adds two images (random forest and gradient boosting).
 
 **_2019–05–25 Update:_** I’ve published a post covering another importance measure — **SHAP values** — [on my personal blog](https://blog.ceshine.net/post/shap/) and [on Medium](https://medium.com/@ceshine/notes-shap-values-a5fc8c844c9a).
 
@@ -67,7 +67,7 @@ For other tree models without bagging mechanism (hence no _OOB_), we can create 
 
 This algorithm gave me an impression that it should be model-agnostic (can be applied on any classifier/regressors), but I’ve not seen literatures discussing its theoretical and empirical implications on other models. The idea to use it on neural networks was briefly mentioned on the Internet. And the same source claimed the algorithm works well on SVM models [8].
 
-(*20200908 Update*: It's been shown that permutation importance can be very misleading when the features are significantly correlated with each other. Please see [my latest post for more information and a few alternative measures](/post/please-stop-permuting-features/))
+(_20200908 Update_: It's been shown that permutation importance can be very misleading when the features are significantly correlated with each other. Please see [my latest post for more information and a few alternative measures](/post/please-stop-permuting-features/))
 
 ## Boruta
 

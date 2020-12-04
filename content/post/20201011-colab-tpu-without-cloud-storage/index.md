@@ -18,7 +18,7 @@ url: /post/colab-tpu-without-cloud-storage/
 
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/illustrations/light-bulbs-lamp-light-glass-bulb-5488573/)" >}}
 
-# Introduction
+## Introduction
 
 Recently I was asked this question (paraphrasing):
 
@@ -32,13 +32,13 @@ The reason why you need to use TFRecord and Cloud Storage is that unlike GPU, TP
 
 There's one exception — if your dataset is small enough to fit into memory, TensorFlow can send your entire dataset over the network to the TPU Host, and you can avoid TFRecord and Cloud Storage.
 
-# The Solution
+## The Solution
 
 Here's how to do it. I'll convert [this Colab notebook](https://colab.research.google.com/notebooks/tpu.ipynb) that trains an image classification model using TFRecord files into two notebooks. [The first one](https://colab.research.google.com/drive/1eaQK111A4e5ZMPR_8jObbfgTqA3ju8Ye?usp=sharing) downloads a subset of the TFRecords files from Cloud Storage and converts them into Numpy arrays. [The second one](https://colab.research.google.com/drive/1JK2BZwi5GYNNoY7oTGGOcIED1xmmfzV4?usp=sharing) loads the Numpy arrays and train them on TPU.
 
 (You don't have to read from TFRecords or use the `tf.data` API in the first notebook. You can read raw image files using PIL or OpenCV and convert them into Numpy arrays as well. Anything that converts the dataset into Numpy arrays will do.)
 
-## First Part
+### First Part
 
 We use the first 4 TFRecord files as the training dataset and the last 2 as validation dataset. This translate to 920 images in the training, and 450 images in the validation.
 
@@ -78,11 +78,11 @@ for tmp_input, tmp_class in tf_dataset:
 joblib.dump([np.stack(buffer_input), np.stack(buffer_class)], "/gdrive/My Drive/tmp/train.jbl")
 ```
 
-Do the same things for the validation dataset and we're good to go! 
+Do the same things for the validation dataset and we're good to go!
 
 [Link to the First Notebook.](https://colab.research.google.com/drive/1eaQK111A4e5ZMPR_8jObbfgTqA3ju8Ye?usp=sharing)
 
-## Second Part
+### Second Part
 
 Now we remove the TFRecord-related parts in the first notebook, load the Numpy arrays from Google Drive, and use `tf.data.Dataset.from_tensor_slices` API to create a Dataset instance.
 
@@ -100,6 +100,6 @@ Do the same to the validation set, and the model should be able to train!
 
 [Link to the Second Notebook.](https://colab.research.google.com/drive/1JK2BZwi5GYNNoY7oTGGOcIED1xmmfzV4?usp=sharing)
 
-# Where's the Limit?
+## Where's the Limit?
 
 I created these demonstrative notebooks with very low resource requirements. I'm not sure how the in-memory Dataset instance is stored on the TPU host, so I don't know how many images you can practically use without getting an OOM from the TPU (they'll need to fit in the memory of your VM first, of course). I'll leave it to the readers to try and find out.

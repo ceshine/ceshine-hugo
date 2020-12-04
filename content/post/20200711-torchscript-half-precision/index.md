@@ -21,7 +21,7 @@ This is a short post describing how to use half precision in [TorchScript](https
 
 > This repository (NVIDIA/apex) holds NVIDIA-maintained utilities to streamline mixed precision and distributed training in PyTorch. Some of the code here will be included in upstream PyTorch eventually. [source](https://github.com/NVIDIA/apex)
 
-# Overview
+## Overview
 
 One thing that I managed to forget is that **PyTorch itself already supports half precision computation**. I wanted to speed up inference for my TorchScript model using half precision, and I spent quite some time digging around before it came to me. It doesn't need Apex Amp to do that. What Amp does for you is patching some of the PyTorch operation so only they run in half precision (O1 mode), or keep master weights in full precision and run all other operations in half (O2 mode, see the diagram below). It also handles the scaling of gradients for you. These are all essential in mixed precision training.
 
@@ -29,7 +29,7 @@ One thing that I managed to forget is that **PyTorch itself already supports hal
 
 But when you finished training and wants to deploy the model, almost all the features provided by Apex Amp are not useful for inference. So you don't really need the Amp module anymore. Besides, you can not use Apex Amp in TorchScript, so you don't really have a choice. Simply convert the model weights to half precision would do.
 
-# Examples
+## Examples
 
 Below I give two examples of converting a model weights and then export to TorchScript.
 
@@ -98,7 +98,7 @@ def collect_predictions(model, loader, half: bool):
     return outputs, y_global
 ```
 
-## Simple Benchmarks
+### Simple Benchmarks
 
 (The model were evaluated on a private image classification dataset. The model were trained in Apex O2 mode.)
 
@@ -115,7 +115,7 @@ Remarks:
 - Apex (O2) and TorchScript (fp16) got exactly the same loss, as they should. The feed-forward computation are exactly the same in these two modes.
 - Apex (O3) is surprisingly slow. Not sure why.
 
-# Bonus: TRTorch
+## Bonus: TRTorch
 
 [TRTorch](https://github.com/NVIDIA/TRTorch) is a new tool developed by NVIDIA and converts a standard TorchScript program into an module targeting a TensorRT engine. With this, we will not need to export the PyTorch model to ONNX format to run model on [TensorRT](https://developer.nvidia.com/tensorrt) and speed up inference.
 

@@ -33,7 +33,7 @@ The above configuration brings the following benefits:
 
 The following sections will give you some more concrete instructions on how to configure this particular R development environment.
 
-# Docker Image
+## Docker Image
 
 (This section assume you already [installed Docker in your system](https://www.docker.com/get-started), and your operating system is Unix-like.)
 
@@ -53,7 +53,7 @@ Then visit [http://localhost:8787](http://localhost:8787) to access RStudio. Use
 
 {{< figure src="1*Cp8j8Xc_0ItRmd8N1003Ng.png" link="1*Cp8j8Xc_0ItRmd8N1003Ng.png" title="RStudio in Browser">}}
 
-# Packrat
+## Packrat
 
 Create a project in RStudio if you haven’t already. Open _Tools/Project Options_, open the “Packrat” tab, and click on “Use packrat with this project”. RStudio will install _packrat_ for you and initialize it for the current project.
 
@@ -73,7 +73,7 @@ Not only _packrat_ keeps tracks of packages installed via `install.packages`, th
 
 As you can see, it stores the identifiers of the Github repo, along with a hash signature to ensure integrity. This is tricky because the master branch can be updated frequently. A better way is to lock on a specific commit or tag. (Note that is is a public repo. I’m not sure how private repos work with _packrat_. You’ll have to find out yourself.)
 
-# Additional Resources
+## Additional Resources
 
 - [Packrat: Reproducible package management for R - Walkthrough](https://rstudio.github.io/packrat/walkthrough.html)
 - [Packrat: Reproducible package management for R - Rstudio](https://rstudio.github.io/packrat/rstudio.html)

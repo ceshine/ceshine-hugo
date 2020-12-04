@@ -20,26 +20,26 @@ This post summarizes the findings and suggestions from the paper [“Please Stop
 
 (Note: Permutation importance is covered in one of my previous posts: [Feature Importance Measures for Tree Models — Part I](https://blog.ceshine.net/post/feature-importance-part-1/).)
 
-# TL;DR
+## TL;DR
 
 Permutation importance (permuting features without retraining) is biased toward features that are correlated. Avoid using it, and use one of the following alternatives:
 
-1. **Conditional variable importance**: permute or generate the feature data from the distribution ***conditioned on other features*** `$x^{c,j}_{ij} \sim x_{ij} | x_{i, -j}$`, then calculate the difference in loss using the same model (no retrain).
-2. **Dropped variable importance** (leave-out-covariates (LOCO)): drop the target feature and ***retrain*** the model. Calculate the difference in loss between the two models.
-3. **Permute-and-relearn importance**: permute the feature data and ***retrain*** the model. Calculate the difference in loss between the two models.
+1. **Conditional variable importance**: permute or generate the feature data from the distribution **_conditioned on other features_** `$x^{c,j}_{ij} \sim x_{ij} | x_{i, -j}$`, then calculate the difference in loss using the same model (no retrain).
+2. **Dropped variable importance** (leave-out-covariates (LOCO)): drop the target feature and **_retrain_** the model. Calculate the difference in loss between the two models.
+3. **Permute-and-relearn importance**: permute the feature data and **_retrain_** the model. Calculate the difference in loss between the two models.
 4. **Conditional-and-relearn importance**: permute or generate the feature data from the distribution as in conditional variable importance, but retrain the model and compare the difference in loss.
 
 (Another alternative is the SHAP values, which is covered in this post of mine: [[Notes] SHAP Values](https://blog.ceshine.net/post/shap/)).
 
 We don't discuss partial dependence plots (PDPs) and individual conditional expectation plots (ICE) in this post because there is no good alternative available (for now). In general, we should not use them with permutation methods.
 
-# Introduction
+## Introduction
 
 Permutation importance (simply called “variable importance” in this paper) is defined by Breiman (2001) as:
 
 <div>$$VI^{\pi}_{j} = \sum_{i=1}^{N}L(y_i, f(x_i^{\pi, j})) - L(y_i, f(x_i))$$</div>
 
-where `$X^{\pi,j}_{i}$` is a matrix achieved by randomly permuting the *j* th column of *X*.
+where `$X^{\pi,j}_{i}$` is a matrix achieved by randomly permuting the _j_ th column of _X_.
 
 This feature importance measure is computationally cheap, applies to the `$f(x)$` derived from any learning method, has no tuning parameters, and statistically very stable. Therefore, they are frequently adopted and advocated for the general public.
 
@@ -47,7 +47,7 @@ However, this permute-and-predict (PaP) structure has serious flaws, especially 
 
 This paper provides an intuitive rationale for the flaws. It argues that when two features are highly correlated, there will be a lot of areas on the hyperplane that don't have training examples. When one of the features got permuted, the model will be forced to **extrapolate**. As the quality of extrapolation is usually very low in more complicated models, the loss will deteriorate sharply, making the permutation importance measure putting more weight on this feature.
 
-# A Simple Simulation Example
+## A Simple Simulation Example
 
 This paper argues that permutation-based diagnostic tools are misleading when both of these conditions are met:
 
@@ -68,7 +68,7 @@ From the simulation result, we can see that all the models agree on the same fea
 
 The increase in the correlation coefficient exacerbates the problem, as does the decrease in training examples.
 
-# Extrapolation and Explanations
+## Extrapolation and Explanations
 
 If we simplify the linear model behind the artificial dataset to `$y = x_1 + \epsilon$` and plot the contours of the learned random forest, we get:
 
@@ -82,7 +82,7 @@ Because of how tree model works, the predicted value of x is determined by the �
 
 For neural networks, the bias can be explained by the very high variance in the extrapolation areas.
 
-# Alternatives
+## Alternatives
 
 {{< figure src="figure-7.png" caption="Figure 7 from the paper" >}}
 

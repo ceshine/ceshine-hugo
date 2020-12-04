@@ -17,7 +17,7 @@ url: /post/kaggle-jigsaw-toxic-2019/
 
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/sky-clouds-sunlight-dark-690293/)" >}}
 
-# Preamble
+## Preamble
 
 Jigsaw hosted [a toxic comment classification competition](https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge/overview/evaluation)[2] in 2018, and has also created an API service for detecting toxic comments[3]. However, it has been shown that the model trained on this kind of datasets tend to have some biases against minority groups. For example, a simple sentence "_I am a black woman_" would be classified as toxic, and also more toxic than the sentence "_I am a woman_"[4]. This year's [_Jigsaw Unintended Bias in Toxicity Classification_ competition](https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification/overview)[1] introduces an innovative metric that aims to reduce such biases and challenges Kagglers to find out the best score we can get under this year's new dataset.
 

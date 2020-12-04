@@ -15,7 +15,7 @@ url: /post/python-cron-telegram-wrapper/
 
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/city-window-architecture-urban-4991094/)" >}}
 
-# Motivation
+## Motivation
 
 [Apache Airflow](http://airflow.apache.org/) is great for managing scheduled workflows, but in a lot of cases, it is an overkill and brings unnecessary complexity to the overall solution. [Cron](https://www.wikiwand.com/en/Cron) jobs are much easier to set up, have built-in support in most systems, and have a very flat learning curve. However, the lack of monitoring features and the consequential silent failures can be the bane of system admins' lives.
 
@@ -29,7 +29,7 @@ We want a simple solution that can help admins monitor the health of cron jobs i
 
 We also only focus on running python scripts as cron jobs. You can always wrap shell scripts inside Python, so this shouldn't be a big problem.
 
-## Honorable Mention: Cronhub
+### Honorable Mention: Cronhub
 
 [Cronhub](https://cronhub.io/) is a SaaS that lets you get instant alerts when any of your background jobs fail silently or run longer than expected. You only need to append a Ping API call at the end of your cron command. It's simple yet powerful.
 
@@ -39,15 +39,15 @@ There are several advantages of the Telegram solution proposed below over Cronhu
 2. Not depending on external services (other than the Telegram API).
 3. The monitoring scheme is stored in the codebase.
 
-# Solution: A Python Decorator
+## Solution: A Python Decorator
 
 My solution is to create a decorator called `telegram_wrapper` that is heavily based on the `telegram_sender` from [huggingface/knockknock](https://github.com/huggingface/knockknock/blob/master/knockknock/telegram_sender.py). The knockknock implementation is designed for training machine learning models. I tweaked the message templates and added a few options to make it more suitable for monitoring background tasks.
 
-## Telegram Bot
+### Telegram Bot
 
 You need to have a [Telegram client](https://telegram.org/apps) and create a [Telegram bot](https://core.telegram.org/bots#6-botfather). Send the first message to the bot, and then use the token of your bot to find your chat_id by visiting [https://api.telegram.org/bot<YourBOTToken>/getUpdates](https://api.telegram.org/bot<YourBOTToken>/getUpdates).
 
-## Usage
+### Usage
 
 First, you need to install `cronhelpers`:
 
@@ -60,7 +60,7 @@ And wrapper the function that contains the cron job with `telegram_wrapper`:
 ```python
 from cronhelpers import telegram_wraooer
 
-# This one only sends a message when the cron job failed
+## This one only sends a message when the cron job failed
 @telegram_wrapper(
   "your_token", "your_chat_id", name="jobName",
   send_at_start=False, send_on_success=False)
@@ -85,7 +85,7 @@ Usually, I would containerize the python environment, and the crontab entry woul
 
 {{< figure src="example.png" caption="Example message on successful execution." >}}
 
-## Notes
+### Notes
 
 1. Set `send_at_start=True` to get a message when a job starts. This is usually not necessary but could be useful if it's a long-running job and you'd like to see the job starts at say 8 pm sharp.
 2. Set `send_on_success=False` to only get a message when a job crashes. Beware that if the job is killed or the machine is shut down you still get no message at all. So use it only when your machine is stable and not crowded.

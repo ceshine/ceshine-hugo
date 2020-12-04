@@ -17,7 +17,7 @@ url: /post/text-annotation-2/
 
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/mountains-alps-mountaineering-cold-4695049/)" >}}
 
-# Introduction
+## Introduction
 
 In [Part 1](https://blog.ceshine.net/post/text-annotation-1/) of this series, we've discussed why building your own annotation tool can be a good idea, and demonstrated a back-end API server based on [FastAPI](https://github.com/tiangolo/fastapi). Now in this Part 2, we're going to build a front-end interface that interacts with the end-user (the annotator). The front-end needs to do mainly three things:
 
@@ -27,7 +27,7 @@ In [Part 1](https://blog.ceshine.net/post/text-annotation-1/) of this series, we
 
 Disclaimer: I'm relatively inexperienced in front-end development. The code here may seem extremely amateur to professionals. However, I hope this post can serve as a reference or starting point for those with similar requirements.
 
-## Prerequisites
+### Prerequisites
 
 This post assumes you have basic understandings of Javascript, React, HTML, and CSS/Sass. If you don't, please refer to the learning resources mentioned in [Part 1](https://blog.ceshine.net/post/text-annotation-1/).
 
@@ -37,7 +37,7 @@ We'll be using the [Bulma CSS framework](https://bulma.io/). The way we used to 
 
 The following section will be built on the created project.
 
-# Code-through
+## Code-through
 
 Let's take another look at what we'll be getting at the end of this section:
 
@@ -45,7 +45,7 @@ Let's take another look at what we'll be getting at the end of this section:
 
 The source code for this post can be found at [veritable-tech/text-annotation-react-frontend](https://github.com/veritable-tech/text-annotation-react-frontend/tree/blog-post).
 
-## Page Layout
+### Page Layout
 
 The overall page layout is defined in the `render` method in `src/App.js`:
 
@@ -86,7 +86,7 @@ There are two buttons, one for fetching a new batch/page and one for submitting 
 
 We'll create an `Entries` React component that is responsible for displaying the pairs and also collecting the annotations. The two states in the `App` component — `page` and `pairs` — are passed to the `Entries` component as properties. There is also a function `changeScore` that is passed to handle the changes in labels.
 
-## The App Component
+### The App Component
 
 This is the main React component that every data and logic will go through. We start by initializing the application state:
 
@@ -96,7 +96,7 @@ class App extends Component {
     super();
     this.state = {
       page: null,
-      pairs: null
+      pairs: null,
     };
     // These two methods will be added soon in the following sections
     this.fetchBatch = this.fetchBatch.bind(this);
@@ -105,7 +105,7 @@ class App extends Component {
 }
 ```
 
-## Fetching a Batch
+### Fetching a Batch
 
 We use the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) to make requests to the back-end API server:
 
@@ -117,7 +117,7 @@ async function getBatch() {
     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
     redirect: "follow", // manual, *follow, error
     referrer: "no-referrer", // no-referrer, *client
-    credentials: "include"
+    credentials: "include",
   });
   if (!res.ok) {
     throw Error(res.statusText);
@@ -152,7 +152,7 @@ async fetchBatch() {
 
 The `Math.round(x[3] * 4) / 4` part automatically transform the continuous predictions (with range [0, 1]) from the model into discrete labels {0, 0.25, 0.5, 0.75, 1.}, which will be displayed as {1, 2, 3, 4, 5} in the `Entires` component.
 
-## The Entries and Entry Component
+### The Entries and Entry Component
 
 The `Entries` component is fairly simple. It just goes through the `pairs` property and creates one `Entry` component for each pair:
 
@@ -177,7 +177,7 @@ class Entries extends Component {
 The `Entry` component is where the main UI lives:
 
 ```javascript
-const Entry = props => {
+const Entry = (props) => {
   return (
     <div className="columns">
       <div className="column">{props.row.get(1)}</div>
@@ -207,14 +207,14 @@ The only "moving part" in the sub-section is the `changeScore` function/method t
 ```javascript
 changeScore = (i, score) => () => {
   this.setState({
-    pairs: this.state.pairs.set(i, this.state.pairs.get(i).set(4, score))
+    pairs: this.state.pairs.set(i, this.state.pairs.get(i).set(4, score)),
   });
 };
 ```
 
 What it does is updating the label of the _ith_ pair. Because we're using immutable objects, what actually happens is a new `pairs` List object is created to replace the old one.
 
-## Submitting the Results
+### Submitting the Results
 
 Now we're at the final piece of the puzzle. The `postBatch` function is very similar to the `getBatch` function, except for the `method` and `body` parameters:
 
@@ -227,7 +227,7 @@ async function postBatch(batch) {
     redirect: "follow", // manual, *follow, error
     referrer: "no-referrer", // no-referrer, *client
     credentials: "include",
-    body: JSON.stringify(batch)
+    body: JSON.stringify(batch),
   });
   if (!res.ok) {
     throw Error(res.statusText);
@@ -251,7 +251,7 @@ async submitBatch() {
 }
 ```
 
-# This is just the Beginning
+## This is just the Beginning
 
 Here we conclude our journey of building a customized annotation tool. As you can see, it's not as hard as you might think. Almost all the changes I've made to the base React project have been fit inside this single blog post! And the 2,000 annotations I've made via this tool can testify that it works well enough (the actual number at the point of writing is approaching 3,000).
 

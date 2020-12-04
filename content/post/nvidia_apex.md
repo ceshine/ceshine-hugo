@@ -12,7 +12,7 @@ The Apex project from NVIDIA is touted as a PyTorch extension that let developer
 
 Spoiler: The answer to the question in the subtitle — yes and no. Yes, Apex and mixed precision training help you save GPU memory and thus allow bigger models and bigger batches under the same hardware limitation. But no, it most likely won’t speed up the training on a pre-Volta graphic card, unless the model is heavy on bandwidth operations.
 
-# What is Mixed Precision Training
+## What is Mixed Precision Training
 
 Check out this great overview by Sylvain Gugger:
 [Mixed precision training (forums.fast.ai)](https://forums.fast.ai/t/mixed-precision-training/20720)
@@ -25,11 +25,11 @@ By switching to 16-bit, we’ll be using half the memory and theoretically less 
 
 For a more technical introduction, refer to [“Mixed-Precision Training of Deep Neural Networks” by Paulius Micikevicius](https://devblogs.nvidia.com/mixed-precision-training-deep-neural-networks/).
 
-# How to Use Apex
+## How to Use Apex
 
 In this post we’ll only cover the mixed precision training part of Apex, not the distributed training part (since I only have one GPU).
 
-## Optimization Levels
+### Optimization Levels
 
 Apex recently changed its API to a unified one for all “optimization levels”. And the “4 lines of code” in the punchline has reduced to “3 lines of code”.
 
@@ -43,7 +43,7 @@ The four optimization levels:
 
 1. **O3 (FP16 training)**: full FP16. Passing `keep_batchnorm_fp32=True` can speed things up as cudnn batchnorm is faster anyway.
 
-## Changes to the Existing Code
+### Changes to the Existing Code
 
 I modified thesimple PyTorch wrapper I wrote([ceshine/pytorch_helper_bot](https://github.com/ceshine/pytorch_helper_bot/tree/apex)) and made it compatible with Apex (using the new API). Here’s how I do it.
 
@@ -61,7 +61,7 @@ Finally, we need to initialize the PyTorch model and optimizer outside of the wr
 
 That’s it! This is the minimal code changes required to do mixed precision training with Apex.
 
-## Advanced Usage
+### Advanced Usage
 
 Unfortunately, for some common deep learning training techniques, Apex requires more changes to be made. Here we’ll cover gradient clipping and learning rate schedulers.
 
@@ -75,7 +75,7 @@ At some optimization levels the optimizer returned by `amp.initialize` is an `ap
 
 Honestly I did not write tests to check if learning rate schedulers works the same way with `FP16_Opimizer` instances, but in my experiment they seem to work the way as expected.
 
-# Experiments
+## Experiments
 
 I tried to train some models on the Cifar10 dataset with Apex. The GPU used is a GTX 1070 (Pascal architecture). The code is not really publication-ready yet, but here’s the link for those who are interested:
 [_ceshine/apex_pytorch_cifar_experiment_](https://github.com/ceshine/apex_pytorch_cifar_experiment).
@@ -102,12 +102,12 @@ So no speed gain by switching to FP16 or O1/O2, but the memory usage did drop si
 
 For both Titan X and GTX 1080 Ti, the automatic mixed precision(Amp) trainings were slower than both FP32 and FP16 training, while the latter two were roughly the same speed. The amount of memory saved from using Amp was higher with V100 than Titan X and GTX 1080 Ti.
 
-## Why the Discrepancy?
+### Why the Discrepancy?
 
 NVIDIA introduced “Tensor Cores” in Volta architecture, which are optimized to do mixed precision computing. The later consumer [Turing architectur](<https://en.wikipedia.org/wiki/Turing_(microarchitecture)>)e also have them. Reference:
 [Tensor Cores in NVIDIA Volta GPU Architecture](https://www.nvidia.com/en-us/data-center/tensorcore/).
 
-The following thread addressed the question quite well: [Do I need tensor cores to benefit from Mixed-Precision training? · Issue #76 · NVIDIA/apex](https://github.com/NVIDIA/apex/issues/76).
+The following thread addressed the question quite well: [Do I need tensor cores to benefit from Mixed-Precision training? · Issue ##76 · NVIDIA/apex](https://github.com/NVIDIA/apex/issues/76).
 
 > Some non-Volta cards (like the P100) can benefit from half-precision arithmetic for certain networks, but **the numerical stability is much less reliable** (even with Apex tools)
 

@@ -12,13 +12,13 @@ url: /post/kaggle-insta-grat/
 
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/japan-mountain-volcano-fuji-sky-4287832/)" >}}
 
-# Overview
+## Overview
 
 Kaggle recently [hosted a competition (Instant Gratification)](https://www.kaggle.com/c/instant-gratification/) to test their new "synchronous Kernel-only competition" format. It features a synthetic dataset, and the best way to achieve high score on this dataset is to reverse-engineer the dataset creation algorithm.
 
 I did not really spend time into this competition, but after the competition was over I went back checked the discussion forum for solutions and insights shared, and found it actually quite interesting. There are quite a few of lessons to be learned about how to create or deal with synthetic data.
 
-## The Revelation
+### The Revelation
 
 This is [the function call](https://www.kaggle.com/c/instant-gratification/discussion/96519#latest-558632) that we want to reverse-engineer from data:
 
@@ -43,21 +43,21 @@ X,y = make_classification(
 
 The competition dataset consists of 512 sub-dataset created by the above function call, and a "magic" discrete feature is attached so we can perfectly tell them apart.
 
-## Cracking Each Parameter
+### Cracking Each Parameter
 
-* **n_informative**: Can be found by removing uninformative features (detail described later).
-* **n_redundant**: Linear combination of informative features. Keeping them should not affect model accuracy. But they'll make infering other parameters more complicated. The existence of such features can be detected using [multicollinearity tests](https://www.wikiwand.com/en/Multicollinearity#/Consequences_of_multicollinearity), but to exactly identify them is much harder. If `n_clusters_per_class` is low and `n_samples` is large enough, we might have some good guesses by looking at empirical feature means grouped by targets
-* **n_repeated**: Given the amount of features, brute force search alone can do the trick.
-* **n_clusters_per_class**: This is the most tricky part. Luckily the actual number is low enough so we can crack it using data visualization (details described later).
-* **flip_y**: Nothing really can be done with this one. We can only empirically find that about 2.5% data points cannot be correctly lassified even after we cracked all other parameters. With only two classes, that means 5% of the target labels were randomly exchanged.
-* **class_sep**: Found by the visualization used to find `n_clusters_per_class`.
-* **hypercube**: Found by the visualization used to find `n_clusters_per_class`. Things will be much harder if `hypercube` is false.
-* **shift**: If constant, can be found by visualizing the empirical feature means. Would be much complicated if it's random.
-* **scale**: Same as `shift`.
+- **n_informative**: Can be found by removing uninformative features (detail described later).
+- **n_redundant**: Linear combination of informative features. Keeping them should not affect model accuracy. But they'll make infering other parameters more complicated. The existence of such features can be detected using [multicollinearity tests](https://www.wikiwand.com/en/Multicollinearity#/Consequences_of_multicollinearity), but to exactly identify them is much harder. If `n_clusters_per_class` is low and `n_samples` is large enough, we might have some good guesses by looking at empirical feature means grouped by targets
+- **n_repeated**: Given the amount of features, brute force search alone can do the trick.
+- **n_clusters_per_class**: This is the most tricky part. Luckily the actual number is low enough so we can crack it using data visualization (details described later).
+- **flip_y**: Nothing really can be done with this one. We can only empirically find that about 2.5% data points cannot be correctly lassified even after we cracked all other parameters. With only two classes, that means 5% of the target labels were randomly exchanged.
+- **class_sep**: Found by the visualization used to find `n_clusters_per_class`.
+- **hypercube**: Found by the visualization used to find `n_clusters_per_class`. Things will be much harder if `hypercube` is false.
+- **shift**: If constant, can be found by visualizing the empirical feature means. Would be much complicated if it's random.
+- **scale**: Same as `shift`.
 
 As you can see, the competition can make a lot harder by changing some of the parameters. Many competitors were able to create perfect classifier by the end of the competition, and their ranking are determined by the randomness introduced by `flip_y` parameter.
 
-# Uninformative Features
+## Uninformative Features
 
 As we've just mentioned, this competition used `make_classification` from scikit-learn to create synthetic data. According to [the documentation](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_classification.html):
 
@@ -97,13 +97,13 @@ And the variance increases as the number of informative features increases (othe
 
 {{< figure src="covariance_5.png" caption="Covariance matrix with 5 features." >}}
 
-# The Number of Clusters per Class
+## The Number of Clusters per Class
 
 Deciphering the `n_clusters_per_class` is the critical step to get perfect classifiers. The most popular model in this competition — [QDA(Quadratic Discriminant Analysis)](https://scikit-learn.org/stable/modules/lda_qda.html) — only fits the case where `n_clusters_per_class = 1`, because the underlying assumption of QDA is that data of each class follows a single multivariate Guassian distrbution. Having more than one (Gaussian) cluster per class breaks that assumption.
 
 {{< figure src="cube.jpg" caption="[Source](https://www.kaggle.com/cdeotte/3-clusters-per-class-0-975/notebook)" >}}
 
-## Solution #1: EDA / Data Visualization
+### Solution #1: EDA / Data Visualization
 
 I failed to think of the solution which [Chris Deotte](https://www.kaggle.com/cdeotte) described in [this notebook](https://www.kaggle.com/cdeotte/3-clusters-per-class-0-975/notebook). But it only works when `n_clusters_per_class` is small and `n_samples` is sufficiently large.
 
@@ -117,7 +117,7 @@ The competition dataset actually looks like this:
 
 And from this, **we've learned that there are three clusters per class**.
 
-### Cases where It Doesn't Work
+#### Cases where It Doesn't Work
 
 We cannot do it in a unsupervised manner, that is, calculate feature means without grouping by target. By doing that each feature mean would count samples from 6 clusters instead of 3. And a [binomial distribution](https://www.wikiwand.com/en/Binomial_distribution) with `n=6` and `p-0.5` already looks a lot similar to a normal distribution:
 
@@ -135,7 +135,7 @@ Another important factor is the number of samples. Without enough samples, the v
 
 To avoid insufficient number of samples, we can pseudo-labels(use a model to generate prediction and treat the prediction as true label) test dataset and include them in our sample mean calculation.
 
-## Solution #2: Directly Fitting Gaussian Mixture Model
+### Solution #2: Directly Fitting Gaussian Mixture Model
 
 This idea comes from [this Cross Validated thread](https://stats.stackexchange.com/questions/32400/optimal-number-of-components-in-a-gaussian-mixture). We want to determine the number of underlying clusters our Guassian Mixture model should use. We can try several possible options and evaluate the log-likelihood or [BIC(Bayesian information criterion)](https://en.wikipedia.org/wiki/Bayesian_information_criterion) of the fitted models. The one with the largest log-likelihood or lowest BIC is the most likely number of clusters:
 
@@ -149,7 +149,7 @@ If we only use train dataset, which have 512 samples per sub-dataset in average 
 
 For this dataset, if we fit a Gaussian mixture model on train dataset only unsupervised, the evaluation method described above wouldn't be able to tell us the correct number of clusters, and the validation trick described in the thread won't work (using the test dataset as validation). But if we include the test data when fitting the model, the correct number of cluster will come out most of the time. So you just need to run the evaluation a couple dozen times and pick the most common answer. But of course, the best way to do it is utilizing the target labels as described in the previous section, and preferably try to fix some obviously flipped samples.
 
-## Summing up
+### Summing up
 
 Once we figured out that `n_clusters_per_class=3`, we can fit the dataset almost perfectly using a Gaussian Mixture Model. The final missing piece is find some way to fix some of the flipped labels so the model would be more stable. Setting some hard threshold seems to suffice for this dataset as observed in some top solutions.
 

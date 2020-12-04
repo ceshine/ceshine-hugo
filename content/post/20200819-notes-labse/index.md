@@ -18,7 +18,7 @@ url: /post/notes-labse/
 
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://unsplash.com/photos/8H9ph_Jp3hA)" >}}
 
-# The Google AI Blog post
+## The Google AI Blog post
 
 [This post on Google AI Blog](https://ai.googleblog.com/2020/08/language-agnostic-bert-sentence.html) explains the premise, background, and related works of this paper pretty well. I'm not going to repeat them in this post. Instead, I'll try to fill in some of the gaps I see as someone that is familiar with this topic but does not follow very closely with the latest development.
 
@@ -32,15 +32,15 @@ But in the result table, we don't see any improvement over LASER[2] in the 14 hi
 
 Maybe they just want to mention a general characteristic of multilingual approaches. Nonetheless, the improvements in the low resource languages are significant and might be attributed to the fine-tuning task, the improved capacity of the model (LASER uses at most 5 Bi-LSTM layers), or the larger pre-train dataset.
 
-# The LaBSE Model
+## The LaBSE Model
 
-## Datasets
+### Datasets
 
 The monolingual data was collected from CommonCrawl and Wikipedia.
 
 The translation corpus is constructed from the web pages using a bitext mining system similar to the approach described in [Uszkoreit et al. (2010)](https://dl.acm.org/doi/10.5555/1873781.1873905).
 
-## Pretraining task
+### Pretraining task
 
 MLM(masked language model) and TLM(translation language modeling) are very common in recent NLP research. In case you forgot the details (like I did with the TLM):
 
@@ -48,7 +48,7 @@ MLM(masked language model) and TLM(translation language modeling) are very commo
 
 Basically, TLM is to throw in a pair of parallel sentences, randomly mask some tokens, and hope that the model will use information in its counterpart sentence to fill in the correct token.
 
-## Getting sentence embeddings
+### Getting sentence embeddings
 
 Sentence embeddings are **extracted from the last hidden state of the encoder [CLS] token**.[1] This is in contrast with the pooling methods used in Sentence-BERT[4]:
 
@@ -56,7 +56,7 @@ Sentence embeddings are **extracted from the last hidden state of the encoder [C
 
 I did not see any similar ablation study in [1] and its predecessor [5]. Maybe this is something that can be tuned to further improve accuracy.
 
-## Fine-tuning task
+### Fine-tuning task
 
 (As the [Google AI Blog](https://ai.googleblog.com/2020/08/language-agnostic-bert-sentence.html) describes, the fine-tuning task is the translation ranking task. The objective is to find the true translation over a collection of sentences in the target language.)
 
@@ -80,9 +80,9 @@ Note that the negative sampling is in-batch(i.e. taken from within the batch), s
 
 This constraint implies that you will likely not able to get good performance training on only one GPU or even one TPU device.
 
-# Additional Analysis
+## Additional Analysis
 
-## BUCC and UN task
+### BUCC and UN task
 
 {{< figure src="bucc.png" caption="[source](http://arxiv.org/abs/2007.01852)[1]" >}}
 
@@ -90,13 +90,13 @@ This constraint implies that you will likely not able to get good performance tr
 
 The LaBSE outperforms bilingual models on the BUCC mining task and the UN parallel sentence retrieval task. Maybe this is the confusing statement of the Google AI Blog post is about.
 
-## Initialize Weights from Multilingual BERT
+### Initialize Weights from Multilingual BERT
 
 This approach is to initialize weights from the multilingual BERT model and then fine-tune as bidirectional dual encoders like before. The resulting model will perform well on high resource languages but poorly on low resource ones.
 
 > Our pre-training approach improves over multilingual BERT on tail languages due to a combination of reasons. We use **a much larger vocab** , 500k versus 30K, which has been shown to improve multilingual performance (Conneau et al., 2019). We also **include TLM** in addition to MLM as this has been shown to improve cross-lingual transfer (Conneau and Lample, 2019). Finally, we pretrain on **common crawl which is much larger**, albeit noisier, than the wiki data multilingual BERT is trained on. [emphasis mine]
 
-# Using the Pre-trained Model
+## Using the Pre-trained Model
 
 Because of the batch size constraint, we probably won't be able to train the model from scratch or even further fine-tune on the dual encoder task without a large distributed training environment. In most cases, we'd directly use the pre-trained model released by the paper authors, which is available on TF Hub with code examples: [**LaBSE**](https://tfhub.dev/google/LaBSE/1).
 
@@ -106,7 +106,7 @@ Here's my thought on how to port the weights: There's already [a script exported
 
 Currently, I don't need this kind of fine-tuning. So I'll wait for someone else to do the porting.
 
-# References
+## References
 
 1. Feng, F., Yang, Y., Cer, D., Arivazhagan, N., & Wang, W. (2020). [Language-agnostic BERT Sentence Embedding.](http://arxiv.org/abs/2007.01852)
 2. Mikel Artetxe and Holger Schwenk. 2019b. [Massively multilingual sentence embeddings for zero-shot cross-lingual transfer and beyond.](https://transacl.org/ojs/index.php/tacl/article/view/1742) Trans. Assoc. Comput. Linguistics, 7:597–610.
