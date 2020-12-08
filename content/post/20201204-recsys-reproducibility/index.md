@@ -11,9 +11,9 @@ keywords:
 url: /post/recsys-reproducibility/
 ---
 
-## Introduction
-
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/workers-people-boats-ships-pier-5708691/)" >}}
+
+## Introduction
 
 Today we’re examining this very interesting and alarming paper in the field of recommender systems — [Are We Really Making Much Progress? A Worrying Analysis of Recent Neural Recommendation Approaches](https://arxiv.org/abs/1907.06902). It also has an extended version still under review — [A Troubling Analysis of Reproducibility and Progress in Recommender Systems Research](https://arxiv.org/abs/1911.07698).
 
