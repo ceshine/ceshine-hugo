@@ -129,6 +129,6 @@ The TPU (TPUv2 on Google Colab) greatly reduces the time needed to train an adeq
 
 The set of augmentations used here is relatively mild. There are a lot more options in the `albumentations` library (e.g. [Cutout](https://albumentations.readthedocs.io/en/latest/api/augmentations.html#albumentations.augmentations.transforms.Cutout)) for you to try.
 
-If you found TPU working great for you, [the current pricing of TPU ](https://cloud.google.com/tpu/docs/pricing)is quite affordable for a few hours of training (Regular $4.5 per hour and preemptible **$1.35\*\* per hour). (I’m not affiliated with Google.)
+If you found TPU working great for you, [the current pricing of TPU ](https://cloud.google.com/tpu/docs/pricing)is quite affordable for a few hours of training (Regular \\$4.5 per hour and preemptible \\$**1.35** per hour). (I’m not affiliated with Google.)
 
 In the future I’ll probably try to update the notebooks to Tensorflow 2.0 alpha or the later RC and report back anything interesting.
