@@ -7,11 +7,13 @@ tags:
   - nlp
   - qa
   - paper
+  - synthetic
 keywords:
   - transformer
   - nlp
   - bert
   - deep learning
+  - synthetic data
 url: /post/synthetic-data-for-qa-model/
 ---
 

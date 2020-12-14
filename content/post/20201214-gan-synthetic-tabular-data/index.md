@@ -9,6 +9,7 @@ tags:
 keywords:
   - gan
   - synthetic
+  - synthetic data
 url: /post/gan-synthetic-tabular-data/
 ---
 
