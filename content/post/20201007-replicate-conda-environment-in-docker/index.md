@@ -58,7 +58,7 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda$CONDA_PYTHON_VERS
     rm -rf /tmp/*
 ```
 
-It's recommended to install mamba to speed up Conda (h/t to [Jeremy Howard](https://twitter.com/jeremyphoward/status/1305342912356478977)):
+It's recommended to install mamba to speed up Conda (h/t [Jeremy Howard](https://twitter.com/jeremyphoward/status/1305342912356478977)):
 
 ```dockerfile
 RUN conda install -y mamba -c conda-forge
@@ -80,6 +80,6 @@ And voalá! The base Conda environment in the Docker image is now exactly the sa
 
 {{< gist ceshine 77623d9972c2369bf0ffd40068792caf >}}
 
-## Reference
+## References
 
 - [Managing environments - conda](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html)
