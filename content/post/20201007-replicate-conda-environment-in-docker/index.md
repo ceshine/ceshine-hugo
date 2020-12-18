@@ -78,7 +78,13 @@ And voalá! The base Conda environment in the Docker image is now exactly the sa
 
 ### A Complete Example
 
+Dockerfile:
+
 {{< gist ceshine 77623d9972c2369bf0ffd40068792caf >}}
+
+Environment.yml:
+
+{{< gist ceshine 5cee0b0e2fcd2bf08077fd7f6ced1d03 >}}
 
 ## References
 
