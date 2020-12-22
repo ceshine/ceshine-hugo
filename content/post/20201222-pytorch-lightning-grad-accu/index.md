@@ -15,11 +15,11 @@ url: /post/pytorch-lightning-grad-accu/
 
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/music-recording-vinyl-retro-disk-5705801/)" >}}
 
-[PyTorch Lightning](https://github.com/PyTorchLightning/pytorch-lightning) reached 1.0.0 on October 2020. I wasn't fully satisfied with the flexibility of its API, so I continued to use my own [pytorch-helper-bot](https://github.com/ceshine/pytorch-helper-bot/). This has changed since the 1.0.0 release. Now I use PyTorch Lightning to develop training code that supports both single and multi-GPU trainings.
+[PyTorch Lightning](https://github.com/PyTorchLightning/pytorch-lightning) reached 1.0.0 in October 2020. I wasn't fully satisfied with the flexibility of its API, so I continued to use my [pytorch-helper-bot](https://github.com/ceshine/pytorch-helper-bot/). This has changed since the 1.0.0 release. Now I use PyTorch Lightning to develop training code that supports both single and multi-GPU training.
 
-However, one thing that bugged me is that **the logging doesn't work correctly when I set the number of gradient accumulation batches larger than one**. The steps recorded in the training loop is still the raw step number, but those recorded in the validation is divided by the number of gradient accumulation batches. The training loop will be flooded with warnings of inconsistent steps being recorded. And it'll be harder for you to compare the training and validation losses without the same step scale.
+However, one thing that bugged me is that **the logging doesn't work as expected when I set the number of gradient accumulation batches larger than one**. The steps recorded in the training loop is still the raw step number, but those recorded in the validation is divided by the number of gradient accumulation batches. The training loop will be flooded with warnings of inconsistent steps being recorded. And it'll be harder for you to compare the training and validation losses without the same step scale.
 
-The support and documentation for gradient accumulation does not seem sufficient at this moment. I digged around the PyTorch Lightning source code, did some experiments, and found some workarounds for this issue.
+The support and documentation for gradient accumulation do not seem sufficient at this moment. I dug around the PyTorch Lightning source code, did some experiments, and found some workarounds for this issue.
 
 ## The Wrong Way
 
@@ -40,7 +40,7 @@ This only works when you have `accumulate_grad_batches=1` in the trainer. The st
 
 ### Context: the global step
 
-One thing that confused me was the definition of step number (found at `self.global_step`) by PyTorch Lightning. In PyTorch Lightning, a step is counted when the `optimizer.step` method is called, not when `loss.backward` is called. So if you have `accumulate_grad_batches=2` and have trained 10 batches, the counted steps is 5, not 10.
+One thing that confused me was the definition of step number (found at `self.global_step`) by PyTorch Lightning. In PyTorch Lightning, a step is counted when the `optimizer.step` method is called, not when `loss.backward` is called. So if you have `accumulate_grad_batches=2` and have trained ten batches, the number of steps counted is five, not ten.
 
 What we want is to match the step number of a training loss with the global step variable.
 
@@ -58,7 +58,7 @@ def training_step(self, batch, batch_idx: int) -> dict:
     return {'loss': loss}
 ```
 
-The step number is correct now, but we now have too many data points! The training loss of every step is recorded and in most case it's not what we want.
+The step number is correct now, but we now have too many data points! The training loss of **every** step is recorded ,and in most cases, it's not what we want.
 
 ## Attempt #2
 
@@ -78,7 +78,7 @@ def training_step(self, batch, batch_idx: int) -> dict:
     return {'loss': loss}
 ```
 
-Now the number of data points are down by a lot. We'll be able to see another problem in the visualized data — we have multiple data points on the same step. This is because for each `global_step`, `training_step` will called `n` times, with `n` being the number of batches to accumulate.
+Now the number of data points is down by a lot. We'll be able to see another problem in the visualized data — we have multiple data points on the same step. For each `global_step`, `training_step` will ne called `n` times, with `n` being the number of batches to accumulate.
 
 ## Attempt #3 (Good for a single GPU)
 
@@ -99,11 +99,11 @@ def training_step(self, batch, batch_idx: int) -> dict:
     return {'loss': loss}
 ```
 
-Now the logging will work properly when you are training on a single GPU
+Now the logging will adequately work when you are training on a single GPU.
 
 ## Attempt #4 (EMA)
 
-So far we're logging only samples of the training losses. The sampled losses have higher variance and less reliability. A better way to do this is to log the smoothed version of the training losses. For example, we can use exponential moving averages:
+So far, we’re logging only samples of the training losses. The sampled losses have higher variances and less reliability. A better way to do this is to log the smoothed version of the training losses. For example, we can use exponential moving averages:
 
 ```python
 class EMATracker:
@@ -178,12 +178,12 @@ def training_step(self, batch, batch_idx):
     return {"loss": loss, "log": batch_idx % self.trainer.accumulate_grad_batches == 0}
 ```
 
-(Author note: this part has not been tested on a multi-GPU environment yet. Will update once it has been tested.)
+(Author note: this part has not been tested on a multi-GPU environment yet. I will update once it has been tested.)
 
 ## A More General Solution (WIP)
 
-As you can see, there's a lot of coding involved to make the logging work. We'll have to create a new EMATracker for a new metric we want to track, and add the needed code in the `training_step` and `training_step_end` methods.
+As you can see, there's a lot of coding involved to make the logging work. We'll have to create a new EMATracker for a new metric we want to track and add the needed code in the `training_step` and `training_step_end` methods.
 
-Using a callback to do this for us would be more scalable solution. We can create a new callback for each new metric and plug it to the trainer. Unfortunately, the callback hook `on_train_batch_end` currently does not get passed the batch outputs at every step, so it's not possible to do it using the internal callback API.
+Using a callback to do this for us would be a more scalable solution. We can create a new callback for each new metric and plug it into the trainer. Unfortunately, the callback hook `on_train_batch_end` currently does not get the batch outputs at every step, so it's not possible to do it using the internal callback API.
 
 There's already [a pull request](https://github.com/PyTorchLightning/pytorch-lightning/pull/4369) addressing this issue. We'll come back to this section once the pull request has been merged.
