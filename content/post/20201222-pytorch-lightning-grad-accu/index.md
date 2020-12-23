@@ -135,7 +135,7 @@ class ExampleModule(pytorch_lightning.LightningModule):
       logits = self.forward(inputs)
       loss = F.cross_entropy(logits, targets)
       # A new line
-      self.train_loss_tracker.update(loss)
+      self.train_loss_tracker.update(loss.detach())
       if batch_idx % self.trainer.accumulate_grad_batches == 0:
         should_log = (
             (self.global_step + 1) % self.log_every_n_steps == 0
@@ -164,7 +164,7 @@ def _should_log(self, flag):
 
 def training_step_end(self, outputs):
     loss = outputs["loss"].mean()
-    self.train_loss_tracker.update(loss)
+    self.train_loss_tracker.update(loss.detach())
     if self._should_log(outputs["log"]):
         self.logger.log_metrics({
             "train_loss": self.train_loss_tracker.value
@@ -178,7 +178,7 @@ def training_step(self, batch, batch_idx):
     return {"loss": loss, "log": batch_idx % self.trainer.accumulate_grad_batches == 0}
 ```
 
-(Author note: this part has not been tested on a multi-GPU environment yet. I will update once it has been tested.)
+(Author note: this part has been tested on a single machine with 4 GPUs.)
 
 ## A More General Solution (WIP)
 
