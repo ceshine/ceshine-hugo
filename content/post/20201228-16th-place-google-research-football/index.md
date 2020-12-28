@@ -1,7 +1,7 @@
 ---
 slug: 16th-place-google-research-football
 date: 2020-12-28T00:00:00.000Z
-title: "[Kaggle] Google Research Football Competition"
+title: "[Kaggle] Google Research Football 2020"
 description: "Describing my 16th place solution and also reviewing some of the others'"
 tags:
   - pytorch
