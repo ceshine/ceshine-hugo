@@ -245,6 +245,12 @@ pre {
   margin-bottom: 25px;
 }
 
+#post-body ul ul,
+#post-body ul ol,
+#post-body ol ul,
+#post-body ol ol {
+  margin-bottom: 0;
+}
 /* Base */
 
 html,
@@ -253,21 +259,21 @@ body {
 }
 
 body {
-  font: 18px/1 "Merriweather", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: 16px/1 "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
 h1 {
-  font-size: 30px;
+  font: 2rem Merriweather, Helvetica;
   letter-spacing: -1px;
   color: #111;
   font-weight: bold;
 }
 
 h2 {
-  font: italic 19px/1.3em Georgia, serif;
+  font: italic 1.3em Georgia, serif;
   color: #bbb;
 }
 
@@ -294,13 +300,13 @@ h2 {
 .profile h1 {
   font-weight: 400;
   letter-spacing: 0px;
-  font-size: 20px;
+  font-size: 24px;
   color: #222;
 }
 
 .profile h2 {
   font-size: 20px;
-  font-weight: 300;
+  font-weight: 400;
   color: #aaa;
   margin-top: 10px;
   font-family: "Merriweather", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -314,7 +320,7 @@ nav.main-nav {
   margin: 0 auto;
   text-align: right;
   z-index: 100;
-  font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 nav.main-nav a {
@@ -481,14 +487,14 @@ i {
 }
 
 .post h1.title {
-  font-size: 2.5rem;
-  line-height: 1.2;
+  font-size: 2rem;
+  line-height: 1.3;
 }
 
 .post h2 {
   margin-top: 30px;
   margin-bottom: 15px;
-  font: 600 1.5rem "Merriweather", "Helvetica Neue", Helvetica, Arial,
+  font: 700 1.8rem "Merriweather", "Helvetica Neue", Helvetica, Arial,
     sans-serif;
   color: #111;
 }
@@ -496,7 +502,7 @@ i {
 .post h3 {
   margin-top: 30px;
   margin-bottom: 10px;
-  font: 600 1.25rem "Merriweather", "Helvetica Neue", Helvetica, Arial,
+  font: 700 1.5rem "Merriweather", "Helvetica Neue", Helvetica, Arial,
     sans-serif;
   color: #222;
 }
@@ -682,7 +688,7 @@ Post List
   float: right;
   position: relative;
   top: 1px;
-  font: 300 17px/1.8 "Merriweather", "Helvetica Neue", helvetica, Arial,
+  font: 400 17px/1.8 "Merriweather", "Helvetica Neue", helvetica, Arial,
     sans-serif;
   color: #bbb;
 }
@@ -716,7 +722,7 @@ Post List
 
 #footer {
   margin-top: 100px;
-  font-family: "Lato", "Helvetica Neue", helvetica, Arial, sans-serif;
+  font-family: "Roboto", "Helvetica Neue", helvetica, Arial, sans-serif;
 }
 
 /* Post Page */
@@ -857,7 +863,7 @@ h2.month {
   float: right;
   position: relative;
   top: 1px;
-  font: 300 17px/1.7 "Merriweather", "Helvetica Neue", helvetica, Arial,
+  font: 400 17px/1.7 "Merriweather", "Helvetica Neue", helvetica, Arial,
     sans-serif;
   color: #bbb;
 }
@@ -899,7 +905,7 @@ h2.month {
 }
 
 #post-list.archive.readmore .dates {
-  font: 300 16px/1.6 "Merriweather", "Helvetica Neue", helvetica, Arial,
+  font: 400 16px/1.6 "Merriweather", "Helvetica Neue", helvetica, Arial,
     sans-serif;
 }
 
@@ -1052,7 +1058,7 @@ a.symbol:hover {
   box-shadow: inset 0 0 0 1px #e4ebf2;
   border-radius: 4px;
   overflow: hidden;
-  font-family: "Menlo", "Monaco", Courier, monospace;
+  font-family: "Roboto", "Monaco", Courier, monospace;
 }
 #TableOfContents {
   margin: 1em 0 0 0;
