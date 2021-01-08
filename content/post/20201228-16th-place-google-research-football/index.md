@@ -52,4 +52,24 @@ My code is public on Github([ceshine/google-football-2020](https://github.com/ce
 
 ## Others' Solutions
 
-To be updated...
+### 7th: s_toppo (supervised)
+
+[The link to the Kaggle discussion thread](https://www.kaggle.com/c/google-football/discussion/200912).
+
+This is the best result that uses only supervised learning (imitating top RL agents) AFAIK. The model is GDBT. I think its success mainly comes from the clever and heavy feature engineering, where GDBT usually shines in comparison to MLP. (I also tried XGBoost with GPU and didn't get any visible improvements, possibly due to the lack of feature engineering.)
+
+Team s_toppo published [a simplified notebook](https://www.kaggle.com/iiyamaiiyama/s-toppo-solution-lb-1400#create-df) of their training and agent creation process on Kaggle.
+
+Another important aspect is the clustering of target agents. The thinking behind it is that learning from multiple agents that behaves very differently can be difficult, so we want to learn from agents that use similar strategies. Team s_toppo [shared a sample of their clustering process](https://www.kaggle.com/iiyamaiiyama/clustering-agents?scriptVersionId=48346260). They didn't describe how the clusters were used, though. I guess they only combine episodes from agents in the same cluster. (This is possibly one of the things I did not handle well in my solution. As I mentioned previously, I should've used agent-based filtering instead of rank-based.)
+
+### 12th: Ken+digimagi (supervised)
+
+Team Ken+digimagi deserves this special mention and a gold medal because one of its members, Ken Miller, is the one who publishes [the notebook](https://www.kaggle.com/mlconsult/1149-ish-bot-rl-approximation) that inspired my solution (and a few others', I believe). They also use GDBT models.
+
+They also published [a simplified(?) notebook](https://www.kaggle.com/digimagi/12th-place-solution-ml-approach-lb-1395) of their training and agent creation process.
+
+They chose two of WeKick's agents as the target of imitation, and they have 1,154 features in their final model. They incorporate some of the ideas from three Japanese papers in this domain to craft the features. They reported that the velocity and acceleration statistics of the players or the ball did not prove to be a useful feature.
+
+The sample weights are higher when the action is different from the previous step.
+
+They trained their model using Kaggle notebooks, so they had to make some trade-offs in terms of model complexity and code simplicity (e.g., not using pandas in some cases).
