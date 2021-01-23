@@ -78,7 +78,7 @@ def training_step(self, batch, batch_idx: int) -> dict:
     return {'loss': loss}
 ```
 
-Now the number of data points is down by a lot. We'll be able to see another problem in the visualized data — we have multiple data points on the same step. For each `global_step`, `training_step` will ne called `n` times, with `n` being the number of batches to accumulate.
+Now the number of data points is down by a lot. We'll be able to see another problem in the visualized data — we have multiple data points on the same step. For each `global_step`, `training_step` will be called `n` times, with `n` being the number of batches to accumulate.
 
 ## Attempt #3 (Good for a single GPU)
 
@@ -163,6 +163,7 @@ def _should_log(self, flag):
     return False
 
 def training_step_end(self, outputs):
+    # Aggregate the losses from all GPUs
     loss = outputs["loss"].mean()
     self.train_loss_tracker.update(loss.detach())
     if self._should_log(outputs["log"]):
