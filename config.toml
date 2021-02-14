@@ -6,6 +6,11 @@ Paginate = 5
 googleAnalytics = "UA-24180048-3"
 hasCJKLanguage = false
 
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
 [params]
    author = "Ceshine Lee"
    bio = "Technical Notes from a Data Geek."
