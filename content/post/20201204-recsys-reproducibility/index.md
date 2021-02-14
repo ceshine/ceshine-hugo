@@ -5,9 +5,11 @@ title: "[Paper] Are We Really Making Much Progress?"
 description: "A Worrying Analysis of Recent Neural Recommendation Approaches"
 tags:
   - recsys
+  - paper
 keywords:
   - recsys
   - recommender
+  - paper
 url: /post/recsys-reproducibility/
 ---
 
