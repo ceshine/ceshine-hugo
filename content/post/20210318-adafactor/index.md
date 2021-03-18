@@ -148,11 +148,11 @@ One problem of this implementation is the naming of its class parameters. There 
 
 With `relative_step=True` and `warmup_init=False`, the learning rate will be a simple inverse-square root decay used by the paper:
 
-<div>$$\rho_t = min(10^{-2}, \frac{1}{\sqrt{t}}$$</div>
+<div>$$\rho_t = min(10^{-2}, \frac{1}{\sqrt{t}})$$</div>
 
 With `relative_step=True` and `warmup_init=True`, it adds a linear warmup stage to the schedule:
 
-<div>$$\rho_t = min(10^{-6} \dot t, \frac{1}{\sqrt{t}}$$</div>
+<div>$$\rho_t = min(10^{-6} \cdot t, \frac{1}{\sqrt{t}})$$</div>
 
 They are implemented in the `_get_lr` [static method](https://github.com/veritable-tech/transformers/blob/8dcc2dfc2bdbd2e4838c7aa3a1e1775a0d23de5a/src/transformers/optimization.py#L469):
 
