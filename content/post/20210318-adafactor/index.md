@@ -1,7 +1,7 @@
 ---
 slug: adafactor
 date: 2021-03-18T00:00:00.000Z
-title: "[Paper] Adafactor: Adaptive Learning Rates with Sublinear Memory Cost Noam"
+title: "[Paper] Adafactor: Adaptive Learning Rates with Sublinear Memory Cost"
 description: "Essential for fine-tuning T5 v1.1 and mT5 models"
 tags:
   - pytorch
@@ -20,21 +20,21 @@ url: /post/adafactor/
 
 ## Motivation
 
-The [Adafactor optimizer](https://arxiv.org/abs/1804.04235), in my experience, can provide much better convergence than fine-tuning the [T5 v1.1](https://github.com/google-research/text-to-text-transfer-transformer/blob/master/released_checkpoints.md#t511) and [mT5](https://arxiv.org/abs/2010.11934)[1] pre-trained models. However, I encountered problems when trying to use custom learning rate scheduler with the Adafactor implementation from the [huggingface/transformer](https://github.com/huggingface/transformers) library. I combed through the paper and the source code to find and fix the cause of the problem, and ended up making a [tiny contribution](https://github.com/huggingface/transformers/pull/9751) to the library.
+The [Adafactor optimizer](https://arxiv.org/abs/1804.04235), in my experience, can provide much better convergence than fine-tuning the [T5 v1.1](https://github.com/google-research/text-to-text-transfer-transformer/blob/master/released_checkpoints.md#t511) and [mT5](https://arxiv.org/abs/2010.11934)[1] pre-trained models. However, I encountered problems when using a custom learning rate scheduler with the Adafactor implementation from the [huggingface/transformer](https://github.com/huggingface/transformers) library. I combed through the paper and the source code to find and fix the cause of the problem, which turned into a [tiny contribution](https://github.com/huggingface/transformers/pull/9751) to the library.
 
-To further squeeze value from the time I've invested, I wrote this post to introduce the key ideas of the Adafactor optimizer and analyze the corresponding chunk of code in the huggingface/transformer implementation (which was taken from the [fairseq library](https://github.com/pytorch/fairseq/blob/master/fairseq/optim/adafactor.py)). Working examples as Kaggle notebooks are also provided : [T5 v1.1](https://www.kaggle.com/ceshine/preprocess-and-finetune-t5-1-1-full/) and [mT5](https://www.kaggle.com/ceshine/preprocess-and-finetune-mt5).
+To further squeeze value from the time I've invested, I wrote this post to introduce the key ideas of the Adafactor optimizer and analyze the corresponding chunk of code in the huggingface/transformer implementation (which was taken from the [fairseq library](https://github.com/pytorch/fairseq/blob/master/fairseq/optim/adafactor.py)). Working examples as Kaggle notebooks are also provided: [T5 v1.1](https://www.kaggle.com/ceshine/preprocess-and-finetune-t5-1-1-full/) and [mT5](https://www.kaggle.com/ceshine/preprocess-and-finetune-mt5).
 
-(Notes: For the original T5 pre-trained models[2], which was pre-trained with a mixture of unsupervised and supervised objectives, Adam or AdamW optimizers are enough to get good results.)
+(Notes: For the original T5 pre-trained models[2], which were pre-trained with a mixture of unsupervised and supervised objectives, Adam or AdamW optimizers are enough to get good results.)
 
 ## Overview
 
-The popular Adam[3] optimizer keeps two additional values for each parameter. One stores the momentum; one stores the exponentially smoothed squared gradients. Therefore, the memory requirement is tripled comparing to the vanilla SGD optimizer. Adafactor dramatically reduce this requirement (more than half) while retain comparable performance (tested on the WMT ’14 En→De translation task with the classic transformer seq2seq architecture).
+The popular Adam[3] optimizer keeps two additional values for each parameter. One stores the momentum; one stores the exponentially smoothed squared gradients. Therefore, the memory requirement is tripled comparing to the vanilla SGD optimizer. Adafactor dramatically reduces this requirement (more than half) while retaining comparable performance (tested on the WMT ’14 En→De translation task with the classic transformer seq2seq architecture).
 
-The authors of Adafactor firstly propose to **replace the full smoothed squared gradients matrix with a low-rank approximation**. This reduce the memory requirements for the square gradients from O(nm) to O(n+m).
+The authors of Adafactor firstly propose to **replace the full smoothed squared gradients matrix with a low-rank approximation**. This reduces the memory requirements for the square gradients from O(nm) to O(n+m).
 
-Secondly, Adafactor removes momentum entirely. This cause some training instability. The authors think that the out-of-date second moment accumulator (the exponential smoothing of the squared gradients) might be the cause. By **increasing the decay rate with time** (new value have higher importance) and **clipping the gradient update**, Adafactor can converge normally even without momentum.
+Secondly, Adafactor removes momentum entirely. This causes some training instability. The authors think that the out-of-date second-moment accumulator (the exponential smoothing of the squared gradients) might be the cause. By **increasing the decay rate with time** (new values have higher importance) and **clipping the gradient update**, Adafactor can converge normally even without momentum.
 
-Finally, Adafactor multiply the learning rate by the scale of the parameters (this is called “relative step size”). The authors showed that training with relative step sizes provides more robustness to differently scaled embedding parameters.
+Finally, Adafactor multiplies the learning rate by the scale of the parameters (this is called “relative step size”). The authors showed that training with relative step sizes provides more robustness to differently scaled embedding parameters.
 
 ## Factored Second Moment Estimation
 
@@ -63,13 +63,13 @@ def _approx_sq_grad(exp_avg_sq_row, exp_avg_sq_col):
     return torch.mm(r_factor.unsqueeze(-1), c_factor.unsqueeze(0))
 ```
 
-The above corresponds to $1/\hat{V}_t = 1/(R_tCt/1^\intercal_nR_t)$. The $(1 - \beta^{t}_2)$ part (a.k.a. bias correction) in Alg 1 has been removed due to a reformulation of $\beta^{t}_2$ in the later part of the paper.
+The above corresponds to $1/\hat{V}_t = 1/(R_tCt/1^\intercal_nR_t)$. The $(1 - \beta^{t}_2)$ part (a.k.a. bias correction) in Alg 1 has been removed due to a reformulation of $\beta^{t}_2$ in the latter part of the paper.
 
 ## Removing Momentum
 
-The authors demonstrated that fast decay of the second moment estimator has convergence problem, while slow decay has stability problem:
+The authors demonstrated that fast decay of the second moment estimator has convergence problems, while slow decay has stability problems:
 
-<div style="max-width: 300px; margin-left: auto; margin-right: auto;">{{< figure src="decay.png" caption="Table 1" >}}</div>
+<div style="max-width: 300px; margin-left: auto; margin-right: auto;">{{< figure src="decay-1.png" caption="Table 1" >}}</div>
 
 And the problem of slow decay is the larger-than-desired updates:
 
@@ -77,7 +77,7 @@ And the problem of slow decay is the larger-than-desired updates:
 
 ### Update Clipping
 
-One of he proposed solutions is clip the update according to the root-mean-square over all parameters in a weight matrix or vector:
+One of the proposed solutions is to clip the update according to the root-mean-square over all parameters in a weight matrix or vector:
 
 <div>$$RMS(U_t) = RMS_{x \in X}(u_{xt}) = \sqrt{Mean_{x \in X}(\frac{g^2_{xt}}{\hat{v_{xt}}})}$$</div>
 
@@ -89,7 +89,7 @@ def _rms(tensor):
     return tensor.norm(2) / (tensor.numel() ** 0.5)
 ```
 
-The tensor should already be unscaled (i.e. $\frac{g_{xt}}{\sqrt{v_{xt}}}$). The `.norm(2)` calculates the root sum squared, and `.numel() ** 0.5` convert it to the root mean squared.
+The tensor should already be unscaled (i.e., $\frac{g_{xt}}{\sqrt{v_{xt}}}$). The `.norm(2)` calculates the root sum squared, and `.numel() ** 0.5` convert it to the root mean squared.
 
 The update then is [clipped accordingly to a threshold](https://github.com/veritable-tech/transformers/blob/8dcc2dfc2bdbd2e4838c7aa3a1e1775a0d23de5a/src/transformers/optimization.py#L569) $d$:
 
@@ -100,7 +100,7 @@ update.div_((self._rms(update) / group["clip_threshold"]).clamp_(min=1.0))
 update.mul_(lr)
 ```
 
-This will effectively cap the unscaled update at $d$ (a horizontal line in Figure 1.).
+It will effectively cap the unscaled update at $d$ (a horizontal line in Figure 1.).
 
 ### Increasing Decay Parameter
 
@@ -114,15 +114,15 @@ This can be [implemented in a one-liner](https://github.com/veritable-tech/trans
 beta2t = 1.0 - math.pow(state["step"], group["decay_rate"])
 ```
 
-Note that $\hat{\beta}_{2t}$ has the reformulated one, which eliminate the need to do bias correction.
+Note that $\hat{\beta}_{2t}$ has been the reformulated, which eliminates the need to do bias correction.
 
 ## Relative Step Size
 
-Adafactor multiplies the given learning rate by the scale of the parameters, which is defined as the root-mean-square of its components. Therefore, parameter with bigger values gets bigger updates and vice versa:
+Adafactor multiplies the given learning rate by the scale of the parameters, which is defined as the root-mean-square of its components. Therefore, parameters with bigger values get bigger updates and vice versa:
 
 <div>$$ \alpha_t = max(\epsilon_2, RMS(X_{t−1})) \rho_t $$</div>
 
-The paper calls $\alpha_t$ the “absolute step size”, and $\rho_t$ the “relative step size”.
+The paper calls $\alpha_t$ the “absolute step size” and $\rho_t$ the “relative step size.”
 
 The relative step size is implemented [here](https://github.com/veritable-tech/transformers/blob/8dcc2dfc2bdbd2e4838c7aa3a1e1775a0d23de5a/src/transformers/optimization.py#L474):
 
@@ -132,7 +132,7 @@ if param_group["scale_parameter"]:
 return param_scale * rel_step_sz
 ```
 
-One important detail that one can easily get wrong (I did) is that the RMS is [calculated on a single parameter tensor](https://github.com/veritable-tech/transformers/blob/8dcc2dfc2bdbd2e4838c7aa3a1e1775a0d23de5a/src/transformers/optimization.py#L548) (can be a matrix or a vector). The learning rate is scaled by the magnitude of the entire weight matrix or vector, no the magnitude of a single parameter.
+One crucial detail that one can easily get wrong (I did) is that the RMS is [calculated on a single parameter tensor](https://github.com/veritable-tech/transformers/blob/8dcc2dfc2bdbd2e4838c7aa3a1e1775a0d23de5a/src/transformers/optimization.py#L548)(a matrix or a vector). The learning rate is scaled by the magnitude of the entire weight matrix or vector, not the magnitude of a single parameter.
 
 ```python
 state["RMS"] = self._rms(p_data_fp32)
@@ -144,7 +144,7 @@ Now we have the complete Adafactor algorithm:
 
 ## Confusing Parameter Naming
 
-One problem of this implementation is the naming of its class parameters. There are three parameters that controls the learning rate: `scale_parameter`, `warmup_init`, and `relative_step`. But in fact only the first parameter — `scale_parameter` — implements the relative step size in the last section. The latter two only controls the learning rate schedule.
+One problem of this implementation is the naming of its class parameters. There are three parameters that control the learning rate: `scale_parameter`, `warmup_init`, and `relative_step`. But in fact, only the first parameter — `scale_parameter` — implements the relative step size in the last section. The latter two only control the learning rate schedule.
 
 With `relative_step=True` and `warmup_init=False`, the learning rate will be a simple inverse-square root decay used by the paper:
 
@@ -167,11 +167,11 @@ As you can see, there's nothing to do with learning rate scaling by the magnitud
 
 ### Using Custom Learning Rate Schedule
 
-Astute readers might already notice that when `relative_step=False` and `warmup_init=False`, the `rel_step_size` is simply the learning rate given the user has given to the optimizer. We can use regular PyTorch learning rate scheduler to control that variable. My [pull request](https://github.com/huggingface/transformers/pull/9751) fixed a bug that prevent the variable to be incorrectly updated by Adafactor.
+Astute readers might already notice that when `relative_step=False` and `warmup_init=False`, the `rel_step_size` is simply the learning rate given the user has given to the optimizer. We can use regular PyTorch learning rate schedulers to control that variable. My [pull request](https://github.com/huggingface/transformers/pull/9751) fixed a bug that prevents the variable from being incorrectly updated by Adafactor.
 
 ## Working Examples
 
-I've written [some code](https://github.com/ceshine/finetuning-t5) that fine-tune T5 and mT5 models on NLI datasets using PyTorch Lightning. [This is where I set up the Adafactor optimizer](https://github.com/ceshine/finetuning-t5/blob/4ee255b3ed7c449ef5bd513cb8446c06f84708aa/mnli/train.py#L366):
+I've written [some code](https://github.com/ceshine/finetuning-t5) that fine-tunes T5 and mT5 models on NLI datasets using PyTorch Lightning. [This is where I set up the Adafactor optimizer](https://github.com/ceshine/finetuning-t5/blob/4ee255b3ed7c449ef5bd513cb8446c06f84708aa/mnli/train.py#L366):
 
 ```python
 optimizer = Adafactor(
@@ -199,9 +199,9 @@ scheduler = {
 }
 ```
 
-I've published a [Kaggle notebook](https://www.kaggle.com/ceshine/preprocess-and-finetune-t5-1-1-full/) that fine-tune the `google/t5-v1_1-base` model on the MultiNLI dataset and gets a competitive result. I've observed that my own learning rate schedule performs better than the inverse-square root decay recommended by the paper.
+I've published a [Kaggle notebook](https://www.kaggle.com/ceshine/preprocess-and-finetune-t5-1-1-full/) that fine-tunes the `google/t5-v1_1-base` model on the MultiNLI dataset and gets a competitive result. I've observed that my learning rate schedule performs better than the inverse-square root decay recommended by the paper.
 
-A [mT5 version](https://www.kaggle.com/ceshine/pytorch-lightning-finetune-mnli-pretrained-mt5) that further fine-tunes a MNLI-fine-tuned `google/mt5-base` model on a multi-lingual dataset is also available. Because of the low resource of the multi-lingual corpus, I froze the embedding matrix in this one to prevent overfitting.
+An [mT5 version](https://www.kaggle.com/ceshine/pytorch-lightning-finetune-mnli-pretrained-mt5) that further fine-tunes an MNLI fine-tuned `google/mt5-base` model on a multi-lingual dataset is also available. Because of the low resource of the multi-lingual corpus, I froze the embedding matrix in this one to prevent overfitting.
 
 ## References
 
