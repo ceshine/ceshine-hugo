@@ -2,7 +2,7 @@
 
 code {
   background: rgba(240, 240, 240, 0.7);
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 400;
   padding: 4px;
   border: none;
@@ -21,7 +21,7 @@ pre code {
   padding-bottom: 14px;
   display: block;
   color: #404040;
-  background: rgb(255, 255, 228);
+  background: rgb(250, 250, 250);
   border: none;
   box-shadow: inset 0 0 0 1px #e4ebf2;
   border-radius: 4px;
