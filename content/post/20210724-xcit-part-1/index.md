@@ -33,7 +33,7 @@ We're going to review the implementation details of the XCA block, the LPI block
 
 ## Cross-Covariance Attention(XCA) block
 
-The key($K=XW_k$) and query($Q=XW_q$) are both `N×C` matrices as in the vanilla transformer. However, instead of calculating the similarity between tokens ($QK^T$, a `N×N` matrix), the XCA calculates the similarities between channels/features ($K^TQ$, a `C×C` matrix). The latter is also known as the (unnormalized) [cross-covariance matrix](https://www.wikiwand.com/en/Cross-covariance_matrix) between `K` and `Q` (the notation is a bit different in the linked Wikipedia page because `X` and `Y` in that page are column vectors). That's where the name XCA comes from.
+The key($K=XW_k$) and query($Q=XW_q$) are both `N×C` matrices as in the vanilla transformer. However, instead of calculating the similarity between tokens ($QK^T$, an `N×N` matrix), the XCA calculates the similarities between channels/features ($K^TQ$, a `C×C` matrix). The latter is also known as the (unnormalized) [cross-covariance matrix](https://www.wikiwand.com/en/Cross-covariance_matrix) between `K` and `Q` (the notation is a slightly different in the linked Wikipedia page because `X` and `Y` in that page are column vectors). That's where the name XCA comes from.
 
 Now we move on to review the [XCA implementation in PyTorch](https://github.com/rwightman/pytorch-image-models/blob/763329f23f675626e657f012e633fca5ea0985ed/timm/models/xcit.py#L251). Let's take a look at the complete module. It's okay if you feel overwhelmed. We'll go through the implementation line by line in just a moment.
 
@@ -51,15 +51,15 @@ The second line computes the `Q`, `K`, `V` matrices. Similar to the vanilla tran
 qkv = self.qkv(x).reshape(B, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 4, 1)
 ```
 
-The `qkv` is a linear layer — `nn.Linear(dim, dim * 3, bias=qkv_bias)`. The result of `self.qkv(x)` is a `B×N×3C` tensor. It is then reshaped to `B×N×3xhx(C/h)`, and permuted to `3xB×hx(C/h)xN`.
+The `qkv` is a linear layer — `nn.Linear(dim, dim * 3, bias=qkv_bias)`. The result of `self.qkv(x)` is a `B×N×3C` tensor. It is then reshaped to `B×N×3xhx(C/h)` and permuted to `3xB×hx(C/h)xN`.
 
-The following line simply split the previous tensor to three `B×hx(C/h)xN` tensors:
+The following line simply split the previous tensor into three `B×hx(C/h)xN` tensors:
 
 ```python
 q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple)
 ```
 
-The `Q` and `K` matrices are $l2$-normalized. The paper claims that normalizing these two matrices “strongly enhanced the stability of training, especially when trained with a variable number of tokens”. Note that the normalization happens in the token dimension:
+The `Q` and `K` matrices are $l2$-normalized. The paper claims that normalizing these two matrices “strongly enhanced the stability of training, especially when trained with a variable number of tokens.” Note that the normalization happens in the token dimension:
 
 ```python
 q = torch.nn.functional.normalize(q, dim=-1)
@@ -74,9 +74,9 @@ attn = attn.softmax(dim=-1)
 attn = self.attn_drop(attn)
 ```
 
-`q @ k.transpose(-2, -1)` creates a `B×hx(C/h)x(C/h)` tensor. A Softmax is applied to the last dimension to create the attention vectors (in this case, how much attention a channel from query should pay to another channel from key). Then a dropout is applied to the tensors.
+`q @ k.transpose(-2, -1)` creates a `B×hx(C/h)x(C/h)` tensor. A Softmax is applied to the last dimension to create the attention vectors (in this case, how much attention a channel from the query should pay to another channel from the key). Then a dropout is applied to the tensors.
 
-Now the attention matrices is used as the filter of `1×1` convolutions on the value matrix:
+Now the attention matrices are used as the filters of `1×1` convolutions on the value matrix:
 
 ```python
 x = (attn @ v).permute(0, 3, 1, 2).reshape(B, N, C)
@@ -91,7 +91,7 @@ x = self.proj(x)
 x = self.proj_drop(x)
 ```
 
-That's it! This is how the XCA block work. I hope this code through help you better understand what's happening under the hood. The LPI block and class attention layer will be covered in part 2. Please stay tuned.
+That's it! This is how the XCA block works. I hope this walk-through helps you better understand what's happening under the hood. The LPI block and class attention layer will be covered in part 2. Please stay tuned.
 
 ## References
 
