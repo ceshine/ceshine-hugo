@@ -2,7 +2,7 @@
 slug: xcit-part-1
 date: 2021-07-24T00:00:00.000Z
 title: "[Notes] Understanding XCiT - Part 1"
-description: "Cross-Covariance Attention (XCA) Block"
+description: "Cross-Covariance Attention(XCA) Block"
 tags:
   - python
   - pytorch
@@ -25,7 +25,7 @@ XCiT: [Cross-Covariance Image Transformers](http://arxiv.org/abs/2106.09681)[1] 
 
 {{< figure src="figure-1.png" caption="[from [1]](http://arxiv.org/abs/2106.09681)" >}}
 
-XCiT replaces the self-attention layer in vision transformers with a Cross-Covariance Attention(XCA) block and a Local Patch Interaction(LPI) block. The XCA block can be understood as a “dynamic” `1×1` convolution layer, as the convolution filters depend on the input data. The LPI block is simply a depth-wise `3×3` convolutions.
+XCiT replaces the self-attention layer in vision transformers with a Cross-Covariance Attention(XCA) block and a Local Patch Interaction(LPI) block. The XCA block can be understood as a “dynamic” `1×1` convolution layer, as the convolution filters depend on the input data. The LPI block is simply depth-wise `3×3` convolution layers.
 
 There is also a class attention layer[2] when XCiT is trained for image classification.
 
@@ -51,9 +51,9 @@ The second line computes the `Q`, `K`, `V` matrices. Similar to the vanilla tran
 qkv = self.qkv(x).reshape(B, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 4, 1)
 ```
 
-The `qkv` is a linear layer — `nn.Linear(dim, dim * 3, bias=qkv_bias)`. The result of `self.qkv(x)` is a `B×N×3C` tensor. It is then reshaped to `B×N×3xhx(C/h)` and permuted to `3xB×hx(C/h)xN`.
+The `qkv` is a linear layer — `nn.Linear(dim, dim * 3, bias=qkv_bias)`. The result of `self.qkv(x)` is a `B×N×3C` tensor. It is then reshaped to `B×N×3xHx(C/H)` and permuted to `3xB×Hx(C/H)xN`.
 
-The following line simply split the previous tensor into three `B×hx(C/h)xN` tensors:
+The following line simply split the previous tensor into three `B×Hx(C/H)xN` tensors:
 
 ```python
 q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple)
@@ -74,7 +74,7 @@ attn = attn.softmax(dim=-1)
 attn = self.attn_drop(attn)
 ```
 
-`q @ k.transpose(-2, -1)` creates a `B×hx(C/h)x(C/h)` tensor. A Softmax is applied to the last dimension to create the attention vectors (in this case, how much attention a channel from the query should pay to another channel from the key). Then a dropout is applied to the tensors.
+`q @ k.transpose(-2, -1)` creates a `B×hx(C/H)x(C/H)` tensor. A Softmax is applied to the last dimension to create the attention vectors (in this case, how much attention a channel from the query should pay to another channel from the key). Then a dropout is applied to the tensors.
 
 Now the attention matrices are used as the filters of `1×1` convolutions on the value matrix:
 
@@ -82,7 +82,7 @@ Now the attention matrices are used as the filters of `1×1` convolutions on the
 x = (attn @ v).permute(0, 3, 1, 2).reshape(B, N, C)
 ```
 
-`attn @ v` creates a `B×hx(C/h)xN` tensor. The tensor is then permuted to `BxNxhx(C/h)` and then reshaped to `BxNxC`. Now we're back to the original shape!
+`attn @ v` creates a `B×Hx(C/H)xN` tensor. The tensor is then permuted to `BxNxHx(C/H)` and then reshaped to `BxNxC`. Now we're back to the original shape!
 
 Finally, a linear projection is applied on the tensor (with dropout) to mix the information from all heads:
 
@@ -96,4 +96,4 @@ That's it! This is how the XCA block works. I hope this walk-through helps you b
 ## References
 
 1. El-Nouby, A., Touvron, H., Caron, M., Bojanowski, P., Douze, M., Joulin, A., … Jegou, H. (2021). [XCiT: Cross-Covariance Image Transformers.](http://arxiv.org/abs/2106.09681)
-2. Wenhai Wang, Enze Xie, Xiang Li, Deng-Ping Fan, Kaitao Song, Ding Liang, Tong Lu, Ping Luo, and Ling Shao. (2021). [Pyramid vision transformer: A versatile backbone for dense prediction without convolutions.](http://arxiv.org/abs/2102.12122)
+2. Touvron, H., Cord, M., Sablayrolles, A., Synnaeve, G., & Jégou, H. (2021). [Going deeper with Image Transformers.](http://arxiv.org/abs/2103.17239)
