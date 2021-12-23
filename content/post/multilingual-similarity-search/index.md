@@ -190,7 +190,7 @@ Most predictions in these cases are actually not far from the correct one. In so
 
 **[NYTimes Notebook](https://github.com/ceshine/LASER/blob/master/notebooks/New%20York%20Times%20Multilingual%20Titles.ipynb)**.
 
-Similar to the [previous BERT post](https://github.com/ceshine/LASER), we use the RSS feeds from the New York Times to extract article titles. However, this time I used the Feedly API to read the RSS feeds, so you can try it on your end(no Feedly account is required):
+Similar to the [previous BERT post](https://medium.com/the-artificial-impostor/news-topic-similarity-measure-using-pretrained-bert-model-1dbfe6a66f1d), we use the RSS feeds from the New York Times to extract article titles. However, this time I used the Feedly API to read the RSS feeds, so you can try it on your end(no Feedly account is required):
 
 ```python
 def fetch_latest(feed_url, count=500):
