@@ -1,7 +1,7 @@
 ---
 slug: mpire-postgres-queries
 date: 2022-01-07T00:00:00.000Z
-title: "Using MPIRE to Parallelize PostgreSQL Queries"
+title: "Use MPIRE to Parallelize PostgreSQL Queries"
 description: "A case study for the high-level Python multiprocessing library"
 tags:
   - python
@@ -14,13 +14,13 @@ keywords:
 url: /post/mpire-postgres-queries/
 ---
 
-{{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/canal-boats-buildings-reflection-5488271/)" >}}
+{{< figure src="/post/sqlite-great-expectations/featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/canal-boats-buildings-reflection-5488271/)" >}}
 
 ## Introduction
 
 [Parallel programming is hard](https://blog.mi.hdm-stuttgart.de/index.php/2016/10/24/why-is-parallel-programming-so-hard-to-express/), and you probably should not use any low-level API to do it in most cases (I'd argue that Python's [built-in multiprocessing package](https://docs.python.org/3/library/multiprocessing.html) is low-level). I've been using [Joblib's Parallel class](https://joblib.readthedocs.io/en/latest/parallel.html) for tasks that are [embarrassingly parallel](https://en.wikipedia.org/wiki/Embarrassingly_parallel) and it works wonderfully.
 
-However, sometimes the tasks at hand is not simple enough for the Parallel class (e.g., you need to share something from the main process that is not pickle-able, or you want to maintain states in each child processes). I've recently found this library — [MPIRE (MultiProcessing Is Really Easy)](https://github.com/Slimmer-AI/mpire) — that significantly mitigates this problem of not having enough flexibility, while still having a high-level and user-friendly API.
+However, sometimes the task at hand is not simple enough for the Parallel class (e.g., you need to share something from the main process that is not pickle-able, or you want to maintain states in each child process). I've recently found this library — [MPIRE (MultiProcessing Is Really Easy)](https://github.com/Slimmer-AI/mpire) — that significantly mitigates this problem of not having enough flexibility, while still having a high-level and user-friendly API.
 
 In the next section, I'll share a case study for MPIRE that would be relevant to data scientists or data engineers who work with databases.
 
@@ -35,9 +35,9 @@ SELECT * FROM table_a WHERE create_time > TIMESTAMP '2021-01-01' and create_time
 SELECT * FROM table_a WHERE modified_time > TIMESTAMP '2021-01-01' and value_a < 100;
 ```
 
-(Note that in some simpler cases where the WHERE clauses share the same structure, we can combine the queries into one big query using a temporary table (details in this [Stack Overflow answer](https://stackoverflow.com/questions/65412161/execute-a-query-for-multiple-sets-of-parameters-with-psycopg2)). This approach would maximally utilize the database connection, but would require some post-processing of the results. We'll stick with the multi-query approach in the rest of the post as it is more expressive and flexible, despite some overhead on the database connection side.)
+(Note that in some simpler cases where the WHERE clauses share the same structure, we can combine the queries into one big query using a temporary table (details in this [Stack Overflow answer](https://stackoverflow.com/questions/65412161/execute-a-query-for-multiple-sets-of-parameters-with-psycopg2)). This approach would maximally utilize the database connection but would require some post-processing of the results. We'll stick with the multi-query approach in the rest of the post as it is more expressive and flexible, despite some overhead on the database connection side.)
 
-The program would waste a lot of time on waiting the database to return the query results if you run these queries sequentially in a single thread, especially when the machine making the queries is not in the same network as the database (e.g., when you're on your laptop running analysis on data in a cloud database). We'll have much higher throughput if we distribute and run the queries in multiple processes or threads. (In this case, multi-threading would suffice because the operations are I/O-bound, not CPU-bound.)
+The program would waste a lot of time waiting for the database to return the query results if you run these queries sequentially in a single thread, especially when the machine making the queries is not in the same network as the database (e.g., when you're on your laptop running analysis on data in a cloud database). We'll have a much higher throughput if we distribute and run the queries in multiple processes or threads. (In this case, multi-threading would suffice because the operations are I/O-bound, not CPU-bound.)
 
 ### Attempt 1: Using Joblib Parallel
 
