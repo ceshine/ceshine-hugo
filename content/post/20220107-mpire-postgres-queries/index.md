@@ -66,11 +66,11 @@ payloads = [("query here", ("val1", "val2")), ("query here", ("val3", "val4"))]
 results = Parallel(n_jobs=4)(delayed(run_query)(connect_text, query, args) for query, args in payloads)
 ```
 
-The problem of this solution is that it creates a new connection to the database in every function call (that runs a query) and destroy it afterwards. This creates significant overhead. More ideal way to handle this situation is to create one connection for each worker process/thread, and reuse that connection in every function call sent to the worker. This is not easily achievable in Joblib, as it does not allow you to create a persistent state in a worker.
+The problem with this solution is that it creates a new connection to the database in every function call (that runs a query) and destroys it afterward. This creates significant overhead. A more ideal way to handle this situation is to create one connection for each worker process/thread and reuse that connection in every function call sent to the worker. This is not easily achievable in Joblib, as it does not allow you to create a persistent state in a worker.
 
 ### Attempt 2: Using MPIRE
 
-[MPIRE's “worker state”](https://slimmer-ai.github.io/mpire/usage/workerpool/worker_state.html) let you initialize worker states with a `worker_init` function before any real work and clean up the states with a `worker_exit` function after all the work are finished.
+[MPIRE's “worker state”](https://slimmer-ai.github.io/mpire/usage/workerpool/worker_state.html) let you initialize worker states with a `worker_init` function before any real work and clean up the states with a `worker_exit` function after all the work is finished.
 
 Let's define the two helper functions:
 
@@ -110,7 +110,7 @@ with WorkerPool(
     )
 ```
 
-That's it! The API is almost as simple as Joblib Parallel, but also much powerful and versatile. There's a lot more useful features in MPIRE, which you can find out in [their well-written documentation](https://slimmer-ai.github.io/mpire/index.html).
+That's it! The API is almost as simple as Joblib Parallel, but also much powerful and versatile. There are a lot more useful features in MPIRE, which you can find out in [their well-written documentation](https://slimmer-ai.github.io/mpire/index.html).
 
 #### Alternative Solution
 
