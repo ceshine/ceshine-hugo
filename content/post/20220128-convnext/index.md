@@ -16,7 +16,7 @@ keywords:
 url: /post/convnext-notes/
 ---
 
-{{< figure src="../news-topic-similarity-measure/featuredImage.jpeg" caption="[credit](https://unsplash.com/photos/Oh15EWXAMvI)" >}}
+{{< figure src="featuredImage.jpg" caption="[credit](https://unsplash.com/photos/Oh15EWXAMvI)" >}}
 
 ## Introduction
 
