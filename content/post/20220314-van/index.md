@@ -20,7 +20,7 @@ url: /post/van-notes/
 
 ## Introduction
 
-At the start of 2022, we have a new pure convolution architecture ([ConvNext](/post/convnext-notes/))[1] that challenges the transformer architectures as a generic vision backbone. The new Visual Attention Network (VAN)[2] is yet another pure and simplistic convolution architecture that its creators claims to has achieve SOTA results with fewer parameters.
+At the start of 2022, we have a new pure convolution architecture ([ConvNext](/post/convnext-notes/))[1] that challenges the transformer architectures as a generic vision backbone. The new Visual Attention Network (VAN)[2] is yet another pure and simplistic convolution architecture that its creators claim to have achieved SOTA results with fewer parameters.
 
 <div style="max-width: 600px; margin-left: auto; margin-right: auto;">{{< figure src="fig-1.png" caption="Source: [2]" >}}</div>
 
@@ -28,17 +28,17 @@ What ConvNext tries to achieve is modernizing a standard ConvNet (ResNet) withou
 
 <div style="max-width: 600px; margin-left: auto; margin-right: auto;">{{< figure src="fig-2.png" caption="Source: [2]" >}}</div>
 
-The authors propose an attention module basd on this decomposition called “Large Kernel Attention.” This attention modules plays the central role in their Visual Attention Network, where LKA is surrounded by two 1x1 convolutions and a GELU activation. There are also two residual connections in each of the _L_ groups in each stage that are not shown in the figure. We'll learn more about the implementation details in the next section.
+The authors propose an attention module based on this decomposition called “Large Kernel Attention.” This attention module plays the central role in their Visual Attention Network, where LKA is surrounded by two 1x1 convolutions and a GELU activation. There are also two residual connections in each of the _L_ groups in each stage that are not shown in the figure. We'll learn more about the implementation details in the next section.
 
 <div style="max-width: 600px; margin-left: auto; margin-right: auto;">{{< figure src="fig-3.png" caption="Source: [2]" >}}</div>
 
 ## Code Analysis
 
-The authors have open-sourced [a VAN implementation for image classification on GitHub](https://github.com/Visual-Attention-Network/VAN-Classification). Generally spaking, the code is very readble. There are some parts that seems to be leftovers from a ViT-like model the author created this implementation from that contribute nothing to data flow. I'll skip those parts below to avoid confusions. The `_init_weights` parts are also skipped for brevity.
+The authors have open-sourced [a VAN implementation for image classification on GitHub](https://github.com/Visual-Attention-Network/VAN-Classification). Generally speaking, the code is very readable. There are some parts that seem to be leftovers from a ViT-like model the author created this implementation from that contribute nothing to the data flow. I'll skip those parts below to avoid confusion. The `_init_weights` parts are also skipped for brevity.
 
 ### Overall data flow
 
-Let's take a top-down view to the data flow have a general idea of what kinds of component are involved. (The `__init__` method is skipped for now.)
+Let's take a top-down view of the data flow to have a general idea of what kinds of components are involved. (The `__init__` method is skipped for now.)
 
 ```python
 class VAN(nn.Module):
@@ -66,11 +66,11 @@ class VAN(nn.Module):
 
 The `patch_embdd` module is the downsampling block, and the `block` module corresponds to the part that is enclosed in dotted lines in Fig 3. Each `block` contains _L_ groups of modules.
 
-The shape of `x` is `(B, C, H, W)` for `patch_embed` and `block`. The tensor is flattened and transposed into the shape of `(B, H*W, C)` and a layer normalization is **appied on the last (channel) dimension**. If it has not reached the last stage, the normalized tensor is then reshaped back into `(B, C, H, W)`. (This reshaping and transposing/permuting of the tensor might negatively affect the efficiency. The official implementation of ConvNext created a custom LayerNorm to avoid these operations altogether.)
+The shape of `x` is `(B, C, H, W)` for `patch_embed` and `block`. The tensor is flattened and transposed into the shape of `(B, H*W, C)` and a layer normalization is **applied on the last (channel) dimension**. If it has not reached the last stage, the normalized tensor is then reshaped back into `(B, C, H, W)`. (This reshaping and transposing/permuting of the tensor might negatively affect the efficiency. The official implementation of ConvNext created a custom LayerNorm to avoid these operations altogether.)
 
 ### Downsampling Layer
 
-I believe the name `OverlapPatchEmbed` is from the nomenclature of ViT-based models. It's just regular downsampling layer with a convolution with stride of 4 (the first layer) or 2 (the rest) and a batch normalization afterward. Note that unlike ConvNext, the “patches” overlaps with each other, hence the `Overlap` in the module name.
+I believe the name `OverlapPatchEmbed` is from the nomenclature of ViT-based models. It's just a regular downsampling layer with a convolution with a stride of 4 (the first layer) or 2 (the rest) and a batch normalization afterward. Note that, unlike ConvNext, the “patches” overlap with each other, hence the `Overlap` in the module name.
 
 ```python
 class OverlapPatchEmbed(nn.Module):
@@ -97,7 +97,7 @@ class OverlapPatchEmbed(nn.Module):
 
 ### Main Block
 
-[DropPath](https://github.com/rwightman/pytorch-image-models/blob/7c67d6aca992f039eece0af5f7c29a43d48c00e4/timm/models/layers/drop.py#L135) is taken from the [rwightman/pytorch-image-models](https://github.com/rwightman/pytorch-image-models/) library (a.k.a. _timm_). It randomly drops the entire sample from the tensor. Combined with a residual connection, this would mean nothing will be added to that sample, in effect skipping the entire layer. That's why this technnique is also called “stochastic depth.”
+[DropPath](https://github.com/rwightman/pytorch-image-models/blob/7c67d6aca992f039eece0af5f7c29a43d48c00e4/timm/models/layers/drop.py#L135) is taken from the [rwightman/pytorch-image-models](https://github.com/rwightman/pytorch-image-models/) library (a.k.a. _timm_). It randomly drops the entire sample from the tensor. Combined with a residual connection, this would mean nothing will be added to that sample, in effect skipping the entire layer. That's why this technique is also called “stochastic depth.”
 
 The two residual connections are marked by the two batch normalizations. The first residual block starts right before the first batch normalization and ends before the second. The second residual block comes right after the first block and ends after the MLP (CFF) module. Two scaling vectors are applied to the residuals channel-wise before they are added to the original values.
 
@@ -226,7 +226,7 @@ class SpatialAttention(nn.Module):
 
 ### VAN initialization
 
-Finally, let's circle back the the initialization of the VAN module. The only thing that might be a bit confusing is the `dpr` list. The idea is to increase the `DropPath` probability as we progress into later stages. We don't want to skip eariler stages because they process local information (e.g., edges) that are more essential than the global information processed in later stages.
+Finally, let's circle back to the initialization of the VAN module. The only thing that might be a bit confusing is the `dpr` list. The idea is to increase the `DropPath` probability as we progress into later stages. We don't want to skip earlier stages because they process local information (e.g., edges) that are more essential than the global information processed in later stages.
 
 ```python
 lass VAN(nn.Module):
@@ -287,7 +287,7 @@ lass VAN(nn.Module):
 
 ## Conclusion
 
-Visual Attention Network is elegantly designed and has very good performance and efficiency on paper. However, I wish there is some throughput benchmarking as in the ConvNext paper. The heavy use of depth-wise convolutions can siginificant drag down the training speed. I've already observed that the tiny version of VAN is not much faster than the small version in my preliminary experiments, probably because of the bottleneck in memory bandwidth instead of computation.
+Visual Attention Network is elegantly designed and has very good performance and efficiency on paper. However, I wish there is some throughput benchmarking as in the ConvNext paper. The heavy use of depth-wise convolutions can significantly drag down the training speed. I've already observed that the tiny version of VAN is not much faster than the small version in my preliminary experiments, probably because of the bottleneck in memory bandwidth instead of computation.
 
 Nonetheless, it's still very impressive that such simple architecture can achieve this level of accuracy. I'm looking forward to more research in this direction.
 
