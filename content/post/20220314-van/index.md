@@ -22,15 +22,15 @@ url: /post/van-notes/
 
 At the start of 2022, we have a new pure convolution architecture ([ConvNext](/post/convnext-notes/))[1] that challenges the transformer architectures as a generic vision backbone. The new Visual Attention Network (VAN)[2] is yet another pure and simplistic convolution architecture that its creators claims to has achieve SOTA results with fewer parameters.
 
-<div style="max-width: 450px; margin-left: auto; margin-right: auto;">{{< figure src="fig-1.png" caption="Source: [2]" >}}</div>
+<div style="max-width: 600px; margin-left: auto; margin-right: auto;">{{< figure src="fig-1.png" caption="Source: [2]" >}}</div>
 
 What ConvNext tries to achieve is modernizing a standard ConvNet (ResNet) without introducing any attention-based modules. VAN still has attention-based modules, but the attention weights are obtained from a large kernel convolution instead of a self-attention block. To overcome the high computation costs brought by a large kernel convolution, it is decomposed into three components: a spatial local convolution (depth-wise convolution), a spatial long-range convolution (depth-wise dilation convolution), and a channel convolution (1x1 point-wise convolution).
 
-<div style="max-width: 450px; margin-left: auto; margin-right: auto;">{{< figure src="fig-2.png" caption="Source: [2]" >}}</div>
+<div style="max-width: 600px; margin-left: auto; margin-right: auto;">{{< figure src="fig-2.png" caption="Source: [2]" >}}</div>
 
 The authors propose an attention module basd on this decomposition called “Large Kernel Attention.” This attention modules plays the central role in their Visual Attention Network, where LKA is surrounded by two 1x1 convolutions and a GELU activation. There are also two residual connections in each of the _L_ groups in each stage that are not shown in the figure. We'll learn more about the implementation details in the next section.
 
-<div style="max-width: 450px; margin-left: auto; margin-right: auto;">{{< figure src="fig-3.png" caption="Source: [2]" >}}</div>
+<div style="max-width: 600px; margin-left: auto; margin-right: auto;">{{< figure src="fig-3.png" caption="Source: [2]" >}}</div>
 
 ## Code Analysis
 
@@ -291,7 +291,7 @@ Visual Attention Network is elegantly designed and has very good performance and
 
 Nonetheless, it's still very impressive that such simple architecture can achieve this level of accuracy. I'm looking forward to more research in this direction.
 
-<div style="max-width: 450px; margin-left: auto; margin-right: auto;">{{< figure src="table-1.png" caption="Source: [2]" >}}</div>
+<div style="max-width: 600px; margin-left: auto; margin-right: auto;">{{< figure src="table-1.png" caption="Source: [2]" >}}</div>
 
 ## References
 
