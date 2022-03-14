@@ -22,7 +22,7 @@ url: /post/streamlit-deployment/
 
 Thankfully, Randy Zwitch(@randyzwitch) from Streamlit pointed out the problem to me on Twitter:
 
-{{< single_tweet 1368917428911083523 >}}
+*(Tweet removed)*
 
 By correctly caching the FAISS index and creating a separate API server to serve the PyTorch model (to support other use cases), I managed to increase the speed dramatically  and memory consumption of the app (now only need to allocate a most 600MB of memory in total):
 
@@ -86,13 +86,13 @@ The following is taken from this script, with some modifications (I put the sent
 ```python
 @st.cache(allow_output_mutation=True)
 def load_data():
-    conn = sqlite3.connect("data/news.sqlite")    
+    conn = sqlite3.connect("data/news.sqlite")
     full_ids = joblib.load("data/ids.jbl")
     index = faiss.read_index("data/index.faiss")
     default_date_range = [datetime.date(2018, 11, 28), datetime.date.today()]
     encoder = SentenceEncoder(
         "streamlit_model/", device="cpu"
-    ).eval()    
+    ).eval()
     return conn, full_ids, index, default_date_range, encoder
 ```
 
