@@ -25,25 +25,25 @@ Recall that an one-dimensional Taylor series is an expansion of a real function 
 
 <div>$$f(x) = f(a) + f'(a)(x-a) + \frac{f''(a)}{2!}(x-a)^2 + .. + \frac{f^{n}(a)}{n!}(x-a)^n + ...$$</div>
 
-We can approximate the cross entropy loss using the Taylor series (a.k.a. Taylor expansion) using $a = 1$:
+We can approximate the cross-entropy loss using the Taylor series (a.k.a. Taylor expansion) using $a = 1$:
 
 <div>$$f(x) = -log(x) = 0 + (-1)(1)^{-1}(x-1) + (-1)^2(1)^{-2}\frac{(x-1)^2}{2} + ... \\ = \sum^{\infty}_{j=1}(-1)^j\frac{(j-1)!}{j!}(x-1)^{j} = \sum^{\infty}_{j=1}\frac{(1-x)^{j}}{j} $$</div>
 
-We can get the expansion for the focal loss simply by multiplying the cross entropy loss series by $(1-x)^\gamma$:
+We can get the expansion for the focal loss simply by multiplying the cross-entropy loss series by $(1-x)^\gamma$:
 
 {{< figure src="eq-1.png" caption="Log loss and Focal loss[1] (Note: $x = P_t$)" >}}
 
-The main idea of this paper is to **adjust the polynomial coefficients for some of the polynomial bases** $(1 - P_t)^j$, which are $1/j$ in the above expansions. Experiments show that adjusting the polynomial coefficient for the first polynomial base ($(1 - P_t)$ for cross entropy loss and $(1 - P_t)^{\gamma}$ for focal loss) is enough to get performance boost while requires minimal hyper-parameter tuning (the paper calls it the ***Poly-1*** formulation).
+The main idea of this paper is to **adjust the polynomial coefficients for some of the polynomial bases** $(1 - P_t)^j$, which are $1/j$ in the above expansions. Experiments show that adjusting the polynomial coefficient for the first polynomial base ($(1 - P_t)$ for cross-entropy loss and $(1 - P_t)^{\gamma}$ for focal loss) is enough to get a performance boosts while requires minimal hyper-parameter tuning (the paper calls it the ***Poly-1*** formulation).
 
 <div style="max-width: 750px; margin-left: auto; margin-right: auto;">{{< figure src="fig-1.png" caption="Source: [1]" >}}</div>
 
 ## How and why does it work
 
-<div style="max-width: 700px; margin-left: auto; margin-right: auto;">{{< figure src="eq-2.png" caption="The gradient of cross entropy loss [1]" >}}</div>
+<div style="max-width: 700px; margin-left: auto; margin-right: auto;">{{< figure src="eq-2.png" caption="The gradient of cross-entropy loss [1]" >}}</div>
 
-As you can see from the above equation, the gradient for the first polynomial term is a constant value of 1. That means the value of $P_t$ does not affect it at all. The sheer appearance of an example of that target class in the training batch will contribute a gradient of 1 from this term. In other words, this term is simply counting class occurrences, and will be swayed by the majority class, especially when the dataset is highly imbalanced.
+As you can see from the above equation, the gradient for the first polynomial term is a constant value of 1. That means the value of $P_t$ does not affect it at all. The sheer appearance of an example of that target class in the training batch will contribute a gradient of 1 from this term. In other words, this term is simply counting class occurrences and will be swayed by the majority class, especially when the dataset is highly imbalanced.
 
-You'd think that we'd want to reduce the coefficient for the first term whenever the dataset is imbalanced. But it is not always the case. The paper shows that increasing the coefficient boost the accuracy on ImageNet-21K from `45.8` to `46.4`. Their theory is that the model trained with cross entropy loss is not confident enough, and putting more emphasis on the majority classes helps the model to gain confidence.
+You'd think that we'd want to reduce the coefficient for the first term whenever the dataset is imbalanced. But it is not always the case. The paper shows that increasing the coefficient boost the accuracy on ImageNet-21K from `45.8` to `46.4`. Their theory is that the model trained with cross-entropy loss is not confident enough, and putting more emphasis on the majority classes helps the model to gain confidence.
 
 <div style="max-width: 750px; margin-left: auto; margin-right: auto;">{{< figure src="fig-2.png" caption="Source: [1]" >}}</div>
 
@@ -54,7 +54,7 @@ For another imbalanced dataset (COCO), reducing the coefficient of the first ter
 
 ## PyTorch Implementations
 
-Because only the first polynomial term is modified in Poly-1 losses, we can divide the loss into two parts: the regular loss value and the correcting value for the first term. Here's [an implementation of Poly-1 Cross Entropy Loss published by Abdulla Huseynov](https://github.com/abhuse/polyloss-pytorch/blob/b9b2fb398e8f30f156cb8d2118b15b3888034b19/polyloss.py):
+Because only the first polynomial term is modified in Poly-1 losses, we can divide the loss into two parts: the regular loss value and the correcting value for the first term. Here's [an implementation of Poly-1 cross-entropy Loss published by Abdulla Huseynov](https://github.com/abhuse/polyloss-pytorch/blob/b9b2fb398e8f30f156cb8d2118b15b3888034b19/polyloss.py):
 
 ```python
 class Poly1CrossEntropyLoss(nn.Module):
