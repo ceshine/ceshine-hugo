@@ -10,7 +10,7 @@ keywords:
 url: /post/sphinx-python-doc/
 ---
 
-{{< figure src="../streamlit-deployment/featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/people-religion-art-statue-street-3299174/)" >}}
+{{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/people-religion-art-statue-street-3299174/)" >}}
 
 ## Motivation
 

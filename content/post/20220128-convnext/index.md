@@ -7,6 +7,7 @@ tags:
   - python
   - pytorch
   - cv
+  - deep_learning
 keywords:
   - python
   - pytorch

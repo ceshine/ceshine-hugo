@@ -17,7 +17,7 @@ keywords:
 url: /post/xcit-part-1/
 ---
 
-{{< figure src="../news-topic-similarity-measure/featuredImage.jpeg" caption="[credit](https://unsplash.com/photos/godmBw_gLDg)" >}}
+{{< figure src="featuredImage.jpeg" caption="[credit](https://unsplash.com/photos/godmBw_gLDg)" >}}
 
 ## Overview
 

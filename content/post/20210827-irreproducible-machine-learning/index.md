@@ -12,7 +12,7 @@ keywords:
 url: /post/irreproducible-machine-learning/
 ---
 
-{{< figure src="/post/text-annotation-2/featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/mountains-alps-mountaineering-cold-4695049/)" >}}
+{{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/mountains-alps-mountaineering-cold-4695049/)" >}}
 
 I just read this (draft) paper named “(Ir)Reproducible Machine Learning: A Case Study” ([blog post](https://reproducible.cs.princeton.edu); [paper](https://reproducible.cs.princeton.edu/irreproducibility-paper.pdf)). It reviewed 15 papers that were focusing on predicting civil war and evaluated using a train-test split. Out of these 15 papers:
 
