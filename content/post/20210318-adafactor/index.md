@@ -30,7 +30,7 @@ To further squeeze value from the time I've invested, I wrote this post to intro
 
 The popular Adam[3] optimizer keeps two additional values for each parameter. One stores the momentum; one stores the exponentially smoothed squared gradients. Therefore, the memory requirement is tripled comparing to the vanilla SGD optimizer. Adafactor dramatically reduces this requirement (more than half) while retaining comparable performance (tested on the WMT ’14 En→De translation task with the classic transformer seq2seq architecture).
 
-The authors of Adafactor firstly propose to **replace the full smoothed squared gradients matrix with a low-rank approximation**. This reduces the memory requirements for the square gradients from O(nm) to O(n+m).
+The authors of Adafactor firstly propose to **replace the full smoothed squared gradients matrix with a low-rank approximation**. This reduces the memory requirements for the squared gradients from O(nm) to O(n+m).
 
 Secondly, Adafactor removes momentum entirely. This causes some training instability. The authors think that the out-of-date second-moment accumulator (the exponential smoothing of the squared gradients) might be the cause. By **increasing the decay rate with time** (new values have higher importance) and **clipping the gradient update**, Adafactor can converge normally even without momentum.
 
@@ -132,7 +132,7 @@ if param_group["scale_parameter"]:
 return param_scale * rel_step_sz
 ```
 
-One crucial detail that one can easily get wrong (I did) is that the RMS is [calculated on a single parameter tensor](https://github.com/veritable-tech/transformers/blob/8dcc2dfc2bdbd2e4838c7aa3a1e1775a0d23de5a/src/transformers/optimization.py#L548)(a matrix or a vector). The learning rate is scaled by the magnitude of the entire weight matrix or vector, not the magnitude of a single parameter.
+The $RMS(X_{t−1})$ notation might make you think that the RMS is calculated on the parameters of the entire model. But the RMS is in fact [calculated on a single parameter tensor](https://github.com/veritable-tech/transformers/blob/8dcc2dfc2bdbd2e4838c7aa3a1e1775a0d23de5a/src/transformers/optimization.py#L548) (a matrix or a vector). This makes sense because we want the learning rate scale to closely follow the scale of the parameters. (The `p_data_fp32` below is a tensor.)
 
 ```python
 state["RMS"] = self._rms(p_data_fp32)
