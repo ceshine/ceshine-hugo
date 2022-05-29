@@ -146,7 +146,7 @@ Now we have the complete Adafactor algorithm:
 
 One problem of this implementation is the naming of its class parameters. There are three parameters that control the learning rate: `scale_parameter`, `warmup_init`, and `relative_step`. But in fact, only the first parameter — `scale_parameter` — implements the relative step size in the last section. The latter two only control the learning rate schedule.
 
-With `relative_step=True` and `warmup_init=False`, the learning rate will be a simple inverse-square root decay used by the paper:
+With `relative_step=True` and `warmup_init=False`, the learning rate will use a simple inverse-square root decay used by the paper:
 
 <div>$$\rho_t = min(10^{-2}, \frac{1}{\sqrt{t}})$$</div>
 
@@ -167,7 +167,7 @@ As you can see, there's nothing to do with learning rate scaling by the magnitud
 
 ### Using Custom Learning Rate Schedule
 
-Astute readers might already notice that when `relative_step=False` and `warmup_init=False`, the `rel_step_size` is simply the learning rate given the user has given to the optimizer. We can use regular PyTorch learning rate schedulers to control that variable. My [pull request](https://github.com/huggingface/transformers/pull/9751) fixed a bug that prevents the variable from being incorrectly updated by Adafactor.
+Astute readers might already notice that when `relative_step=False` and `warmup_init=False`, the `rel_step_size` is simply the learning rate the user has given to the optimizer. We can use regular PyTorch learning rate schedulers to control that variable. My [pull request](https://github.com/huggingface/transformers/pull/9751) fixed a bug that prevents the variable from being incorrectly updated by Adafactor.
 
 ## Working Examples
 
