@@ -3,7 +3,7 @@ languageCode = "en"
 title = "Veritable Tech Blog"
 theme = "cactus-plus"
 Paginate = 5
-googleAnalytics = "UA-24180048-3"
+googleAnalytics = "G-HE2HBKGF2H"
 hasCJKLanguage = false
 
 [markup]
