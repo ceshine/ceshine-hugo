@@ -24,25 +24,27 @@ url: /post/MaxViT/
 
 <div style="max-width: 700px; margin-left: auto; margin-right: auto;">{{< figure src="swin-attention.png" caption="Source: [2]" >}}</div>
 
-The Swin Transformer[2] restricts the attention to a local shifted non-overlapping windows, which reduces the compute complexity to linear to the input size and improves the model performance on tasks that rely heavily on local information. However, the capacity of window-based attention is limited due to the loss of non-locality. As a result, it does not scale well on larger data sets, such as ImageNet-21K and JFT.
+The Swin Transformer[2] uses local shifted non-overlapping windows to restrict attention, which reduces the computational complexity and improves performance on tasks that require local information. However, the window-based attention has limited capacity due to the loss of non-locality, making it difficult to scale on larger datasets like ImageNet-21K and JFT.
 
 <div style="max-width: 700px; margin-left: auto; margin-right: auto;">{{< figure src="Max-SA-1.png" caption="Multi-axis self-attention (Max-SA) [1]" >}}</div>
 
-The first part of the multi-axis attention(Max-SA) is the **block attention**, which uses local attention window of fixed size to conduct local interactions. It is equivalent to the Swin attention without shifting windows. It reshapes the input tensor of shape `$(H, W, C)$` to `$(\frac{H}{P} \times \frac{W}{P},P \times P, C)$` and applies attention in the second dimension (`$P \times P$`) (P is the window size).
+The first part of Max-SA is **block attention**, which involves using a local attention window of a fixed size to facilitate local interactions. This is similar to Swin attention, but without shifting windows. It reshapes the input tensor of shape `$(H, W, C)$` to `$(\frac{H}{P} \times \frac{W}{P},P \times P, C)$` and applies attention on the second dimension (`$P \times P$`) (P is the window size).
 
 The second part of Max-SA is what makes it unique (and also confusing). It is the **grid attention**, which performs sparse global attention. The input tensor is reshaped to `$(G \times G, \frac{H}{G} \times \frac{W}{G}, C)$`, but this time, the attention is applied on the **first dimension** (`$G \times G$`) (G is the grid size). The size of attention window is therefore also fixed, making both the compute complexity of both the block attention and grid attention linear to the input size.
 
+(Throughout this article, I use the terms "pixel" and "element" interchangeably to denote a single element in the 2D space.)
+
 The figure above illustrates an example of applying Max-SA on a 2D input. The window size (P) and grid size (G) are both 4. The size of the input tensor is `$(8, 8, 1)$`. The block attention split the tensor into 4 blocks of 4 by 4 windows (`$(2 \times 2, 4 \times 4, 1)$`), and the attention is applied within elements of the same color. The grid attention interlaces `$\frac{8}{4} \times \frac{8}{4} = 4$` 4 by 4 grids on the input tensor,and the attention is applied within each 4 by 4 grid.
 
-The paper calls the `$\frac{H}{G} \times \frac{W}{G}` local tensors _windows_ of adaptive size, which is confusing because the elements within a window do not have any interaction in the grid attention. It is simply the size of the tensor that contains exactly one element from each grid. (I use "pixel" and "element" interchangeably to denote a single element in the 2D space in this article.)
+The paper refers to the local `$\frac{H}{G} \times \frac{W}{G}` local tensors as "windows" of adaptive size, which can be confusing since the elements within a window do not interact with each other in the grid attention. Rather, a "window" here simply means to the size of the tensor that contains exactly one element from each grid.
 
 ### On the "globalness" of Max-SA
 
-Please note that Max-SA, while having a _global_ grid attention, does not necessarily has a receptive field of the whole image. For example, if the input size is `$(18, 18, 1)$`, the block size is 3, and the grid size is 3, then each element of the Max-SA attention's output can only see `$(9, 9, 1)$` pixels or elements. The input tensor is partitioned into `$6 \times 6 = 36$` blocks of 3 by 3 windows in the block attention, and the grid attention divides the windows into two groups, each has 18 windows. The information can only be exchanged within the two groups.
+Although Max-SA has a _global_ grid attention, its receptive field for the entire image is not guaranteed. For example, if the input size is `$(18, 18, 1)$`, the block size is 3, and the grid size is 3, then each element of the Max-SA attention's output can only see `$(9, 9, 1)$` pixels or elements. The input tensor is partitioned into `$6 \times 6 = 36$` blocks of 3 by 3 windows in the block attention. The grid attention divides the windows into two groups, each with 18 windows, and information can only be exchanged within these groups.
 
-The downsampling stage and the convolutions added in MaxViT architecture can help to increase the receptive field to the whole image, but when using independently, you need to remember that the Max-SA attention is not necessarily global, which is different from the Swin attention, which allows exchanging information with neighboring windows.
+The MaxViT architecture utilizes downsampling stages and convolutions to increase the receptive field to the entire image. However, when used independently, it's important to note that the Max-SA attention is not always global, unlike the Swin attention that can exchange information with neighboring windows.
 
-The point of grid attention is not being able to attend to the whole image, but to allow attending to far-away pixels without increasing the compute complexity. It is not wise to stack multiple layers of Max-SA attentions with the same hyper-parameters as the receptive field will not necessarily increase.
+The grid attention allows attending to far-away pixels without increasing the compute complexity, but it doesn't attend to the entire image. It's not recommended to stack multiple layers of Max-SA attentions with the same hyper-parameters because the receptive field may not increase.
 
 ## MaxViT Architecture
 
