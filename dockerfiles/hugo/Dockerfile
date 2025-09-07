@@ -1,12 +1,21 @@
-FROM ubuntu:14.04
+FROM alpine:3.18
 
-RUN apt-get update -q && apt-get install -y curl
-RUN curl -L -o /tmp/hugo.tar.gz https://github.com/spf13/hugo/releases/download/v0.20/hugo_0.20_Linux-64bit.tar.gz
-RUN tar zxvf /tmp/hugo.tar.gz -C /tmp  && mv /tmp/hugo_0.20_linux_amd64/hugo_0.20_linux_amd64 /usr/local/bin/hugo
+ARG HUGO_VERSION=0.149.1
+# The extended version has built-in SASS/SCSS support.
+ARG HUGO_BINARY=hugo_extended_${HUGO_VERSION}_linux-amd64.tar.gz
 
-# VOLUME ["/var/www/blog"]
+# Install Hugo
+RUN apk add --no-cache curl \
+    && curl -L -o /tmp/hugo.tar.gz https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/${HUGO_BINARY} \
+    && tar zxvf /tmp/hugo.tar.gz -C /usr/local/bin \
+    && rm /tmp/hugo.tar.gz \
+    && apk del curl
 
-RUN apt-get install -y python-pygments
-ENTRYPOINT ["hugo"]
-#CMD ["-w", "-s", "/src/blog", "-d", "/var/www/blog"]
-CMD ["server", "-w", "-s", "/src/blog", "--bind=0.0.0.0", "--appendPort=false", "-v", "-b", "https://blog.ceshine.net", "--disableLiveReload"]
+# Set the working directory
+WORKDIR /src
+
+# Expose the default Hugo port
+EXPOSE 1313
+
+# Start the Hugo server, building drafts and unpublished content
+CMD ["server", "--bind=0.0.0.0", "-D"]
