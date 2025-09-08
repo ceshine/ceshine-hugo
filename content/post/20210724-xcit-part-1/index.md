@@ -17,11 +17,11 @@ keywords:
 url: /post/xcit-part-1/
 ---
 
-{{< figure src="featuredImage.jpeg" caption="[credit](https://unsplash.com/photos/godmBw_gLDg)" >}}
+{{< figure src="/post/news-topic-similarity-measure/featuredImage.jpeg" caption="[credit](https://unsplash.com/photos/godmBw_gLDg)" >}}
 
 ## Overview
 
-XCiT: [Cross-Covariance Image Transformers](http://arxiv.org/abs/2106.09681)[1] is a paper from Facebook AI that proposes a “transposed” version of self-attention that operates across feature channels rather than tokens. This cross-covariance attention has linear complexity in the number of tokens (the original self-attention has quadratic complexity). When used on images as in vision transformers, this linear complexity allows the model to process images of higher resolutions and split the images into smaller patches, which are both shown to improve performance.
+XCiT: [Cross-Covariance Image Transformers](http://arxiv.org/abs/2106.09681)\[1\] is a paper from Facebook AI that proposes a “transposed” version of self-attention that operates across feature channels rather than tokens. This cross-covariance attention has linear complexity in the number of tokens (the original self-attention has quadratic complexity). When used on images as in vision transformers, this linear complexity allows the model to process images of higher resolutions and split the images into smaller patches, which are both shown to improve performance.
 
 {{< figure src="figure-1.png" caption="[from [1]](http://arxiv.org/abs/2106.09681)" >}}
 

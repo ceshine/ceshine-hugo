@@ -16,7 +16,7 @@ keywords:
 url: /post/van-notes/
 ---
 
-{{< figure src="featuredImage.jpg" caption="[credit](https://unsplash.com/photos/VULVydw3nV0)" >}}
+{{< figure src="/post/replicate-conda-environment-in-docker/featuredImage.jpg" caption="[credit](https://unsplash.com/photos/VULVydw3nV0)" >}}
 
 ## Introduction
 

@@ -17,7 +17,7 @@ keywords:
 url: /post/polyloss/
 ---
 
-{{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/stained-glass-spiral-circle-pattern-1181864/)" >}}
+{{< figure src="/post/FiveThirtyEight-model/featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/stained-glass-spiral-circle-pattern-1181864/)" >}}
 
 ## Introduction
 

@@ -17,7 +17,7 @@ keywords:
 url: /post/xcit-part-2/
 ---
 
-{{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/cat-sweet-kitty-animals-feline-323262/)" >}}
+{{< figure src="/post/spacy-sentencizer/featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/cat-sweet-kitty-animals-feline-323262/)" >}}
 
 In [Part 1](/post/xcit-part-1), we introduced the XCiT architecture and reviewed the implementation of the Cross-Covariance Attention(XCA) block. In this Part 2, we'll review the implementation of the Local Patch Interaction(LPI) block and the Class Attention layer.
 
