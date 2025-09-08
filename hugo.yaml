@@ -20,6 +20,11 @@ markup:
 taxonomies:
   tag: tags
 
+
+services:
+  disqus:
+    shortname: "ceshine-lis-blog"
+
 menu:
   main:
     - name: Archive
@@ -47,6 +52,8 @@ params:
   ShowAllPagesInArchive: true
   ShowPageNums: true
   ShowToc: true
+  comments: true
+  disqusShortname: "ceshine-lis-blog"
 
   homeInfoParams:
     Title: "Technical Notes from Ceshine Lee"
@@ -68,7 +75,6 @@ params:
   enableRSS: true
   enableToc: true
   enableDisqus: true
-  disqusShortname: "ceshine-lis-blog"
   githubName: "ceshine"
   enableSummary: true
   useDescriptionReplaceSummary: true
