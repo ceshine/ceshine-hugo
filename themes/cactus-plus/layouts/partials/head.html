@@ -1,46 +1,49 @@
 <!DOCTYPE html>
 <html {{ with .Site.LanguageCode }}lang="{{ . }}" {{ end }}>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="{{ .Permalink }}" />
+    <link rel="canonical" href="{{ .Permalink }}" itemprop="url" />
+    <meta name="url" content="{{ .Permalink }}" />
+    {{ if .Site.Params.enableTwitterCard }} {{ partial "twitter-cards.html" . }}
+    {{ partial "og-tags.html" . }} {{ end }} {{ with .Site.Params.author }}
+    <meta name="author" content="{{ . }}" />
+    {{ end }}
+    <meta itemprop="name" content="{{ .Title }}" />
+    <meta property="og:site_name" content="{{ .Site.Title }}" />
+    {{ with .Site.Params.description }}
+    <meta name="description" content="{{ . }}" />
+    {{ end }} {{ hugo.Generator }}
+    <title>
+      {{ if .IsHome }}{{ .Title }}{{ else }}{{ .Title }} &middot; {{ .Site.Title
+      }}{{ end }}
+    </title>
+    <link rel="shortcut icon" href="{{ .Site.BaseURL }}images/favicon.ico" />
 
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<base href="{{ .Permalink }}">
-  <link rel="canonical" href="{{ .Permalink }}" itemprop="url" /> 
-	<meta name="url" content="{{ .Permalink }}" />
-	{{ if .Site.Params.enableTwitterCard }}
-	{{ partial "twitter-cards.html" . }}
-	{{ partial "og-tags.html" . }}
-	{{ end }}
-	{{ with .Site.Params.author }}
-	<meta name="author" content="{{ . }}">{{ end }}
-	<meta itemprop="name" content="{{ .Title }}" />
-	<meta property="og:site_name" content="{{ .Site.Title }}" />
-	{{ with .Site.Params.description }}
-	<meta name="description" content="{{ . }}">{{ end }}
-	{{ .Hugo.Generator }}
-	<title>{{ if .IsHome }}{{ .Title }}{{ else }}{{ .Title }} &middot; {{ .Site.Title }}{{ end }}</title>
-	<link rel="shortcut icon" href="{{ .Site.BaseURL }}images/favicon.ico">
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,700&family=Roboto:wght@400;700&family=Source+Code+Pro&display=swap"
+      rel="stylesheet"
+    />
 
-	<link rel="preconnect" href="https://fonts.gstatic.com">
-	<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,700&family=Roboto:wght@400;700&family=Source+Code+Pro&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="{{ .Site.BaseURL }}css/style.css" />
+    <link rel="stylesheet" href="{{ .Site.BaseURL }}css/highlight.css" />
 
-	<link rel="stylesheet" href="{{ .Site.BaseURL }}css/style.css">
-	<link rel="stylesheet" href="{{ .Site.BaseURL }}css/highlight.css">
-
-	{{ if eq .Site.Params.iconFont "font-awesome" }}
-	<link rel="stylesheet" href="{{ .Site.BaseURL }}css/font-awesome.min.css">
-	{{ else }}
-	<link rel="stylesheet" href="{{ .Site.BaseURL }}css/monosocialiconsfont.css">
-	{{ end }}
-
-	{{ if .Site.Params.enableRSS }}
-	<link href="{{ .Site.RSSLink }}" rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" />
-	{{ end }}
-
-	{{ range .Site.Params.customCSS }}
-	<link rel="stylesheet" href="{{ $.Site.BaseURL }}{{ . }}">
-	{{ end }}
-
-	{{ partial "mathjax_support.html" . }}
-</head>
+    {{ if eq .Site.Params.iconFont "font-awesome" }}
+    <link rel="stylesheet" href="{{ .Site.BaseURL }}css/font-awesome.min.css" />
+    {{ else }}
+    <link
+      rel="stylesheet"
+      href="{{ .Site.BaseURL }}css/monosocialiconsfont.css"
+    />
+    {{ end }} {{ if .Site.Params.enableRSS }} {{ with .OutputFormats.Get "rss"
+    }} {{ printf `
+    <link rel="%q" type="%q" href="%q" title="%q" />
+    ` .Rel .MediaType.Type .RelPermalink site.Title | safeHTML }} {{ end }} {{
+    end }} {{ range .Site.Params.customCSS }}
+    <link rel="stylesheet" href="{{ $.Site.BaseURL }}{{ . }}" />
+    {{ end }} {{ partial "mathjax_support.html" . }}
+  </head>
+</html>
