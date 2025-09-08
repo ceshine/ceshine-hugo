@@ -1,0 +1,47 @@
+baseURL: "https://blog.ceshine.net/"
+languageCode: "en"
+title: "Veritable Tech Blog"
+theme: "PaperMod"
+pagination:
+  pagerSize: 5
+googleAnalytics: "G-HE2HBKGF2H"
+hasCJKLanguage: false
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+  highlight:
+    noClasses: false
+    lineNos: false
+    style: "github"
+params:
+  author: "Ceshine Lee"
+  bio: "Technical Notes from a Data Geek."
+  description: "Veritable Tech Blog"
+  twitter: "ceshine_en"
+  enableRSS: true
+  enableToc: true
+  enableDisqus: true
+  disqusShortname: "ceshine-lis-blog"
+  githubName: "ceshine"
+  enableSummary: true
+  useDescriptionReplaceSummary: true
+  enableGoogleAnalytics: true
+  enableBaiduAnalytics: false
+  enableTwitterCard: true
+  enableShare: true
+  home: ""
+  archive: ""
+  showLatestPosts: false
+  readMore: ""
+  title404: ""
+  subtitle404: ""
+  iconFont: "font-awesome"
+  socialIconStyle: "square"
+social:
+  twitter-square: "https://www.x.com/ceshine_en"
+  github-square: "https://www.github.com/ceshine"
+outputs:
+  home:
+    - "html"
+    - "rss"
