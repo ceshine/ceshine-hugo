@@ -96,11 +96,11 @@ Some not-rigorous-at-all statistics:
 
 So no speed gain by switching to FP16 or O1/O2, but the memory usage did drop significantly. This is consistent with the numbers reported in [_znxlwm/pytorch-apex-experiment_](https://github.com/znxlwm/pytorch-apex-experiment) which conducted extensive experiments on different GPUs and precision levels with a VGG16 model.
 
-<center>![[source](https://github.com/znxlwm/pytorch-apex-experiment)](/images/apex/0*AHjv6G_HeQ6Wf-fO.png) [source](https://github.com/znxlwm/pytorch-apex-experiment)</center>
+{{< figure src="/images/apex/0*AHjv6G_HeQ6Wf-fO.png" caption= "[source](https://github.com/znxlwm/pytorch-apex-experiment)">}}
 
-<center>![https://github.com/znxlwm/pytorch-apex-experiment](/images/apex/0*d2_SWpEroos_ACOx.png) [source](https://github.com/znxlwm/pytorch-apex-experiment) (The unit of the y-axis is actually **MB**)</center>
+{{< figure src="/images/apex/0*d2_SWpEroos_ACOx.png" caption= "[source](https://github.com/znxlwm/pytorch-apex-experiment) (The unit of the y-axis is actually **MB**)">}}
 
-For both Titan X and GTX 1080 Ti, the automatic mixed precision(Amp) trainings were slower than both FP32 and FP16 training, while the latter two were roughly the same speed. The amount of memory saved from using Amp was higher with V100 than Titan X and GTX 1080 Ti.
+For both Titan X and GTX 1080 Ti, the automatic mixed precision (Amp) trainings were slower than both FP32 and FP16 training, while the latter two were roughly the same speed. The amount of memory saved from using Amp was higher with V100 than Titan X and GTX 1080 Ti.
 
 ### Why the Discrepancy?
 
