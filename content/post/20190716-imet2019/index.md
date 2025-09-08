@@ -38,7 +38,7 @@ This is essentially a (noisy) multi-label image classification problem. There ar
 
 ### Solution Strategies
 
-There were some [cheating allegations](https://www.kaggle.com/c/imet-2019-fgvc6/discussion/94430)[8] near the end of the competition. The competition host has not responded to these allegations yet, but there are some convincing evidences that someone did cheat. Therefore, I'm not going to include the solutions of those whose integrity is in doubt (thus the solution is just "story-telling", as someone put it).
+There were some [cheating allegations](https://www.kaggle.com/c/imet-2019-fgvc6/discussion/94430)\[8\] near the end of the competition. The competition host has not responded to these allegations yet, but there are some convincing evidences that someone did cheat. Therefore, I'm not going to include the solutions of those whose integrity is in doubt (thus the solution is just "story-telling", as someone put it).
 
 Every top solutions use transfer learning (fine-tuning pretrained model). So the development process can be simplified into three parts:
 
@@ -75,7 +75,7 @@ This is the data pipeline I used in my competition submission (it uses [_albumen
 
 {{< gist ceshine 4687b4c959946b1e3f58ac8eb91dd4b2 >}}
 
-(For those who are not familiar with _albumentations_, In addition to the official documentation[8], there is also a [live demo page](<(https://albumentations.ml/)>)[11] for you to explore.)
+(For those who are not familiar with _albumentations_, In addition to the official documentation[8], there is also a [live demo page](https://albumentations.ml/) \[11\] for you to explore.)
 
 This pipeline is rather aggressive, and uses stochastic TTA(test-time augmentation). The image size _256x256_ is chosen mainly with the speed of training in mind (discussed in more details in the next section).
 
@@ -109,7 +109,7 @@ By switching to this new pipeline, I managed to achieve the same private leaderb
 
 ## Train Models using Kaggle Kernels
 
-[Kaggle Kernels](https://www.kaggle.com/docs/kernels)[12] upgraded their GPU offerings from K80 to P100. It's already more powerful than my GTX 1070, with more computing capability and a lot more memory. It's by far the best option for those with low budget but high demand of GPU memory.
+[Kaggle Kernels](https://www.kaggle.com/docs/kernels)\[12\] upgraded their GPU offerings from K80 to P100. It's already more powerful than my GTX 1070, with more computing capability and a lot more memory. It's by far the best option for those with low budget but high demand of GPU memory.
 
 You can run up to **4 kernels** simultaneously and each one can run up to **9 hours** in one session at the time of writing. I trained all my models on Kaggle, which would have cost a fortune if I train them on, say, Google Cloud Platform.
 
