@@ -61,7 +61,7 @@ params:
 
   homeInfoParams:
     Title: "Technical Notes from Ceshine Lee"
-    Content: "👋 Welcome to my Blog!"
+    Content: "Practical deep dives into machine learning and data science. Expect code, critical analysis, and real-world tips. No fluff."
 
   socialIcons:
     - name: github
