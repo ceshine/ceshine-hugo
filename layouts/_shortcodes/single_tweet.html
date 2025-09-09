@@ -1,9 +1,9 @@
 <center>
-    {{ $tweetId := (index .Params 0) | string }} {{ $apiUrl := printf
-    "https://publish.x.com/oembed?url=https://x.com/i/status/%s&omit_script=true"
-    $tweetId }} {{ $remoteResource := resources.GetRemote $apiUrl }} {{ if and
-    $remoteResource ($tweet := $remoteResource.Content | unmarshal) }} {{
-    $tweet.html | safeHTML }}
+    {{ $tweetId := (index .Params 0) | string }}
+    {{ $apiUrl := printf "https://publish.x.com/oembed?url=https://x.com/i/status/%s&omit_script=true" $tweetId }}
+    {{ $remoteResource := resources.GetRemote $apiUrl }}
+    {{ if and $remoteResource ($tweet := $remoteResource.Content | unmarshal) }}
+    {{ $tweet.html | safeHTML }}
     <script
         async
         src="https://platform.twitter.com/widgets.js"
