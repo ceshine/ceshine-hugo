@@ -1,12 +1,12 @@
-+++
-title = "[Notes] SHAP Values"
-description = "A Unified Approach to Interpreting Model Predictions"
-date = 2019-05-23T11:29:49+08:00
-tags = [""]
-images = ["cover.jpg"]
-draft = false
-url= "/post/shap/"
-+++
+---
+title: "[Notes] SHAP Values"
+description: "A Unified Approach to Interpreting Model Predictions"
+date: 2019-05-23T11:29:49+08:00
+tags: [""]
+images: ["cover.jpg"]
+draft: false
+url: "/post/shap/"
+---
 
 {{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/tai-qi-activity-body-fitness-1583805/)" >}}
 

@@ -1,10 +1,10 @@
-+++
-Categories = ["golang"]
-Description = ""
-Tags = ["golang"]
-date = "2015-08-29T15:26:20+08:00"
-title = "First Step of Web Scraping in Go"
-+++
+---
+categories: ["golang"]
+description: "A tutorial on how to get started with web scraping in Go, using the goquery library."
+tags: ["golang"]
+date: "2015-08-29T15:26:20+08:00"
+title: "First Step of Web Scraping in Go"
+---
 
 An appropriate amount of web scraping is often required for web-related data science projects. Python has a well-known scraping framework called [Scrapy](http://www.wikiwand.com/en/Scrapy) which aims to accommodate all kinds of possible scenarios. For those who want more control over the process and don't mind getting their hands dirty, [GRequests](https://github.com/kennethreitz/grequests)(or the good old [Requests](https://github.com/kennethreitz/requests)) combined with [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/) can also be a solid solution.
 

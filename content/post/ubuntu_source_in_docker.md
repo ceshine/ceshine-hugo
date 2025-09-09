@@ -1,11 +1,11 @@
-+++
-Categories = [ "Docker" ]
-Description = ""
-Tags = ["docker"]
-date = "2015-07-07T17:42:55+10:00"
-title = "Change Sources of Ubuntu in a Docker image"
+---
+categories: [ "Docker" ]
+description: "How to change the package source of an Ubuntu Docker image to a local mirror."
+tags: ["docker"]
+date: "2015-07-07T17:42:55+10:00"
+title: "Change Sources of Ubuntu in a Docker image"
 
-+++
+---
 
 The official docker images of Ubuntu use _archive.ubuntu.com_ as the default package source.
 

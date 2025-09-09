@@ -1,10 +1,10 @@
-+++
-Categories = [ "Python", "Statistics" ]
-Description = "confidence interval, correlation coefficient, and linear regression"
-Tags = ["python", "stats"]
-date = "2014-02-25T17:54:38+08:00"
-title = "Shortcuts for some common statistical functions"
-+++
+---
+categories: [ "Python", "Statistics" ]
+description: "confidence interval, correlation coefficient, and linear regression"
+tags: ["python", "stats"]
+date: "2014-02-25T17:54:38+08:00"
+title: "Shortcuts for some common statistical functions"
+---
 
 Here are some useful functions when performing statistical analysis:
 

@@ -1,10 +1,10 @@
-+++
-Categories = [ "Machine Learning" ]
-Description = ""
-Tags = ["machine_learning", "bayesian"]
-date = "2015-07-11T17:54:38+10:00"
-title = "Bayesian Logistic Regression using PyMC3"
-+++
+---
+categories: [ "Machine Learning" ]
+description: "A tutorial on how to use PyMC3 to fit a Bayesian logistic regression model on the Kaggle Titanic dataset."
+tags: ["machine_learning", "bayesian"]
+date: "2015-07-11T17:54:38+10:00"
+title: "Bayesian Logistic Regression using PyMC3"
+---
 
 I've been reading this amazing (free) book [Bayesian Methods for Hackers](https://github.com/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers). I was half way through in early 2015, but dropped it because of some nuisances. But when I finally restarted reading it, I found it might be a good thing that I stopped reading for a while. Now I have more appreciation of the Bayesian methods and more mathematical understanding to fully grasp the idea the book trying to convey. (To be honest, I was quite confused about some concept like MAP in the first round of reading)
 

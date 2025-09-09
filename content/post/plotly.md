@@ -1,6 +1,6 @@
 ---
 slug: plotly
-description: ""
+description: "A tutorial on how to use Plotly to visualize data, using a dataset of cancer deaths in Taiwan as an example."
 tags:
   - "dataviz"
   - "rstat"

@@ -1,10 +1,10 @@
-+++
-Categories = [ "Python" ]
-Description = ""
-Tags = ["python"]
-date = "2013-10-07T13:54:38+08:00"
-title = "Dicussing the zen of python"
-+++
+---
+categories: [ "Python" ]
+description: "A discussion of the Zen of Python and its importance for Python developers."
+tags: ["python"]
+date: "2013-10-07T13:54:38+08:00"
+title: "Dicussing the zen of python"
+---
 
 Every newbie for python should have already heard of or read [PEP-8 a.k.a. THE style guide for python code](http://www.python.org/dev/peps/pep-0008/), which hopefully I can cover in one of the next few posts. However, there's one more important ground for you to cover before you can become a professional. It's [The Zen of Python](http://www.python.org/dev/peps/pep-0020/). You can read it right inside the python interpreter:
 
