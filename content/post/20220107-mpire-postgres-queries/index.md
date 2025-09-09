@@ -14,7 +14,7 @@ keywords:
 url: /post/mpire-postgres-queries/
 ---
 
-{{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/canal-boats-buildings-reflection-5488271/)" >}}
+{{< figure src="/post/sqlite-great-expectations/featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/canal-boats-buildings-reflection-5488271/)" >}}
 
 ## Introduction
 

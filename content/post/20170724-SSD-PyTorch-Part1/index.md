@@ -1,6 +1,6 @@
 ---
 title: "[Learning Note] Single Shot MultiBox Detector with PyTorch — Part 1"
-description: ""
+description: "An introduction to the Single Shot MultiBox Detector (SSD) with PyTorch, covering its network structure and prediction scheme."
 date: '2017-07-24T06:03:30.513Z'
 tags:
   - python

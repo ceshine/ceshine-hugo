@@ -1,0 +1,110 @@
+baseURL: "https://blog.ceshine.net/"
+languageCode: "en"
+title: "Veritable Tech Blog"
+theme: "PaperMod"
+googleAnalytics: "G-HE2HBKGF2H"
+enableEmoji: true
+
+pagination:
+  pagerSize: 5
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+  highlight:
+    noClasses: false
+    lineNos: false
+    style: "github"
+
+taxonomies:
+  tag: tags
+
+
+services:
+  disqus:
+    shortname: "ceshine-lis-blog"
+
+menu:
+  main:
+    - identifier: archives
+      name: Archives
+      url: archives
+      weight: 5
+    - identifier: search
+      name: Search
+      url: search/
+      weight: 10
+    - identifier: tags
+      name: Tags
+      url: tags/
+      weight: 10
+
+params:
+  defaultTheme: auto
+  env: production # to enable google analytics, opengraph, twitter-cards and schema.
+  author: "Ceshine Lee"
+  bio: "Technical Notes from a Data Geek."
+  description: "Veritable Tech Blog"
+  ShowShareButtons: true
+  ShowReadingTime: false
+  displayFullLangName: true
+  ShowPostNavLinks: true
+  ShowBreadCrumbs: true
+  ShowCodeCopyButtons: true
+  ShowRssButtonInSectionTermList: true
+  ShowAllPagesInArchive: true
+  ShowPageNums: true
+  ShowToc: true
+  comments: true
+  disqusShortname: "ceshine-lis-blog"
+
+  homeInfoParams:
+    Title: "Technical Notes from Ceshine Lee"
+    Content: "Practical deep dives into machine learning and data science. Expect code, critical analysis, and real-world tips. No fluff."
+
+  socialIcons:
+    - name: github
+      title: View Source on Github
+      url: "https://github.com/ceshine/ceshine-hugo"
+    - name: X
+      title: Find Ceshine on X/Twitter
+      url: "https://x.com/ceshine_en"
+
+  analytics:
+    google:
+      SiteVerificationTag: "G-HE2HBKGF2H"
+
+  # for search
+  # https://fusejs.io/api/options.html
+  fuseOpts:
+    isCaseSensitive: false
+    shouldSort: true
+    location: 0
+    distance: 1000
+    threshold: 0.4
+    minMatchCharLength: 0
+    limit: 10 # refer: https://www.fusejs.io/api/methods.html#search
+    keys: ["title", "permalink", "summary", "content"]
+
+  twitter: "ceshine_en"
+  enableRSS: true
+  enableToc: true
+  enableDisqus: true
+  githubName: "ceshine"
+  enableSummary: true
+  useDescriptionReplaceSummary: true
+  enableGoogleAnalytics: true
+  enableBaiduAnalytics: false
+  enableTwitterCard: true
+  iconFont: "font-awesome"
+  socialIconStyle: "square"
+social:
+  twitter-square: "https://www.x.com/ceshine_en"
+  github-square: "https://www.github.com/ceshine"
+
+outputs:
+  home:
+    - "html"
+    - "rss"
+    - "json"

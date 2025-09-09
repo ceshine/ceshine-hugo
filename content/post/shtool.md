@@ -1,10 +1,10 @@
-+++
-Categories = [ "Python", "Data Engineering" ]
-Description = ""
-Tags = ["data_eng"]
-date = "2014-03-05T17:54:38+08:00"
-title = "A simple script to automate MySQLdump backups"
-+++
+---
+categories: [ "Python", "Data Engineering" ]
+description: "A simple Python script to automate MySQLdump backups using the `sh` library."
+tags: ["data_eng"]
+date: "2014-03-05T17:54:38+08:00"
+title: "A simple script to automate MySQLdump backups"
+---
 
 I just moved my MySQL database to some OpenVZ VPS, which doesn't support snapshot backups. Therefore I had to set up some backup mechanism myself.
 

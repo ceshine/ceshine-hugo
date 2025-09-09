@@ -1,10 +1,16 @@
-content:
-    build: dockerfiles/content/
-
-web:
-    build: dockerfiles/hugo/
+services:
+  content:
+    build:
+      context: dockerfiles/content
+    volumes:
+      - hugo_content:/src/blog
+  web:
+    build:
+      context: dockerfiles/hugo
     ports:
-        - 80:1313
-    volumes_from:
-        - content
+      - "80:1313"
+    volumes:
+      - hugo_content:/src/blog
     restart: on-failure
+volumes:
+  hugo_content:

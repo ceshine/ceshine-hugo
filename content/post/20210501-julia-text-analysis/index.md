@@ -12,7 +12,7 @@ keywords:
 url: /post/julia-text-analysis/
 ---
 
-{{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/dog-attention-mixed-breed-dog-6082017/)" >}}
+{{< figure src="/post/julia-sysimage-script/featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/dog-attention-mixed-breed-dog-6082017/)" >}}
 
 ## Overview
 

@@ -1,23 +1,23 @@
-
 ---
 slug: polyloss
 date: 2022-05-15T00:00:00.000Z
 title: "[Notes] PolyLoss: A Polynomial Expansion Perspective of Classification Loss Functions"
 description: "A simple tweak to make your loss function much more adaptable"
 tags:
-  - python
-  - pytorch
-  - cv
-  - deep_learning
+- python
+- pytorch
+- cv
+- deep_learning
 keywords:
-  - python
-  - pytorch
-  - cv
-  - deep learning
+- python
+- pytorch
+- cv
+- deep learning
 url: /post/polyloss/
+
 ---
 
-{{< figure src="featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/stained-glass-spiral-circle-pattern-1181864/)" >}}
+{{< figure src="/post/538-model-2020/featuredImage.jpg" caption="[Photo Credit](https://pixabay.com/photos/stained-glass-spiral-circle-pattern-1181864/)" >}}
 
 ## Introduction
 
@@ -50,7 +50,6 @@ You'd think that we'd want to reduce the coefficient for the first term whenever
 For another imbalanced dataset (COCO), reducing the coefficient of the first term to zero provides the best precision and recall. Therefore, there are generally no a rule of thumb for determining the value of the coefficient. You have to do hyper-parameter tuning to determine the best perturbation value $\epsilon$ for different datasets and tasks.
 
 <div style="max-width: 750px; margin-left: auto; margin-right: auto;">{{< figure src="fig-3.png" caption="Source: [1]" >}}</div>
-
 
 ## PyTorch Implementations
 

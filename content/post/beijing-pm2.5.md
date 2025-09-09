@@ -1,11 +1,11 @@
-+++
-Categories = ["Visualization"]
-Description = "Plotted with R package dygraphs."
-Tags = ["dataviz", "rstat"]
-date = "2016-07-13T20:04:17+08:00"
-title = "Beijing PM2.5 Concentration History 2015-2016"
+---
+categories: ["Visualization"]
+description: "Plotted with R package dygraphs."
+tags: ["dataviz", "rstat"]
+date: "2016-07-13T20:04:17+08:00"
+title: "Beijing PM2.5 Concentration History 2015-2016"
 
-+++
+---
 
 Plotted with R package **dygraphs**. (Click the image to access the interactive version)
 

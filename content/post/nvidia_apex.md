@@ -1,10 +1,10 @@
-+++
-Description = "Does it benefits those who still use Pascal consumer cards?"
-Tags = ["pytorch", "deep-learning"]
-Categories = ["Machine Learning"]
-date = "2019-03-26T19:54:30+08:00"
-title = "Use NVIDIA Apex for Easy Mixed Precision Training in PyTorch"
-+++
+---
+description: "Does it benefits those who still use Pascal consumer cards?"
+tags: ["pytorch", "deep-learning"]
+categories: ["Machine Learning"]
+date: "2019-03-26T19:54:30+08:00"
+title: "Use NVIDIA Apex for Easy Mixed Precision Training in PyTorch"
+---
 
 ![](/images/apex/featuredImage.jpeg)_Photo by [Sam Power](https://unsplash.com/photos/6aP9EGsYE3s?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)_
 

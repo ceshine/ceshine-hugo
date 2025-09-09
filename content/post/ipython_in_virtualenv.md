@@ -1,10 +1,10 @@
-+++
-Categories = [ "Python" ]
-Description = "This should help you avoid a common pitfall you'd encounter trying to use ipython notebooks in virtualenv"
-Tags = ["python"]
-date = "2014-04-29T13:54:38+08:00"
-title = "Tip for using iPython Notebooks in virtualenv"
-+++
+---
+categories: [ "Python" ]
+description: "This should help you avoid a common pitfall you'd encounter trying to use ipython notebooks in virtualenv"
+tags: ["python"]
+date: "2014-04-29T13:54:38+08:00"
+title: "Tip for using iPython Notebooks in virtualenv"
+---
 
 When trying to install ipython and dependencies of its notebook feature via pip, I was stuck. Even I'd already installed pyzmq, I still got this message:
 
