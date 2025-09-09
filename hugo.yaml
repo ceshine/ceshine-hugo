@@ -27,17 +27,21 @@ services:
 
 menu:
   main:
-    - name: Archive
+    - identifier: archives
+      name: Archives
       url: archives
       weight: 5
-    - name: Search
+    - identifier: search
+      name: Search
       url: search/
       weight: 10
-    - name: Tags
+    - identifier: tags
+      name: Tags
       url: tags/
       weight: 10
 
 params:
+  defaultTheme: auto
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
   author: "Ceshine Lee"
   bio: "Technical Notes from a Data Geek."
@@ -71,6 +75,18 @@ params:
     google:
       SiteVerificationTag: "G-HE2HBKGF2H"
 
+  # for search
+  # https://fusejs.io/api/options.html
+  fuseOpts:
+    isCaseSensitive: false
+    shouldSort: true
+    location: 0
+    distance: 1000
+    threshold: 0.4
+    minMatchCharLength: 0
+    limit: 10 # refer: https://www.fusejs.io/api/methods.html#search
+    keys: ["title", "permalink", "summary", "content"]
+
   twitter: "ceshine_en"
   enableRSS: true
   enableToc: true
@@ -91,3 +107,4 @@ outputs:
   home:
     - "html"
     - "rss"
+    - "json"
