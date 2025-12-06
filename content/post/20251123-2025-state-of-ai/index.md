@@ -57,6 +57,6 @@ It's not an unreasonable assumption that the increase in AI adoption rates in th
 
 A marketing department using ChatGPT for copywriting could also be counted as "piloting" AI in the company. Nonetheless, the data still show that more and more companies are willing to claim they use AI in at least one of their business functions.
 
-## Disclosure
+## AI use disclosure
 
 I used AI tools to revise my writing (primarily for grammar and lexical correctness) in this post. However, I wrote most of the content myself; it was not generated with prompts.
