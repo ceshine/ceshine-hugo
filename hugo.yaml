@@ -20,7 +20,6 @@ markup:
 taxonomies:
   tag: tags
 
-
 services:
   disqus:
     shortname: "ceshine-lis-blog"
@@ -67,9 +66,12 @@ params:
     - name: github
       title: View Source on Github
       url: "https://github.com/ceshine/ceshine-hugo"
-    - name: X
+    - name: x
       title: Find Ceshine on X/Twitter
       url: "https://x.com/ceshine_en"
+    - name: mastodon
+      title: Find Ceshine on Mastodon
+      url: "https://sigmoid.social/@ceshine"
 
   analytics:
     google:
@@ -98,10 +100,6 @@ params:
   enableBaiduAnalytics: false
   enableTwitterCard: true
   iconFont: "font-awesome"
-  socialIconStyle: "square"
-social:
-  twitter-square: "https://www.x.com/ceshine_en"
-  github-square: "https://www.github.com/ceshine"
 
 outputs:
   home:
