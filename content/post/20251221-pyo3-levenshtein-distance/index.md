@@ -26,6 +26,225 @@ However, because I still mostly use Python for my various projects, making Rust 
 
 The tooling consists of [PyO3](https://pyo3.rs/v0.27.1/index.html)[1] and [Maturin](https://www.maturin.rs/tutorial.html)[2]. PyO3 is a Rust library that provides a bridge between Rust and Python, while Maturin is a build system that simplifies the process of building and distributing Rust-based Python packages. To test out the tooling, I decided to build a [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance)[3] calculation function in Rust that can be imported and run in Python code. Getting to a working version was much simpler than I expected, and the speedup was immediately visible. However, getting it to a more robust and publishable state took me a bit more digging. This blog post will walk you through the process and highlight some key configurations and concepts that may confuse beginners.
 
+The code for this post is available on GitHub at [ceshine/pyo3-Levenshtein](https://github.com/ceshine/pyo3-Levenshtein).
+
+## Single Thread Implementation
+
+Let’s start with the most straightforward implementation of the Levenshtein distance, which runs on a single thread. It immediately provides more than a 50× speedup compared to a single-threaded Python implementation of the same algorithm. Further optimization of the algorithm and multithreaded execution could yield a significantly greater speedup, but let’s keep things simple to help you grasp the key ideas.
+
+We'll use [version 0.2.2 of the pyo3-Levenshtein](https://github.com/ceshine/pyo3-Levenshtein/tree/0.2.2) package to demonstrate the single-threaded implementation.
+
+**Prerequisites**:
+
+1. You need to have [Rust and Cargo](https://doc.rust-lang.org/cargo/getting-started/installation.html) installed on your system.
+2. I recommend using [`uv`](https://docs.astral.sh/uv/) (written in Rust) to manage your Python environment, and I will use it throughout the rest of this post. However, this process should work with any Python environment manager.
+
+### Setting up the project
+
+First, install Maturin globally using `uv tool install maturin`. The `maturin` command should be available in your terminal afterward.
+
+I manually created Cargo.toml and pyproject.toml in the project root, following Maturin's documentation [2]. However, you can also use the `maturin new` command to create these files.
+
+Below are the contents of my Cargo.toml:
+
+```toml
+[package]
+name = "pyo3-levenshtein"
+version = "0.2.2"
+edition = "2024"
+
+[dependencies]
+pyo3 = { version = "0.27.1", features = ["abi3-py310"] }
+rayon = "1.10"
+once_cell = "1.20"
+dashmap = "6.1"
+
+[features]
+default = []
+extension-module = ["pyo3/extension-module"]
+
+[lib]
+name = "pyo3_levenshtein"
+crate-type = ["cdylib", "rlib"]
+```
+
+Notes:
+
+- The `rayon`, `once_cell`, and the `dashmap` dependencies are for the multi-threaded implementation. For the single-threaded implementation, `pyo3` is the single depencency needed.
+- `cdylib` is required for the Python binding; `rlib` is required for running the Rust doctests.
+
+And here's the content my pyproject.toml file:
+
+```toml
+[project]
+name = "pyo3-levenshtein"
+dynamic = ["version"]
+description = "Add your description here"
+requires-python = ">=3.10"
+dependencies = []
+
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[dependency-groups]
+dev = [
+    "ipython>=8.37.0",
+    "joblib>=1.5.2",
+    "levenshtein>=0.27.3",
+    "pytest>=9.0.1",
+    "pytest-benchmark>=5.2.3",
+]
+
+[tool.uv]
+cache-keys = [{file = "pyproject.toml"}, {file = "Cargo.toml"}, {file = "**/*.rs"}]
+```
+
+Notes:
+
+- None of the `dev` dependencies are needed for the package to work. They are only for development and benchmarking purposes.
+- Maturin automatically pulls the version information from Cargo.toml, so we can use `dynamic = ["version"]` in this file [4].
+- The `[tool.uv]` section makes Python environment-management tools such as `uv` track changes in Rust source files, so the uv run command will automatically rebuild the Rust code when changes are detected.
+- Remember to update the `description` field if you plan to publish your package on PyPI.
+
+### Implementing the Rust code
+
+For simplicity, we’ll use the [pure Rust project layout](https://www.maturin.rs/project_layout.html) [5] in this section. The trade-off is that Python type checkers won’t work with the Rust-powered function because we haven’t provided any type stubs.
+
+We’ll implement the classic [Wagner–Fischer algorithm](https://en.wikipedia.org/wiki/Wagner%E2%80%93Fischer_algorithm) to calculate the Levenshtein distance, which measures the edit distance between two strings.
+
+Put this code in [src/lib.rs](https://github.com/ceshine/pyo3-Levenshtein/blob/db96b1af5f2a0085b31adc0b47d4b93572c30cae/src/lib.rs#L59):
+
+```rust
+use pyo3::prelude::*;
+
+/// Calculates the Levenshtein distance between two strings.
+///
+/// The Levenshtein distance is the minimum number of single-character edits
+/// (insertions, deletions, or substitutions) required to transform one string
+/// into another. This implementation uses dynamic programming with a 2D matrix.
+///
+/// # Examples
+///
+/// \`\`\`
+/// use pyo3_levenshtein::levenshtein;
+/// let distance = levenshtein("kitten", "sitting");
+/// assert_eq!(distance, 3);
+/// \`\`\`
+#[pyfunction]
+pub fn levenshtein(s1: &str, s2: &str) -> usize {
+    let len1 = s1.chars().count();
+    let len2 = s2.chars().count();
+
+    // Handle edge cases: if either string is empty,
+    // the distance is the length of the other string
+    if len1 == 0 {
+        return len2;
+    }
+    if len2 == 0 {
+        return len1;
+    }
+
+    // Convert strings to char vectors to handle Unicode properly
+    let s1_chars: Vec<char> = s1.chars().collect();
+    let s2_chars: Vec<char> = s2.chars().collect();
+
+    // Create a matrix where matrix[i][j] represents the minimum edits
+    // needed to transform the first i characters of s1 into the first j characters of s2
+    let mut matrix = vec![vec![0; len2 + 1]; len1 + 1];
+
+    // Initialize first column: distance from empty string to s1[0..i]
+    // requires i deletions
+    for i in 0..=len1 {
+        matrix[i][0] = i;
+    }
+    // Initialize first row: distance from empty string to s2[0..j]
+    // requires j insertions
+    for j in 0..=len2 {
+        matrix[0][j] = j;
+    }
+
+    // Fill in the rest of the matrix using dynamic programming
+    for i in 1..=len1 {
+        for j in 1..=len2 {
+            // If characters match, no edit is needed (cost = 0)
+            // Otherwise, substitution is needed (cost = 1)
+            let cost = if s1_chars[i - 1] == s2_chars[j - 1] {
+                0
+            } else {
+                1
+            };
+
+            // Take the minimum of three possible operations:
+            matrix[i][j] = std::cmp::min(
+                std::cmp::min(
+                    matrix[i - 1][j] + 1, // deletion: remove char from s1
+                    matrix[i][j - 1] + 1, // insertion: add char to s1
+                ),
+                matrix[i - 1][j - 1] + cost, // substitution: replace char in s1
+            );
+        }
+    }
+
+    // The bottom-right cell contains the final distance
+    m
+}
+
+#[pymodule]
+mod pyo3_levenshtein {
+    #[pymodule_export]
+    use super::levenshtein;
+}
+```
+
+Run `maturing develop --release --uv` to build and install the Rust code and Python extension in your local environment. Afterwards, you can run `uv run python -c "from pyo3_levenshtein import levenshtein; print(levenshtein('abc', 'ebd'))"` to check if the `levenshtein` function is now available in Python. The output of this command should be 2 (two substitution operations).
+
+### End of the first part of this post
+
+We've finished implementing a Rust-powered Levenshtein distance function in Python! You can stop here if you're in a hurry. We've successfully achieved our goal: a much faster Levenshtein distance function in Python.
+
+In the following sections, we'll discuss benchmarking details, the multi-threaded implementation, Python type stubs, and further performance improvements.
+
+## Benchmarking
+
+I use [pytest-benchmark](https://pytest-benchmark.readthedocs.io/en/latest/) [6] in this project to get a benchmark fixture in pytest that benchmarks any function passed to it and prints the results at the end of the test run.
+
+The benchmark dataset is synthetic and consists of string pairs with random lengths from 1 to 50 (strings of length 0 will not trigger the dynamic programming algorithm), with characters sampled from all ASCII letters and digits. Because the Rust implementation is really fast, especially when run in multi-threaded mode, we use 2^14 (16,384) pairs of strings in the dataset and measure the time required for the program to calculate the distances for all pairs.
+
+The benchmarking code looks like the following (find [the full benchmarking script for the single-threaded implementations here](https://github.com/ceshine/pyo3-Levenshtein/blob/0.3.0/benchmarking/benchmarks_single.py)):
+
+```python
+from pyo3_levenshtein import levenshtein as pyo3_levenshten_
+
+TEST_DATASET_SIZE = 2**14
+
+def run_levenshtein(test_dataset: list[tuple[str, str, int]], distance_func: Callable[[str, str], int]) -> list[int]:
+    """Run a levenshtein distance function on a test dataset.
+
+    Args:
+        test_dataset: List of tuples containing (str1, str2, expected_distance)
+        distance_func: The levenshtein distance function to use
+
+    Returns:
+        List of computed distances
+    """
+    result: list[int] = []
+    for str1, str2, _ in test_dataset:
+        result.append(distance_func(str1, str2))
+    return result
+
+def test_pyo3_levenshten(test_dataset: list[tuple[str, str, int]]):
+    res = run_levenshtein(test_dataset, pyo3_levenshten_)
+    assert len(res) == TEST_DATASET_SIZE
+    for pred, (_, _, gt) in zip(res, test_dataset):
+        assert pred == gt
+```
+
+You can run the benchmark with the following command: `uv run pytest benchmarking/benchmarks_single.py --benchmark-max-time 10`. This command will repeat the test until the specified maximum time elapses and then report the statistics.
+
+I copied the pure Python implementation from [toastdriven/pylev](https://github.com/toastdriven/pylev) in [benchmarking/pure_python_impl.py](https://github.com/ceshine/pyo3-Levenshtein/blob/0.3.0/benchmarking/pure_python_impl.py) to provide a baseline.
+
+The single-threaded Python implementation of the Wagner–Fischer algorithm takes about 2,500 ms to process all 16,384 pairs of strings on average, while our Rust/PyO3 version takes about 40 ms on average. That's a 60x speedup!
 
 ## References
 
@@ -33,3 +252,5 @@ The tooling consists of [PyO3](https://pyo3.rs/v0.27.1/index.html)[1] and [Matur
 2. [Maturin Tutorial](https://www.maturin.rs/tutorial.html)
 3. [Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)
 4. [GitHub Issue: Add dynamic = \["version"\] to pyproject.toml](https://github.com/PyO3/maturin/issues/1772)
+5. [Maturin: Project Layout](https://www.maturin.rs/project_layout.html)
+6. [pytest-benchmark](https://pytest-benchmark.readthedocs.io/en/latest/)
