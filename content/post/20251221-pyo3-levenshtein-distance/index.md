@@ -7,10 +7,16 @@ tags:
   - rust
   - open-source
   - python
+  - tutorial
+  - case-study
+  - nlp
 keywords:
-  - python
-  - rust
-  - pyo3
+  - Python
+  - Rust
+  - PyO3
+  - NLP
+  - multithreading
+  - Rayon
 url: /post/pyo3-levenshtein-distance/
 ---
 
@@ -20,21 +26,21 @@ Disclaimer: A 50x speedup is not guaranteed. Actual performance depends on the n
 
 ## Introduction
 
-Recently, I finally found some time to learn the Rust programming language. I find its memory safety guarantee quite elegant, although it comes with the trade-off of a steep learning curve, especially when it comes to Rust’s ownership and lifetime system. It is very appealing to someone like me, whose primary tool is a scripting language and who writes low-level code only from time to time. Writing C/C++ code can easily lead to unstable runtime behavior or unexpected results in such circumstances.
+Recently, I finally found some time to learn the Rust programming language. I find its memory safety guarantee quite elegant, although it comes with the trade-off of a steep learning curve, especially when it comes to Rust’s ownership and lifetime system. It is very appealing to someone like me, who mainly uses a scripting language and who writes low-level code only from time to time. Writing C/C++ code can easily lead to unstable runtime behavior or unexpected results in such circumstances.
 
-For practice, I translated one of my CLI tools from Julia to Rust with the assistance of GPT-5-Codex. The tool performs a video-understanding task via a [LitServe](https://github.com/Lightning-AI/LitServe) HTTP server. I used the [Tokio library](https://docs.rs/tokio/latest/tokio/index.html) to run the three stages (frame extraction, frame inference, and post-processing) concurrently. In my opinion, Rust is much better suited to this kind of task than Julia. I’m also satisfied with the modularity and clarity of the new Rust codebase.
+For practice, I translated one of my CLI tools from Julia to Rust with the assistance of GPT-5-Codex. The tool performs a video understanding task via a [LitServe](https://github.com/Lightning-AI/LitServe)-based HTTP server. I used the [Tokio library](https://docs.rs/tokio/latest/tokio/index.html) to run the three stages (frame extraction, frame inference, and post-processing) as concurrent tasks. In my opinion, Rust is much better suited to this kind of task than Julia. I’m also satisfied with the modularity and clarity of the new Rust codebase.
 
-However, because I still mostly use Python for my various projects, making Rust code work in Python would offer the best of both worlds and empower me to write more efficient and maintainable code. Incidentally, I was studying the [fenic](https://github.com/typedef-ai/fenic) library and found that it had written some Polars extensions in Rust and integrated them into the main package to speed up certain compute-intensive tasks (e.g., handling JSON strings). I took the opportunity to study the tooling around Polars extensions and learned that [Polars](https://github.com/pola-rs/polars) and some other popular Rust-powered Python libraries (e.g., [Tokenizers](https://github.com/huggingface/tokenizers)) also use the same tooling (they usually have more sophisticated build configurations than fenic, though).
+However, because I still mostly use Python for my various projects, making Rust code work in Python code would offer the best of both worlds and empower me to write more efficient and maintainable code. Incidentally, I was studying the [fenic](https://github.com/typedef-ai/fenic) library and found that it includes Polars extensions written in Rust, which are integrated into the main package to speed up certain compute-intensive tasks (e.g., handling JSON strings). I took the opportunity to study the tooling around Polars extensions and learned that [Polars](https://github.com/pola-rs/polars) and some other popular Rust-powered Python libraries (e.g., [Tokenizers](https://github.com/huggingface/tokenizers)) also use the same toolchain (they usually have more sophisticated build configurations than fenic, though).
 
-The tooling consists of [PyO3](https://pyo3.rs/v0.27.1/index.html)[1] and [Maturin](https://www.maturin.rs/tutorial.html)[2]. PyO3 is a Rust library that provides a bridge between Rust and Python, while Maturin is a build system that simplifies the process of building and distributing Rust-based Python packages. To test out the tooling, I decided to build a [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance)[3] calculation function in Rust that can be imported and run in Python code. Getting to a working version was much simpler than I expected, and the speedup was immediately visible. However, getting it to a more robust and publishable state took me a bit more digging. This blog post will walk you through the process and highlight some key configurations and concepts that may confuse beginners.
+The tooling includes [PyO3](https://pyo3.rs/v0.27.1/index.html)[1] and [Maturin](https://www.maturin.rs/tutorial.html)[2]. PyO3 is a Rust library that provides a bridge between Rust and Python, while Maturin is a build system that simplifies the process of building and distributing Rust-based Python packages. To try out the tooling, I decided to build a [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance)[3] calculation function in Rust that can be imported and run in Python code. Getting a working implementation was much simpler than I expected, and the speedup was immediately visible. However, getting it to a more robust, publish-ready state took me a bit more digging. This blog post will walk you through the process and highlight some key configurations and concepts that may confuse beginners.
 
 The code for this post is available on GitHub at [ceshine/pyo3-Levenshtein](https://github.com/ceshine/pyo3-Levenshtein).
 
 ## Single Thread Implementation
 
-Let’s start with the most straightforward implementation of the Levenshtein distance, which runs on a single thread. It immediately provides more than a 50× speedup compared to a single-threaded Python implementation of the same algorithm. Further optimization of the algorithm and multithreaded execution could yield a significantly greater speedup, but let’s keep things simple to help you grasp the key ideas.
+Let’s start with the most straightforward implementation of the Levenshtein distance, which runs on a single thread. It immediately provides more than a 50× speedup compared to a single-threaded Python implementation of the same algorithm. Further optimization of the algorithm and multi-threaded execution could yield a significantly greater speedup, but let’s keep things simple to help you grasp the key ideas.
 
-We'll use [version 0.2.2 of the pyo3-Levenshtein](https://github.com/ceshine/pyo3-Levenshtein/tree/0.2.2) package to demonstrate the single-threaded implementation.
+We'll use [v0.2.2 of the pyo3-Levenshtein](https://github.com/ceshine/pyo3-Levenshtein/tree/0.2.2) package to demonstrate the single-threaded implementation.
 
 **Prerequisites**:
 
@@ -72,10 +78,10 @@ crate-type = ["cdylib", "rlib"]
 
 Notes:
 
-- The `rayon`, `once_cell`, and the `dashmap` dependencies are for the multi-threaded implementation. For the single-threaded implementation, `pyo3` is the single depencency needed.
+- The `rayon`, `once_cell`, and `dashmap` dependencies are for the multi-threaded implementation. For the single-threaded implementation, `pyo3` is the single dependency needed.
 - `cdylib` is required for the Python binding; `rlib` is required for running the Rust doctests.
 
-And here's the content my pyproject.toml file:
+And here are the contents of my pyproject.toml file:
 
 ```toml
 [project]
@@ -106,33 +112,20 @@ Notes:
 
 - None of the `dev` dependencies are needed for the package to work. They are only for development and benchmarking purposes.
 - Maturin automatically pulls the version information from Cargo.toml, so we can use `dynamic = ["version"]` in this file [4].
-- The `[tool.uv]` section makes Python environment-management tools such as `uv` track changes in Rust source files, so the uv run command will automatically rebuild the Rust code when changes are detected.
+- The `[tool.uv]` section makes Python environment management tools such as `uv` track changes in Rust source files, so the uv run command will automatically rebuild the Rust code when changes are detected.
 - Remember to update the `description` field if you plan to publish your package on PyPI.
 
 ### Implementing the Rust code
 
-For simplicity, we’ll use the [pure Rust project layout](https://www.maturin.rs/project_layout.html) [5] in this section. The trade-off is that Python type checkers won’t work with the Rust-powered function because we haven’t provided any type stubs.
+For simplicity, we’ll use the [pure Rust project layout](https://www.maturin.rs/project_layout.html) [5] in this section. The trade-off is that Python type checkers won’t have type information for the Rust-powered function because we haven’t provided any type stubs.
 
 We’ll implement the classic [Wagner–Fischer algorithm](https://en.wikipedia.org/wiki/Wagner%E2%80%93Fischer_algorithm) to calculate the Levenshtein distance, which measures the edit distance between two strings.
 
-Put this code in [src/lib.rs](https://github.com/ceshine/pyo3-Levenshtein/blob/db96b1af5f2a0085b31adc0b47d4b93572c30cae/src/lib.rs#L59):
+Put this code in [src/lib.rs](https://github.com/ceshine/pyo3-Levenshtein/blob/db96b1af5f2a0085b31adc0b47d4b93572c30cae/src/lib.rs#L59) (docstring omitted to save space):
 
 ```rust
 use pyo3::prelude::*;
 
-/// Calculates the Levenshtein distance between two strings.
-///
-/// The Levenshtein distance is the minimum number of single-character edits
-/// (insertions, deletions, or substitutions) required to transform one string
-/// into another. This implementation uses dynamic programming with a 2D matrix.
-///
-/// # Examples
-///
-/// \`\`\`
-/// use pyo3_levenshtein::levenshtein;
-/// let distance = levenshtein("kitten", "sitting");
-/// assert_eq!(distance, 3);
-/// \`\`\`
 #[pyfunction]
 pub fn levenshtein(s1: &str, s2: &str) -> usize {
     let len1 = s1.chars().count();
@@ -189,7 +182,7 @@ pub fn levenshtein(s1: &str, s2: &str) -> usize {
     }
 
     // The bottom-right cell contains the final distance
-    m
+    matrix[len1][len2]
 }
 
 #[pymodule]
@@ -199,9 +192,9 @@ mod pyo3_levenshtein {
 }
 ```
 
-Run `maturing develop --release --uv` to build and install the Rust code and Python extension in your local environment. Afterwards, you can run `uv run python -c "from pyo3_levenshtein import levenshtein; print(levenshtein('abc', 'ebd'))"` to check if the `levenshtein` function is now available in Python. The output of this command should be 2 (two substitution operations).
+Run `maturin develop --release --uv` to build and install the Rust code and Python extension in your local environment. Afterwards, you can run `uv run python -c "from pyo3_levenshtein import levenshtein; print(levenshtein('abc', 'ebd'))"` to check if the `levenshtein` function is now available in Python. The output of this command should be 2 (two substitution operations).
 
-### End of the first part of this post
+### Summary
 
 We've finished implementing a Rust-powered Levenshtein distance function in Python! You can stop here if you're in a hurry. We've successfully achieved our goal: a much faster Levenshtein distance function in Python.
 
@@ -211,12 +204,12 @@ In the following sections, we'll discuss benchmarking details, the multi-threade
 
 I use [pytest-benchmark](https://pytest-benchmark.readthedocs.io/en/latest/) [6] in this project to get a benchmark fixture in pytest that benchmarks any function passed to it and prints the results at the end of the test run.
 
-The benchmark dataset is synthetic and consists of string pairs with random lengths from 1 to 50 (strings of length 0 will not trigger the dynamic programming algorithm), with characters sampled from all ASCII letters and digits. Because the Rust implementation is really fast, especially when run in multi-threaded mode, we use 2^14 (16,384) pairs of strings in the dataset and measure the time required for the program to calculate the distances for all pairs.
+The benchmark dataset is synthetic and consists of string pairs with random lengths from 1 to 50 (not using strings of length 0 because they will trigger an early return), with characters sampled from all ASCII letters and digits. Because the Rust implementation is really fast, especially when run in multi-threaded mode, we use 2^14 (16,384) pairs of strings in the dataset and measure the time required for the program to calculate the distances for all pairs.
 
 The benchmarking code looks like the following (find [the full benchmarking script for the single-threaded implementations here](https://github.com/ceshine/pyo3-Levenshtein/blob/0.3.0/benchmarking/benchmarks_single.py)):
 
 ```python
-from pyo3_levenshtein import levenshtein as pyo3_levenshten_
+from pyo3_levenshtein import levenshtein as pyo3_levenshtein_
 
 TEST_DATASET_SIZE = 2**14
 
@@ -235,8 +228,8 @@ def run_levenshtein(test_dataset: list[tuple[str, str, int]], distance_func: Cal
         result.append(distance_func(str1, str2))
     return result
 
-def test_pyo3_levenshten(test_dataset: list[tuple[str, str, int]]):
-    res = run_levenshtein(test_dataset, pyo3_levenshten_)
+def test_pyo3_levenshtein(test_dataset: list[tuple[str, str, int]]):
+    res = run_levenshtein(test_dataset, pyo3_levenshtein_)
     assert len(res) == TEST_DATASET_SIZE
     for pred, (_, _, gt) in zip(res, test_dataset):
         assert pred == gt
@@ -244,17 +237,19 @@ def test_pyo3_levenshten(test_dataset: list[tuple[str, str, int]]):
 
 You can run the benchmark with the following command: `uv run pytest benchmarking/benchmarks_single.py --benchmark-max-time 10`. This command will repeat the test until the specified maximum time elapses and then report the statistics.
 
-I copied the pure Python implementation from [toastdriven/pylev](https://github.com/toastdriven/pylev) in [benchmarking/pure_python_impl.py](https://github.com/ceshine/pyo3-Levenshtein/blob/0.3.0/benchmarking/pure_python_impl.py) to provide a baseline.
+I copied the pure Python implementation from [toastdriven/pylev](https://github.com/toastdriven/pylev) in [benchmarking/pure_python_impl.py](https://github.com/ceshine/pyo3-Levenshtein/blob/0.3.0/benchmarking/pure_python_impl.py) as a baseline implementation.
 
 The single-threaded Python implementation of the Wagner–Fischer algorithm takes about 2,500 ms to process all 16,384 pairs of strings on average, while our Rust/PyO3 version takes about 40 ms on average. That's a 60x speedup!
+
+{{< figure src="sample-benchmark-outputs.png" caption="Sample benchmark output (v0.3.0); results vary slightly from [README](https://github.com/ceshine/pyo3-Levenshtein/blob/0.3.0/README.md) due to statistical variance." >}}
 
 ## Multi-threaded implementation
 
 I use the Rust crate [rayon](https://docs.rs/rayon/latest/rayon/) [7] to provide data parallelism. The parallel implementation is much more involved than the single-threaded one because it must explicitly release the Python GIL before distributing work to the thread pool.
 
-I also added a global thread-pool cache to avoid repeatedly creating thread pools during benchmarking. In practice, it would be more reasonable to use a single thread pool if the user is not expected to change the number of threads during the program’s lifetime.
+I also added a global thread pool cache to avoid repeatedly creating thread pools during benchmarking. In practice, it would be more reasonable to use a single thread pool if the user is not expected to change the number of threads during the program’s lifetime.
 
-Below is the multi-threaded `levenshtein_batch` function taken from version 0.3.0. I've omitted the docstring to save space. You can find the full version [on GitHub](https://github.com/ceshine/pyo3-Levenshtein/blob/691cbbbab105d877fcc5fca541b9b397b2dfa2b2/src/lib.rs#L177).
+Below is the multi-threaded `levenshtein_batch` function taken from version 0.3.0. I've omitted the doc comments to save space. You can find the full version [on GitHub](https://github.com/ceshine/pyo3-Levenshtein/blob/691cbbbab105d877fcc5fca541b9b397b2dfa2b2/src/lib.rs#L177).
 
 ```rust
 use rayon::prelude::*;
@@ -304,15 +299,17 @@ pub fn levenshtein_batch(
 }
 ```
 
-A side effect of incorporating the `rayon` crate and interacting with the Python GIL (Global Interpreter Lock) is that the `cargo test` command now requires a Python interpreter to be installed.
+A side effect of incorporating the `rayon` crate and interacting with the Python GIL (Global Interpreter Lock) is that the `cargo test` command now requires a Python interpreter and its dev headers.
 
-I created a shell script, [run-cargo-tests.sh](https://github.com/ceshine/pyo3-Levenshtein/blob/0.3.0/run-cargo-tests.sh), to determine the paths to the Python interpreter and its library directory, set the appropriate environment variables, and run `cargo test`. You should run the script in your CI environment (continuous integration) instead of running `cargo test` directly.
+I created a shell script, [run-cargo-tests.sh](https://github.com/ceshine/pyo3-Levenshtein/blob/0.3.0/run-cargo-tests.sh), to determine the paths to the Python interpreter and the Python library directory, set the appropriate environment variables, and run `cargo test`. You should run the script in your CI environment (continuous integration) instead of running `cargo test` directly.
 
-The parallelism provided by the `rayon` crate is highly efficient. With a 12-thread pool—which, in theory, uses all hyperthreads on the six performance cores of my Core i5-13500 CPU. I see about a 6× speedup compared to the single-threaded version (6.5 ms vs. 40 ms). This suggests there is very little overhead.
+The parallelism provided by the `rayon` crate is highly efficient. With a 12-thread pool, which in theory uses all hyperthreads on the six performance cores of my Core i5-13500 CPU, I see about a 6× speedup compared to the single-threaded version (6.5 ms vs. 40 ms). This suggests there is very little overhead.
+
+The benchmarking code for the multi-threaded implementation is available at [benchmarking/benchmarks_multi.py](https://github.com/ceshine/pyo3-Levenshtein/blob/0.3.0/benchmarking/benchmarks_multi.py).
 
 ## Python Type Stubs
 
-To provide typing information to Python type-checkers, we need to convert the project from a pure-Rust layout to a mixed Rust/Python layout [5].
+To provide typing information to Python type checkers, we need to convert the project from a pure-Rust layout to a mixed Rust/Python layout [5].
 
 We need to create a Python package in `python/pyo3_levenshtein`, which will contain the following files:
 
@@ -341,10 +338,10 @@ Contents of `pyo3_levenshtein.pyi` (docstrings omitted to save space):
 ```python
 from typing import List, Tuple, Optional
 
-def levenshtein(s1: str, s2: str) -> int:
+def levenshtein(s1: str, s2: str, grapheme_segmentation: bool = False) -> int:
     ...
 
-def levenshtein_batch(pairs: List[Tuple[str, str]], num_threads: Optional[int] = None) -> List[int]:
+def levenshtein_batch(pairs: List[Tuple[str, str]], num_threads: Optional[int] = None, grapheme_segmentation: bool = False) -> List[int]:
     ...
 ```
 
@@ -352,7 +349,7 @@ Run `maturin develop --release --uv` again, and your IDE and type checker should
 
 ## Further Optimizations
 
-Despite already being significantly faster than the pure-Python implementation, our Rust implementation is still much slower than the C implementation used in the `Levenshtein` Python package [8]. That package is powered by `rapidfuzz-cpp` [9]. I used Claude Code to summarize the optimizations employed in `rapidfuzz-cpp` and stored the report in [rapidfuzz-levenshtein.md](https://github.com/ceshine/pyo3-Levenshtein/blob/0.3.0/rapidfuzz-levenshtein.md). Unfortunately, these techniques are too sophisticated to be incorporated into this practice project.
+Despite already being significantly faster than the pure-Python implementation, our Rust implementation is still much slower than the C implementation used in the `Levenshtein` Python package [8]. That package is powered by `rapidfuzz-cpp` [9]. I used Claude Code to summarize the optimizations employed in `rapidfuzz-cpp` and stored the report in [rapidfuzz-levenshtein.md](https://github.com/ceshine/pyo3-Levenshtein/blob/0.3.0/rapidfuzz-levenshtein.md). Unfortunately, these techniques are too sophisticated to be incorporated into this learning project.
 
 However, I found another Python package, [jellyfish](https://github.com/jamesturk/jellyfish), that provides high-performance implementations of various string-comparison metrics (including [Levenshtein distance](https://github.com/jamesturk/jellyfish/blob/b21046a4f0c490f2c20548ba9b2c6c15fe120847/src/levenshtein.rs)). (It also uses PyO3 and Maturin to integrate Rust code into the package.) In version 0.3.0 of my `pyo3-levenshtein` package, I ported some of the techniques it uses and achieved a **1.7× speedup in single-threaded mode**, along with much lower memory usage (space complexity). I’ve also added support for grapheme-cluster segmentation for more complex Unicode characters, but it incurs some performance overhead, so it’s disabled by default and in benchmarks.
 
