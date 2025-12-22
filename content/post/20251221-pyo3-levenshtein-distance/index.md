@@ -366,3 +366,7 @@ Explaining the details of these optimizations would require a whole new blog pos
 7. [Crate rayon](https://docs.rs/rayon/latest/rayon/)
 8. [Levenshtein (formerly python-levenshtein)](https://github.com/rapidfuzz/Levenshtein)
 9. [rapidfuzz-cpp](https://github.com/rapidfuzz/rapidfuzz-cpp)
+
+## AI use disclosure
+
+I used AI tools to revise my writing (primarily for grammar and lexical correctness) in this post. However, I wrote most of the content myself; it was not generated with prompts.
