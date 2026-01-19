@@ -4,3 +4,10 @@
 
 [build.environment]
   HUGO_VERSION = "0.149.1"
+
+[[redirects]]
+  from = "https://blog.veritable.pw/*"
+  to = "https://blog.ceshine.net/:splat"
+  status = 301
+  force = true
+  headers = {X-From = "Netlify"}
