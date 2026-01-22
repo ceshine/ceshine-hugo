@@ -19,4 +19,9 @@ This will start the Hugo development server, and you can view the blog at `http:
 
 ## Deployment
 
-The Docker setup (`docker-compose.yml` and `dockerfiles/`) in this repository is intended for deployment on a VPS (Virtual Private Server) and is not needed for local development.
+Deployment on a VPS (Virtual Private Server) and is not needed for local development.
+
+## License
+
+This project is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](./LICENSE) license.
+

@@ -5,6 +5,8 @@ theme: "PaperMod"
 googleAnalytics: "G-HE2HBKGF2H"
 enableEmoji: true
 
+copyright: '© 2015-2026 [Ceshine Lee](https://blog.ceshine.net/) · [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)'
+
 pagination:
   pagerSize: 5
 
