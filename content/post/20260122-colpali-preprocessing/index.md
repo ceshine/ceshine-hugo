@@ -1,7 +1,7 @@
 ---
 slug: colpali-preprocessing
 date: 2026-01-22T00:00:00.000Z
-title: "[Notes] ColPali's Image Preprocessing Pipeline"
+title: "[Notes] Uncovering the Hidden Preprocessing Logic of ColPali"
 description: ""
 tags:
   - python
@@ -16,6 +16,11 @@ keywords:
   - RAG
   - ColPali
   - Qdrant
+  - SigLIP
+  - Visual Document Understanding
+  - Late Interaction
+  - Visual Document Retrieval
+  - PaliGemma
 url: /post/colpali-preprocessing/
 ---
 
