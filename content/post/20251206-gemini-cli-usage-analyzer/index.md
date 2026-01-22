@@ -13,6 +13,11 @@ keywords:
   - python
   - gemini
   - gemini-cli
+cover:
+  image: "gemini_cli_usage_analyzer_500.png"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/gemini-cli-usage-analyzer-initial-release/
 ---
 

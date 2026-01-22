@@ -8,6 +8,11 @@ tags:
   - industry_news
 keywords:
   - ai
+cover:
+  image: "cover.png"
+  hidden: true
+  responsiveImages: true
+  relative: true  
 url: /post/state-of-ai-2025/
 ---
 

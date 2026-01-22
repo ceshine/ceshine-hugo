@@ -17,6 +17,11 @@ keywords:
   - NLP
   - multithreading
   - Rayon
+cover:
+  image: "python-rust.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/pyo3-levenshtein-distance/
 ---
 

@@ -21,6 +21,11 @@ keywords:
   - Late Interaction
   - Visual Document Retrieval
   - PaliGemma
+cover:
+  image: "factory-inspection.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/colpali-preprocessing/
 ---
 
