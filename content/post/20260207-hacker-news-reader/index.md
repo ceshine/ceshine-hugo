@@ -121,6 +121,21 @@ flowchart TD
     J --> K[Python receives counts]
 ```
 
+The Hacker News ingestion pipeline is implemented in Rust and is usually triggered from Python via the PyO3 bridge. The bridge builds the ingestion configuration that includes:
+
+- Database path
+- Story list selection (top or best)
+- Limits for stories, comments, depth, and concurrency
+- Rate limit settings
+
+The Rust pipeline spawns multiple workers to fetch stories and comments asynchronously, with multiple workers running concurrently. The rate limit for the Hacker News API is implemented using a mutex that controls the minimum number of seconds between requests.
+
+The pipeline first fetches the list of stories, processes the stories one by one, and collects their comments one level at a time (from the direct descendants to the deepest comment level defined in the configuration). Collected data is written to the database sequentially at the end of each step to avoid race conditions.
+
+Once the list of stories is persisted to the database as a snapshot, the ingestion process can be resumed, and all previously ingested stories and comments associated with this list will be overwritten by the upsert operations. This could cause time discrepancy issues if the process is resumed long after the snapshot was taken. Ideally, the entire ingestion pipeline should be treated as an atomic operation to avoid such issues. However, since retry attempts usually occur shortly after a failure, this is considered a reasonable trade-off between simplicity and correctness.
+
+The Python caller of the ingestion pipeline receives a simple ingestion summary containing the snapshot timestamp, the number of stories in the list, and the number of items ingested or skipped for each item type.
+
 ## Acknowledgments
 
 This article helped me set up Mermaid diagram rendering on this website: [Getting Mermaid Diagrams Working in Hugo](https://blog.mikesahari.com/posts/hugo-mermaid-diagrams/)
