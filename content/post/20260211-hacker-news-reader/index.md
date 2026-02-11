@@ -1,6 +1,6 @@
 ---
 slug: developing-a-hacker-news-reader
-date: 2026-02-10T00:00:00.000Z
+date: 2026-02-11T00:00:00.000Z
 title: "Developing an AI-assisted Hacker News Reader"
 description: ""
 tags:
