@@ -145,21 +145,21 @@ The Python caller of the ingestion pipeline receives a simple ingestion summary 
 flowchart TD
     START[Start: Story IDs and Model ID]:::python
     META[Fetch Story Metadata]:::python
-    FILTER{Filter URLs<br>Non-Empty URLs<br>External URLs}:::python
+    FILTER{Filter URLs:<br>Non-Empty URLs<br>External URLs}:::python
     BRIDGE[PyO3 Bridge to Rust]:::python
-    RUST_PREP[Prepare Fetch Set<br>DB and Schema Ready<br>Skipped vs To_Fetch]:::rust
+    RUST_PREP[Prepare Fetch Set:<br>DB and Schema Ready<br>Skipped vs To_Fetch]:::rust
     MCP_SPAWN[[Google Search MCP Server]]:::rust
-    RUST_FETCH[Fetch Markdown via Tool<br>Concurrent Buffer Unordered]:::rust
+    RUST_FETCH[Fetch Markdown via Tool:<br>Concurrent Buffer Unordered]:::rust
     TOOL_OK{Tool Result Has Text}:::rust
-    UPSERT_RAW[Upsert Raw Markdown<br>Fetch Timestamp Stored]:::rust
-    FETCH_STATUS[Record Fetch Status<br>Success Skipped or Error]:::rust
+    UPSERT_RAW[Upsert Raw Markdown:<br>Fetch Timestamp Stored]:::rust
+    FETCH_STATUS[Record Fetch Status:<br>Success Skipped or Error]:::rust
     MCP_SHUTDOWN[Best Effort Shutdown]:::rust
-    PAGE_LIST{Build Fetched Page List<br>Internal Duplicate or Condensed}:::python
-    WEBPARSER[Run Web Parser Agent<br>Line Numbers Added]:::python
+    PAGE_LIST{Build Fetched Page List}:::python
+    WEBPARSER[Run Web Parser Agent:<br>Line Numbers Added]:::python
     PARSE_STATUS{Parse Status}:::python
-    CONDENSE[Extract Content Ranges<br>Condensed Markdown]:::python
+    CONDENSE[Extract Content Ranges:<br>Condensed Markdown]:::python
     PARSE_ERROR[Log Error and Skip Update]:::python
-    UPDATE_PAGES[Update Fetched Pages<br>Condensed Markdown and Flags]:::python
+    UPDATE_PAGES[Update Fetched Pages:<br>Condensed Markdown and Flags]:::python
     RETURN_FLAGS[Return Story ID to Success Flag]:::python
 
     START --> META --> FILTER
@@ -222,6 +222,59 @@ If either of the two flags is raised in the LLM output, we will record the issue
 
 ## Web Page Content and Discussion Summarizer
 
+```mermaid
+flowchart TD
+    START[Start: Story IDs and Model ID]:::python
+    INPUTS[Gather Inputs:<br>Story Metadata<br>Thread Comments<br>Optional Page Content]:::python
+    FLATTEN[Flatten Thread:<br>Preorder Comment List]:::python
+    CLEAN[Clean and Truncate Comment Text]:::python
+    PAYLOAD[Build Thread Payload:<br>Story Header and Comments]:::python
+    PAGE_CHECK{Page Content Available}:::python
+    HEADER_PAGE[Prompt Header:<br>source_mode: page]:::python
+    HEADER_HN[Prompt Header:<br>source_mode: hn_only]:::python
+    PROMPT[Assemble LLM Prompt:<br>Header Comment Lines and Page - if available]:::python
+    AI_AGENT[[External AI Agent]]:::python
+    FORMAT[Format Summary Markdown and Persist to DB]:::python
+
+    START --> INPUTS --> FLATTEN --> CLEAN --> PAYLOAD --> PAGE_CHECK
+    PAGE_CHECK -->|yes| HEADER_PAGE --> PROMPT
+    PAGE_CHECK -->|no| HEADER_HN --> PROMPT
+    PROMPT -->|Send Prompt| AI_AGENT
+    AI_AGENT -->|Receive Summary| FORMAT
+
+    classDef python fill:#e3f2fd,stroke:#1565c0,stroke-width:1px,color:#0b2b55;
+```
+
+This is the last component in the system that writes to the database. The main task of this summarizer component is to synthesize a prompt that instructs the LLM to generate two summaries: one for the content of the linked web page and one for the Hacker News discussion thread.
+
+Because the fetcher/parser component may fail to collect the content of the linked web page, we have a fallback that infers the post’s content from the discussion. We mark the normal mode with a `source_mode: page` line and the fallback mode with a `source_mode: hn_only` line. The system prompt contains instructions to handle both modes appropriately.
+
+The ingested Hacker News comments are traversed in pre-order to mimic the presentation on the Hacker News website. Each comment is placed in the prompt as a single-line JSON object (one object per line).
+
+Because the page content is optional, the prompt lists the comments first; it then appends the page content (if present) at the end.
+
+This is the input format included in the system prompt:
+
+```markdown
+Title: <Story Title>
+URL: <URL linked by the Story>
+Descendants: <Number of comments under this story>
+source_mode: [page | hn_only]
+
+{"id": 9224, "parent_id": 8863, "depth": 0, "rank_in_parent": 1, "by": "user1", "time": 1175816820, "dead": false, "deleted": false, "text": "This is a top-level comment containing the full text..."}
+{"id": 9272, "parent_id": 9224, "depth": 1, "rank_in_parent": 1, "by": "user2", "time": 1175822880, "dead": false, "deleted": false, "excerpt": "This is a nested reply containing only an excerpt..."}
+... (one JSON object per line)
+
+--- 
+
+[The Page Content in Markdown when `source_mode` is `page`]
+```
+
+You can find [the complete system prompt here](https://gist.github.com/ceshine/293dea23ba53dcb02759b4612b3469d5).
+
+Similar to the AI agent for the fetch result parser, the summarizer agent is required to produce structured output containing the two summaries we requested. The received output is briefly validated and then persisted to the database.
+
+## Report Generator
 
 ## Acknowledgments
 
