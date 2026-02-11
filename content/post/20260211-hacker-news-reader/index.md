@@ -2,7 +2,7 @@
 slug: developing-a-hacker-news-reader
 date: 2026-02-11T00:00:00.000Z
 title: "Developing an AI-assisted Hacker News Reader"
-description: ""
+description: "A technical deep dive into building a custom Hacker News reader using Rust, Python, and AI agents to fetch, parse, and summarize stories automatically."
 tags:
   - ai
   - apps
@@ -44,8 +44,8 @@ Please note that this blog post describes the latest version of the app as of ea
 flowchart TB
   START((Orchestrator Start))
   INGEST[HN Story + Comment Ingestion]
-  FETCH[Webpage Fetching]
-  PARSE[AI Webpage Cleanup]
+  FETCH[Web Page Fetching]
+  PARSE[AI Web Page Cleanup]
   SUMM[AI Summarization]
   REPORT[Static HTML Reports]
   PUBLIC[Public HTML Files]
@@ -83,7 +83,6 @@ flowchart TB
   class DB db;
   class PUBLIC frontend;
 
-  classDef rust fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,color:#0b2b55;
   classDef python fill:#e3f2fd,stroke:#1565c0,stroke-width:1px,color:#0b2b55;
   classDef db fill:#fff3e0,stroke:#ef6c00,stroke-width:1px,color:#4a2b00;
   classDef frontend fill:#f3f3f3,stroke:#666,stroke-width:1px,color:#1f1f1f;
@@ -99,7 +98,7 @@ There are four main components in this system:
 3. **Summarizer**: A Python program that uses LLMs to summarize the content of the stories and the comments on those stories.
 4. **Report generator**: A Python program that generates a report for each specific Top and Best list of stories and an index of the reports. Each story includes a summary of the linked content and a summary of the discussion about the story.
 
-The entire workflow is orchestrated by a Python script, and each component is executed in order. The data are stored in a local SQLite database. **Each job is scoped to a snapshot of the "top" and "best" story lists.** This allows us to resume an interrupted job by skipping stories and comments that have already been processed by each component.
+The entire workflow is orchestrated by a Python script, and each component is executed in order. The data is stored in a local SQLite database. **Each job is scoped to a snapshot of the "top" and "best" story lists.** This allows us to resume an interrupted job by skipping stories and comments that have already been processed by each component.
 
 The generated reports are self-contained HTML files. The index is also a self-contained HTML file. The reports and the index are available at [https://hnreader.ceshine.net/](https://hnreader.ceshine.net/) via [Cloudflare Pages](https://pages.cloudflare.com). This is a completely static website intended to minimize hosting costs and complexity.
 
@@ -109,7 +108,7 @@ In addition to the static reports, I have developed an interactive NiceGUI app, 
 
 We'll cover each component in more details in the next few sections.
 
-(This system currently process only stories with a valid URL. Stories without links, such as Ask HN and Who's Hiring, are skipped for now.)
+(This system currently processes only stories with a valid URL. Stories without links, such as Ask HN and Who's Hiring, are skipped for now.)
 
 ## Hacker News Ingestion
 
@@ -142,7 +141,7 @@ The Hacker News ingestion pipeline is implemented in Rust and is usually trigger
 - Limits for stories, comments, depth, and concurrency
 - Rate limit settings
 
-The Rust pipeline spawns multiple workers to fetch stories and comments asynchronously, with multiple workers running concurrently. The rate limit for the Hacker News API is implemented using a mutex that controls the minimum number of seconds between requests.
+The Rust pipeline spawns multiple workers to fetch stories and comments asynchronously, with multiple workers running concurrently. Rate limiting is enforced via a mutex to ensure a minimum delay between API requests.
 
 The pipeline first fetches the list of stories, processes the stories one by one, and collects their comments one level at a time (from the direct descendants to the deepest comment level defined in the configuration). Collected data is written to the database sequentially at the end of each step to avoid race conditions.
 
@@ -159,7 +158,7 @@ flowchart TD
     FILTER{Filter URLs:<br>Non-Empty URLs<br>External URLs}:::python
     BRIDGE[PyO3 Bridge to Rust]:::python
     RUST_PREP[Prepare Fetch Set:<br>DB and Schema Ready<br>Skipped vs To_Fetch]:::rust
-    MCP_SPAWN[[Google Search MCP Server]]:::rust
+    MCP_SPAWN[[Playwright MCP Server]]:::rust
     RUST_FETCH[Fetch Markdown via Tool:<br>Concurrent Buffer Unordered]:::rust
     TOOL_OK{Tool Result Has Text}:::rust
     UPSERT_RAW[Upsert Raw Markdown:<br>Fetch Timestamp Stored]:::rust
@@ -335,7 +334,7 @@ This is an internal application for validating intermediate database states and 
 
 {{<figure src="visualizer_front.png" caption="Front Page">}}
 
-{{<figure src="visualizer_snapshot_browser.png" caption="Snapshot Brower">}}
+{{<figure src="visualizer_snapshot_browser.png" caption="Snapshot Browser">}}
 
 {{<figure src="visualizer_page_viewer.png" caption="Page Content Viewer">}}
 
@@ -355,11 +354,15 @@ The MCP server currently in use does not handle CAPTCHAs for fetch requests the 
 
 **Support concurrent AI agent requests**:
 
-Currently, the fetch-result parser and the summarizer agents each handle one request at a time. This worked well during my initial development with local LLMs. However, when used with commercial LLM APIs, this approach misses the opportunity to use concurrent requests for significant performance gains. However, this increases the codebase's complexity.
+Currently, the fetch-result parser and the summarizer agents each handle one request at a time. This worked well during initial development with local LLMs. With commercial LLM APIs, though, this leaves significant performance on the table because requests could run concurrently, at the cost of added codebase complexity.
 
 **Provide search functionality for the summary reports**:
 
 We could probably use Algolia’s free tier to provide simple search functionality for the static website. We could also build a simple search index for story titles and implement a self-contained HTML page to provide a more integrated experience.
+
+**Improve the system prompt of the summarizer agent**:
+
+The current system prompt has rigid output requirements for all story types. We may want to give the agent more leeway to decide what content to include in the summary. Providing more examples of story types could also help.
 
 ## AI Use Disclosure
 
