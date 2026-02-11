@@ -5,7 +5,16 @@ title: "Developing an AI-assisted Hacker News Reader"
 description: ""
 tags:
   - ai
+  - apps
+  - open-source
+  - python
+  - rust
 keywords:
+  - Python
+  - Rust
+  - PyO3
+  - NLP
+  - multithreading
   - ai
 cover:
   image: "cover.jpg"
@@ -310,7 +319,7 @@ flowchart TD
 
 This is the component I relied most heavily on AI to build, because I am not familiar with JavaScript. I intentionally avoided any complex JavaScript frameworks to minimize project complexity and reduce maintenance and hosting costs for the reports.
 
-The Python report-generation code relies on the Jinja2 templating system. Each snapshot has its own self-contained HTML report. Generating the report HTML files is straightforward: we read the summary data from the database and let Jinja2 populate the templates for us.
+The Python report generation code relies on the Jinja2 templating engine. Each snapshot has its own self-contained HTML report. Generating the HTML report files is straightforward: we read the summary data from the database and let Jinja2 populate the templates. We optionally perform some post-processing on the summary data to inject links to the referenced Hacker News comments.
 
 The tricky part comes when building the index page and the navigation links within each report page. We have two generation modes: "single" and "batch". The former generates a report for a single snapshot, while the latter generates reports for all snapshots in the database. The "single" mode requires finding the previous and next snapshots for the target snapshot. The navigation links in the reports for those neighboring snapshots may need to be updated. The "batch" mode is much more straightforward, as we can collect the list of snapshots in chronological order and process them one by one.
 
@@ -331,6 +340,26 @@ This is an internal application for validating intermediate database states and 
 {{<figure src="visualizer_page_viewer.png" caption="Page Content Viewer">}}
 
 {{<figure src="visualizer_thread_debugger.png" caption="Thread Debugger">}}
+
+## Future Improvements
+
+**A more intelligent comment ingestion strategy**:
+
+Currently, the ingestion process is mainly controlled by two parameters: one controls the maximum depth of the comment tree that it traverses; the other controls the maximum number of child comments to be collected for each story or comment node. This may not be the best strategy for obtaining the most relevant comments. For example, we may want to go deeper for the first few child (first-level) comments of a story.
+
+A thorough analysis of common patterns in the Hacker News discussion tree is needed to devise such a strategy.
+
+**A more robust page fetcher**:
+
+The MCP server currently in use does not handle CAPTCHAs for fetch requests the way it does for search requests. Improving the MCP server would help increase the number of pages that can be fetched. Alternatively, adding a second fetcher layer that relies on a commercial scraping API would also do the trick, albeit at some cost.
+
+**Support concurrent AI agent requests**:
+
+Currently, the fetch-result parser and the summarizer agents each handle one request at a time. This worked well during my initial development with local LLMs. However, when used with commercial LLM APIs, this approach misses the opportunity to use concurrent requests for significant performance gains. However, this increases the codebase's complexity.
+
+**Provide search functionality for the summary reports**:
+
+We could probably use Algolia’s free tier to provide simple search functionality for the static website. We could also build a simple search index for story titles and implement a self-contained HTML page to provide a more integrated experience.
 
 ## AI Use Disclosure
 
