@@ -74,7 +74,7 @@ flowchart TB
   class DB db;
   class PUBLIC frontend;
 
-  classDef rust fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px;
+  classDef rust fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,color:#0b2b55;
   classDef python fill:#e3f2fd,stroke:#1565c0,stroke-width:1px,color:#0b2b55;
   classDef db fill:#fff3e0,stroke:#ef6c00,stroke-width:1px,color:#4a2b00;
   classDef frontend fill:#f3f3f3,stroke:#666,stroke-width:1px,color:#1f1f1f;
@@ -104,21 +104,24 @@ We'll cover each component in more details in the next few sections.
 
 ```mermaid
 flowchart TD
-    A[Python app calls ingest_once] --> B[PyO3 bridge into Rust and build config]
-    B --> D[Run Rust ingestion pipeline]
+    A[Python app calls ingest_once]:::python --> B[PyO3 bridge into Rust and build config]:::python
+    B --> D[Run Rust ingestion pipeline]:::rust
 
-    D --> E[HN API client]
-    D -->|spawns writer task| F[SQLite writer]
+    D --> E[HN API client]:::rust
+    D -->|spawns writer task| F[SQLite writer]:::rust
 
-    E -->|spawn workers with concurrency limit| G[Fetch story lists]
-    G --> H[Fetch story and comment items]
+    E -->|spawn workers with concurrency limit| G[Fetch story lists]:::rust
+    G --> H[Fetch story and comment items]:::rust
 
     H -->|item rows to persist| F
     G -->|list snapshots to persist| F
 
-    F --> I[Upsert snapshots, stories, comments]
-    I --> J[Return ingestion summary]
-    J --> K[Python receives counts]
+    F --> I[Upsert snapshots, stories, comments]:::rust
+    I --> J[Return ingestion summary]:::rust
+    J --> K[Python receives counts]:::python
+    
+    classDef rust fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,color:#0b2b55;
+    classDef python fill:#e3f2fd,stroke:#1565c0,stroke-width:1px,color:#0b2b55;
 ```
 
 The Hacker News ingestion pipeline is implemented in Rust and is usually triggered from Python via the PyO3 bridge. The bridge builds the ingestion configuration that includes:
@@ -132,9 +135,93 @@ The Rust pipeline spawns multiple workers to fetch stories and comments asynchro
 
 The pipeline first fetches the list of stories, processes the stories one by one, and collects their comments one level at a time (from the direct descendants to the deepest comment level defined in the configuration). Collected data is written to the database sequentially at the end of each step to avoid race conditions.
 
-Once the list of stories is persisted to the database as a snapshot, the ingestion process can be resumed, and all previously ingested stories and comments associated with this list will be overwritten by the upsert operations. This could cause time discrepancy issues if the process is resumed long after the snapshot was taken. Ideally, the entire ingestion pipeline should be treated as an atomic operation to avoid such issues. However, since retry attempts usually occur shortly after a failure, this is considered a reasonable trade-off between simplicity and correctness.
+_Once the list of stories is persisted to the database as a snapshot, the ingestion process can be resumed, and all previously ingested stories and comments associated with this list will be overwritten by the upsert operations. This could cause time discrepancy issues if the process is resumed long after the snapshot was taken. Ideally, the entire ingestion pipeline should be treated as an atomic operation to avoid such issues. However, since retry attempts usually occur shortly after a failure, this is considered a reasonable trade-off between simplicity and correctness._
 
 The Python caller of the ingestion pipeline receives a simple ingestion summary containing the snapshot timestamp, the number of stories in the list, and the number of items ingested or skipped for each item type.
+
+## Web Page Fetching and Parsing
+
+```mermaid
+flowchart TD
+    START[Start: Story IDs and Model ID]:::python
+    META[Fetch Story Metadata]:::python
+    FILTER{Filter URLs<br>Non-Empty URLs<br>External URLs}:::python
+    BRIDGE[PyO3 Bridge to Rust]:::python
+    RUST_PREP[Prepare Fetch Set<br>DB and Schema Ready<br>Skipped vs To_Fetch]:::rust
+    MCP_SPAWN[[Google Search MCP Server]]:::rust
+    RUST_FETCH[Fetch Markdown via Tool<br>Concurrent Buffer Unordered]:::rust
+    TOOL_OK{Tool Result Has Text}:::rust
+    UPSERT_RAW[Upsert Raw Markdown<br>Fetch Timestamp Stored]:::rust
+    FETCH_STATUS[Record Fetch Status<br>Success Skipped or Error]:::rust
+    MCP_SHUTDOWN[Best Effort Shutdown]:::rust
+    PAGE_LIST{Build Fetched Page List<br>Internal Duplicate or Condensed}:::python
+    WEBPARSER[Run Web Parser Agent<br>Line Numbers Added]:::python
+    PARSE_STATUS{Parse Status}:::python
+    CONDENSE[Extract Content Ranges<br>Condensed Markdown]:::python
+    PARSE_ERROR[Log Error and Skip Update]:::python
+    UPDATE_PAGES[Update Fetched Pages<br>Condensed Markdown and Flags]:::python
+    RETURN_FLAGS[Return Story ID to Success Flag]:::python
+
+    START --> META --> FILTER
+    FILTER --> BRIDGE --> RUST_PREP --> RUST_FETCH --> TOOL_OK
+    RUST_PREP -.->|Start MCP Service| MCP_SPAWN
+    RUST_FETCH -.->|Tool Call| MCP_SPAWN
+    MCP_SPAWN -.->|Response| TOOL_OK
+    TOOL_OK -->|yes| UPSERT_RAW --> FETCH_STATUS
+    TOOL_OK -->|no| FETCH_STATUS
+    FETCH_STATUS --> MCP_SHUTDOWN --> PAGE_LIST --> WEBPARSER --> PARSE_STATUS
+    MCP_SPAWN -.->|Stop MCP Service| MCP_SHUTDOWN
+    PARSE_STATUS -->|success| CONDENSE --> UPDATE_PAGES --> RETURN_FLAGS
+    PARSE_STATUS -->|blocked/anomalous| UPDATE_PAGES
+    PARSE_STATUS -->|failed/crashed| PARSE_ERROR --> RETURN_FLAGS
+
+    classDef rust fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,color:#0b2b55;
+    classDef python fill:#e3f2fd,stroke:#1565c0,stroke-width:1px,color:#0b2b55;
+```
+
+This component consists of two submodules: the Rust web page fetcher and the Python fetch-result parser. The two are connected by a Python orchestrator.
+
+### Web Page Fetcher
+
+I chose to implement the web page fetcher in Rust because of its superior concurrency control and high-performance multi-process management capabilities.
+
+The fetcher currently runs the [Playwright MCP server](https://github.com/ceshine/python-playwright-google-search.git) I developed to fetch web pages. This MCP server has been used in my other projects and my daily LLM chat workflows, so incorporating it into this project creates minimal development friction (and it's free!). I may add support for commercial scraping APIs such as Jina's Reader API and the Firecrawl API in the future for pages and sites that do not play well with Playwright.
+
+The MCP server supports concurrency, so the Rust fetcher can directly initiate multiple tool calls against a single MCP process, making the fetching process incredibly fast.
+
+We use the `fetch_markdown` tool from the MCP server to collect the Markdown version of the fetched web page for brevity and readability.
+
+The entire fetcher module is only 150 lines of code.
+
+### Fetch Result Parser
+
+Fetched web pages often contain a lot of irrelevant content, such as navigation headers, footers, advertisements, privacy notifications, and other elements. To prevent this content from distracting the summarizer, I added a fetch-result parser that utilizes LLMs to extract the main content from fetched web pages.
+
+To avoid hallucinations from LLMs, instead of asking LLMs to repeat the main content, we attach a line number to each line of the fetched content and ask the LLM to extract the line numbers of the main content. While there may be incorrectly identified lines, the extracted content will always be verbatim from the fetched content, ensuring no hallucinations.
+
+The LLMs are also tasked with determining two flags based on the input content: 'blocked' and 'anomalous'. The 'blocked' flag indicates cases where the fetch attempt is blocked by the website (usually resulting in an 'access denied' message or a CAPTCHA request). The 'anomalous' flag indicates cases where the fetched result does not seem relevant to the story's title (usually caused by page rendering issues).
+
+Finally, we ask the LLMs to provide the reasoning for their decision. This helps us debug the results and, hopefully, improve the accuracy of the output.
+
+Below is the part of the system prompt for the LLM that specifies the output format:
+
+```markdown
+Output format
+
+- Return a single JSON object matching this schema exactly:
+  - content_ranges: list of [start, end]
+  - blocked: boolean
+  - anomalous: boolean
+  - reasoning: string
+- Do not add any other keys.
+```
+
+You can find [the complete system prompt here](https://gist.github.com/ceshine/01316d53a030a88aec70738ea2cbb5ce).
+
+If either of the two flags is raised in the LLM output, we will record the issue for the target URL in the database. Otherwise, we reconstruct the main content from the original fetch result and the LLM output and persist it to the database.
+
+## Web Page Content and Discussion Summarizer
+
 
 ## Acknowledgments
 
