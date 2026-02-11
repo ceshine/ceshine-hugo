@@ -94,6 +94,8 @@ The entire workflow is orchestrated by a Python script, and each component is ex
 
 The generated reports are self-contained HTML files. The index is also a self-contained HTML file. The reports and the index are available at [https://hnreader.ceshine.net/](https://hnreader.ceshine.net/) via [Cloudflare Pages](https://pages.cloudflare.com). This is a completely static website intended to minimize hosting costs and complexity.
 
+{{<figure src="website_screenshot.jpg" caption="Screenshot of hnreader.ceshine.net">}}
+
 In addition to the static reports, I have developed an interactive NiceGUI app, Visualizer, for internal testing purposes. The app exposes internal states stored in the local SQLite database. Because it exposes fetched web pages, I am not making the app publicly available.
 
 We'll cover each component in more details in the next few sections.
@@ -275,6 +277,66 @@ You can find [the complete system prompt here](https://gist.github.com/ceshine/2
 Similar to the AI agent for the fetch result parser, the summarizer agent is required to produce structured output containing the two summaries we requested. The received output is briefly validated and then persisted to the database.
 
 ## Report Generator
+
+```mermaid
+flowchart TD
+    START[Start: Report Request]:::python
+    SCOPE{Report Scope}:::python
+    SNAPSHOT_HTML[Build Snapshot Report with Jinja2]:::python
+    NAV_PATCH[Patch Navigation Links]:::python
+    WRITE_REPORT[Write Report File]:::python
+    UPDATE_NEIGHBORS[Update Neighbor Reports]:::python
+    INDEX_PAGE[Regenerate Index Page]:::python
+
+    SNAPSHOTS[Fetch Snapshot List]:::python
+    GROUP_LISTS[Group by List Name]:::python
+    LOOP_REPORTS[Iterate Snapshots<br>Chronological Order]:::python
+    PATCH_BATCH[Patch Prev and Next Links]:::python
+    WRITE_BATCH[Write Report Files]:::python
+    INDEX_ALL[Generate Index Page]:::python
+
+    FETCH_DATA[Fetch Snapshot Data]:::python
+
+    START --> SCOPE
+    SCOPE -->|single| FETCH_DATA
+    FETCH_DATA --> SNAPSHOT_HTML
+    SNAPSHOT_HTML -->|single report| NAV_PATCH --> WRITE_REPORT --> UPDATE_NEIGHBORS --> INDEX_PAGE
+
+    SCOPE -->|batch| SNAPSHOTS --> GROUP_LISTS --> LOOP_REPORTS --> FETCH_DATA
+    SNAPSHOT_HTML -->|batch reports| PATCH_BATCH --> WRITE_BATCH --> INDEX_ALL
+
+    classDef python fill:#e3f2fd,stroke:#1565c0,stroke-width:1px,color:#0b2b55;
+```
+
+This is the component I relied most heavily on AI to build, because I am not familiar with JavaScript. I intentionally avoided any complex JavaScript frameworks to minimize project complexity and reduce maintenance and hosting costs for the reports.
+
+The Python report-generation code relies on the Jinja2 templating system. Each snapshot has its own self-contained HTML report. Generating the report HTML files is straightforward: we read the summary data from the database and let Jinja2 populate the templates for us.
+
+The tricky part comes when building the index page and the navigation links within each report page. We have two generation modes: "single" and "batch". The former generates a report for a single snapshot, while the latter generates reports for all snapshots in the database. The "single" mode requires finding the previous and next snapshots for the target snapshot. The navigation links in the reports for those neighboring snapshots may need to be updated. The "batch" mode is much more straightforward, as we can collect the list of snapshots in chronological order and process them one by one.
+
+I use [Pico CSS](https://picocss.com/) for the UI and [Alpine.js](https://alpinejs.dev/) for dynamic behavior. The pages are uploaded and deployed to Cloudflare Pages via a single command: `npx wrangler pages deploy reports --commit-dirty=true`.
+
+You can access the reports at [https://hnreader.ceshine.net](https://hnreader.ceshine.net).
+
+{{<figure src="cloudflare_pages_dashboard.jpg" caption="Screenshot of Cloudflare Pages Dashboard">}}
+
+## NiceGUI-based Visualizer
+
+This is an internal application for validating intermediate database states and for my own use (e.g., generating a copy-ready prompt for each story so I can explore interesting stories further in a separate LLM thread). Below are some screenshots demonstrating the application's capabilities.
+
+{{<figure src="visualizer_front.png" caption="Front Page">}}
+
+{{<figure src="visualizer_snapshot_browser.png" caption="Snapshot Brower">}}
+
+{{<figure src="visualizer_page_viewer.png" caption="Page Content Viewer">}}
+
+{{<figure src="visualizer_thread_debugger.png" caption="Thread Debugger">}}
+
+## AI Use Disclosure
+
+I rely heavily on the Codex CLI (GPT-5.2 Codex) to create Mermaid diagrams consistent with the codebase. I also used AI tools to revise the rest of the post, primarily for grammar and word choice. However, I wrote most of the content myself; it was not generated using prompts.
+
+I developed the Hacker News reader mainly with assistance from the Gemini CLI (3 Pro Preview and 3 Flash Preview), occasionally using Codex CLI and OpenCode.
 
 ## Acknowledgments
 
