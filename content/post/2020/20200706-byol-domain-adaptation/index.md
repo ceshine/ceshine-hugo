@@ -15,6 +15,11 @@ keywords:
   - domain adaptation
   - transfer learning
   - BYOL
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/byol-domain-adaptation/
 ---
 

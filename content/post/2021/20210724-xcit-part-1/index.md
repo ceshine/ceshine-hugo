@@ -14,6 +14,11 @@ keywords:
   - transformers
   - cv
   - deep learning
+cover:
+  image: "/post/news-topic-similarity-measure/featuredImage.jpeg"
+  hidden: true
+  responsiveImages: true
+  relative: false
 url: /post/xcit-part-1/
 ---
 

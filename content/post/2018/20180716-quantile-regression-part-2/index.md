@@ -22,6 +22,11 @@ keywords:
   - deep-learning
   - python
   - data-science
+cover:
+  image: "featuredImage.jpeg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/quantile-regression-part-2/
 ---
 

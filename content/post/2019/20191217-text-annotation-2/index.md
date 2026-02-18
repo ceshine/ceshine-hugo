@@ -12,6 +12,11 @@ keywords:
   - dataset
   - annotation
   - react
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/text-annotation-2/
 ---
 

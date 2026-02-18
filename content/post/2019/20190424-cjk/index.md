@@ -5,6 +5,11 @@ title: "Detecting Chinese Characters in Unicode Strings"
 description: "CJK in Unicode and Python 3 implementation"
 tags:
   - nlp
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/cjk-unicode/
 ---
 

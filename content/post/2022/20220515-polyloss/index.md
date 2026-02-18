@@ -13,6 +13,11 @@ keywords:
 - pytorch
 - cv
 - deep learning
+cover:
+  image: "/post/538-model-2020/featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: false
 url: /post/polyloss/
 
 ---

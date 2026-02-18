@@ -11,6 +11,11 @@ keywords:
   - python
   - tools
   - data engineering
+cover:
+  image: "/post/sqlite-great-expectations/featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: false
 url: /post/mpire-postgres-queries/
 ---
 

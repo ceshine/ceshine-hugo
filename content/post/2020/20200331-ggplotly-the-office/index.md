@@ -11,6 +11,11 @@ keywords:
   - dataviz
   - rstats
   - plotly
+cover:
+  image: "rplot.png"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/ggplotly-the-office/
 ---
 

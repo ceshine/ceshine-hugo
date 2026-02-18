@@ -9,6 +9,11 @@ tags:
 keywords:
   - julia
   - tip
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/julia-sysimage-script/
 ---
 

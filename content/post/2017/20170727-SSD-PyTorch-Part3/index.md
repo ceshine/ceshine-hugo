@@ -11,6 +11,11 @@ keywords:
   - computer vision
   - object detection
   - pytorch
+cover:
+  image: "1__iFIQ28x7y02zaORgudC__1w.png"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/20170727-SSD-PyTorch-Part3/
 ---
 

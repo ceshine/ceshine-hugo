@@ -14,6 +14,11 @@ keywords:
   - bert
   - deep learning
   - synthetic data
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/synthetic-data-for-qa-model/
 ---
 

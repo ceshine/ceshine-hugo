@@ -4,6 +4,11 @@ tags: ["pytorch", "deep-learning"]
 categories: ["Machine Learning"]
 date: "2019-03-26T19:54:30+08:00"
 title: "Use NVIDIA Apex for Easy Mixed Precision Training in PyTorch"
+cover:
+  image: "/images/apex/0*AHjv6G_HeQ6Wf-fO.png"
+  hidden: true
+  responsiveImages: true
+  relative: true
 ---
 
 ![](/images/apex/featuredImage.jpeg)_Photo by [Sam Power](https://unsplash.com/photos/6aP9EGsYE3s?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)_

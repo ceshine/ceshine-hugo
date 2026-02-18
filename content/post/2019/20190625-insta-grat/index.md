@@ -7,6 +7,11 @@ tags:
   - machine_learning
 keywords:
   - synthetic data
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/kaggle-insta-grat/
 ---
 

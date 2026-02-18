@@ -4,6 +4,12 @@ description: "A guide on how to migrate a blog from Pelican to Hugo, and how to 
 tags: ["docker"]
 date: "2015-07-28T17:00:36+10:00"
 title: "Migrated the Blog from Pelican to Hugo"
+cover:
+  image: "/post/538-model-2020/featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: false
+url: /post/migration/
 ---
 
 I've been using [pelican](http://blog.getpelican.com/) to build _blog.ceshine.net_ for about two years, and as you can see, I've not been very productive. Part of the reasons is that I found I spent more time tuning the code rather than actually writing stuffs.

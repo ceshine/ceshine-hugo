@@ -19,6 +19,11 @@ keywords:
   - nlp
   - deep-learning
   - data-science
+cover:
+  image: "featuredImage.jpeg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/news-topic-similarity-measure/
 ---
 

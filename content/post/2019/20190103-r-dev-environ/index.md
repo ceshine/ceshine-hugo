@@ -6,6 +6,11 @@ title: "More Portable, Reproducible R Development Environment"
 tags:
   - docker
   - rstats
+cover:
+  image: "featuredImage.jpeg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/more-portable-reproducible-r-development-environment/
 ---
 

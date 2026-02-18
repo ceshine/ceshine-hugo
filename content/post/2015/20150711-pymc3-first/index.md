@@ -4,6 +4,12 @@ description: "A tutorial on how to use PyMC3 to fit a Bayesian logistic regressi
 tags: ["machine_learning", "bayesian"]
 date: "2015-07-11T17:54:38+10:00"
 title: "Bayesian Logistic Regression using PyMC3"
+cover:
+  image: "/post/538-model-2020/featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: false
+url: /post/pymc3-first/
 ---
 
 I've been reading this amazing (free) book [Bayesian Methods for Hackers](https://github.com/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers). I was half way through in early 2015, but dropped it because of some nuisances. But when I finally restarted reading it, I found it might be a good thing that I stopped reading for a while. Now I have more appreciation of the Bayesian methods and more mathematical understanding to fully grasp the idea the book trying to convey. (To be honest, I was quite confused about some concept like MAP in the first round of reading)

@@ -4,6 +4,12 @@ description: "This should help you avoid a common pitfall you'd encounter trying
 tags: ["python"]
 date: "2014-04-29T13:54:38+08:00"
 title: "Tip for using iPython Notebooks in virtualenv"
+cover:
+  image: "/post/538-model-2020/featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: false
+url: /post/ipython-in-virtualenv/
 ---
 
 When trying to install ipython and dependencies of its notebook feature via pip, I was stuck. Even I'd already installed pyzmq, I still got this message:

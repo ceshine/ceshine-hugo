@@ -12,6 +12,11 @@ keywords:
   - random-forest
   - gradient-boosting
   - python
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/feature-importance-part-1/
 ---
 

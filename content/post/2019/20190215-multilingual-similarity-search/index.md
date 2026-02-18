@@ -19,6 +19,11 @@ keywords:
   - pytorch
   - nlp
   - data-science
+cover:
+  image: "featuredImage.jpeg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/multilingual-similarity-search/
 ---
 

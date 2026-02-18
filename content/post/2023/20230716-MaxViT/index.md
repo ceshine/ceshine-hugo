@@ -13,6 +13,11 @@ keywords:
   - pytorch
   - cv
   - deep learning
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/MaxViT/
 ---
 

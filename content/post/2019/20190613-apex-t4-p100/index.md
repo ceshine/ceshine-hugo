@@ -11,6 +11,11 @@ keywords:
   - pytorch
   - colab
   - kaggle
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/apex-t4-p100/
 ---
 

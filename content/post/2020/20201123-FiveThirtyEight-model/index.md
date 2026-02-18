@@ -7,6 +7,11 @@ tags:
   - forecasting
 keywords:
   - forecasting
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/538-model-2020/
 ---
 

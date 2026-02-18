@@ -9,6 +9,11 @@ tags:
 keywords:
   - tutorial
   - gcp
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/gcp-shutdown-script/
 ---
 

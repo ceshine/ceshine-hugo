@@ -12,6 +12,11 @@ keywords:
   - deep learning
   - kaggle
   - nlp
+cover:
+  image: "18gwWxW96N8CSCpOVZZ1tbA.jpeg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/kaggle-toxic-comment-classification-challenge/
 ---
 

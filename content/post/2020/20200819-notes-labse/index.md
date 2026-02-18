@@ -13,6 +13,11 @@ keywords:
   - bert
   - sentence embedding
   - deep learning
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/notes-labse/
 ---
 

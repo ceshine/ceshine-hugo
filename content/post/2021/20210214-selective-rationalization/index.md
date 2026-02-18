@@ -14,6 +14,11 @@ keywords:
   - pytorch
   - paper
   - research
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/selective-rationalization/
 ---
 

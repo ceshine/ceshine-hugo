@@ -26,6 +26,11 @@ keywords:
   - nlp
   - pytorch
   - tutorial
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/neural-language-models/
 ---
 

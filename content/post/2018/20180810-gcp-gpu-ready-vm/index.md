@@ -12,6 +12,11 @@ keywords:
   - deep-learning
   - tutorial
   - gcp
+cover:
+  image: "featuredImage.jpeg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/gcp-gpu-ready-vm/
 ---
 

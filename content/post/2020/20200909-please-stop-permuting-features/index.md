@@ -11,6 +11,11 @@ keywords:
   - random-forest
   - gradient-boosting
   - neural-network
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/please-stop-permuting-features/
 ---
 

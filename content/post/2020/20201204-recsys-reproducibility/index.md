@@ -10,6 +10,11 @@ keywords:
   - recsys
   - recommender
   - paper
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/recsys-reproducibility/
 ---
 

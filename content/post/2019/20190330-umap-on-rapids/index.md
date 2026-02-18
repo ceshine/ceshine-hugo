@@ -18,6 +18,11 @@ keywords:
   - machine-learning
   - data-visualization
   - data-science
+cover:
+  image: "featuredImage.jpeg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/umap-on-rapids-15x-speedup/
 ---
 

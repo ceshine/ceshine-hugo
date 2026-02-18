@@ -14,6 +14,11 @@ keywords:
   - cv
   - deep learning
   - research
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/convnext-notes/
 ---
 

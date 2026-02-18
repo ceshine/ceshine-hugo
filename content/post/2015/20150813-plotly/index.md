@@ -6,6 +6,11 @@ tags:
   - "rstat"
 date: "2015-08-13T17:54:30+08:00"
 title: "Plotly Example: Deaths Caused By Cancer in Taiwan"
+cover:
+  image: "/post/538-model-2020/featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: false
 url: /post/plotly/
 ---
 

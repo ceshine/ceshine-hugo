@@ -9,6 +9,11 @@ tags:
 keywords:
   - book
   - causal-inference
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/the-book-of-why/
 ---
 

@@ -14,6 +14,11 @@ keywords:
   - transformers
   - cv
   - deep learning
+cover:
+  image: "/post/spacy-sentencizer/featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: false
 url: /post/xcit-part-2/
 ---
 

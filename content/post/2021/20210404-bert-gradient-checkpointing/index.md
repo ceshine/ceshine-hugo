@@ -11,6 +11,11 @@ keywords:
   - pytorch
   - nlp
   - codethrough
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/bert-gradient-checkpoint/
 ---
 

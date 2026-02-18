@@ -19,6 +19,11 @@ keywords:
   - image-classification
   - keras
   - tensorflow
+cover:
+  image: "featuredImage.jpeg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/custom-image-augmentation-with-keras/
 ---
 

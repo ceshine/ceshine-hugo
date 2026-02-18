@@ -13,6 +13,11 @@ keywords:
   - streamlit
   - pytorch
   - tip
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/streamlit-deployment/
 ---
 

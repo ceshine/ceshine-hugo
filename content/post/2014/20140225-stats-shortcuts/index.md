@@ -4,6 +4,12 @@ description: "confidence interval, correlation coefficient, and linear regressio
 tags: ["python", "stats"]
 date: "2014-02-25T17:54:38+08:00"
 title: "Shortcuts for some common statistical functions"
+cover:
+  image: "/post/538-model-2020/featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: false
+url: /post/stats-shortcut/
 ---
 
 Here are some useful functions when performing statistical analysis:

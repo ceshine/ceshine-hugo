@@ -4,7 +4,11 @@ description: "Plotted with R package dygraphs."
 tags: ["dataviz", "rstat"]
 date: "2016-07-13T20:04:17+08:00"
 title: "Beijing PM2.5 Concentration History 2015-2016"
-
+cover:
+  image: "/post/538-model-2020/featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: false
 ---
 
 Plotted with R package **dygraphs**. (Click the image to access the interactive version)

@@ -11,6 +11,11 @@ keywords:
   - reinforcement learning
   - pytorch
   - kaggle
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/16th-place-google-research-football/
 ---
 

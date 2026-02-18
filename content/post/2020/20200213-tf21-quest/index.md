@@ -12,6 +12,11 @@ keywords:
   - tensorflow
   - tpu
   - kaggle
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/tf21-quest/
 ---
 

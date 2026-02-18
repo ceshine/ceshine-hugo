@@ -12,6 +12,11 @@ keywords:
   - pytorch
   - docker
   - deep learning
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/docker-multi-stage-build/
 ---
 

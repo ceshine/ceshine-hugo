@@ -13,6 +13,11 @@ keywords:
   - colab
   - tpu
   - cv
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/colab-tpu-without-cloud-storage/
 ---
 

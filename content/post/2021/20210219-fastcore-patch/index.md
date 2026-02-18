@@ -11,6 +11,11 @@ keywords:
   - python
   - pytorch
   - tip
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/fastcore-patch-to-case-study/
 ---
 

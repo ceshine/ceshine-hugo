@@ -17,6 +17,11 @@ keywords:
   - transfer learning
   - bert
   - transformers
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/finetune-sentence-bert/
 ---
 

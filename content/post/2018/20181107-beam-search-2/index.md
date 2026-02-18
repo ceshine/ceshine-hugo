@@ -11,6 +11,11 @@ tags:
 keywords:
   - nlp
   - python
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/implementing-beam-search-part-2/
 ---
 

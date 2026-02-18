@@ -8,6 +8,11 @@ tags:
   - tips
 keywords:
   - pytorch
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/pytorch-memory-swish/
 ---
 

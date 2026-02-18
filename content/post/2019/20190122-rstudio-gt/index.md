@@ -20,6 +20,11 @@ keywords:
   - rlang
   - r
   - data analysis
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/playing-with-rstudio-gt-r-package/
 ---
 

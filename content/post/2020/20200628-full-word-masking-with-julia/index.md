@@ -9,6 +9,11 @@ tags:
 keywords:
   - julia
   - nlp
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/julia-whole-word-masking/
 ---
 

@@ -4,6 +4,12 @@ description: "A simple Python script to automate MySQLdump backups using the `sh
 tags: ["data_eng"]
 date: "2014-03-05T17:54:38+08:00"
 title: "A simple script to automate MySQLdump backups"
+cover:
+  image: "/post/538-model-2020/featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: false
+url: /post/shtool/
 ---
 
 I just moved my MySQL database to some OpenVZ VPS, which doesn't support snapshot backups. Therefore I had to set up some backup mechanism myself.

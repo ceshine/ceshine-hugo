@@ -20,6 +20,11 @@ keywords:
   - nlp
   - visualization
   - data-science
+cover:
+  image: "featuredImage.jpeg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/use-textrank-to-extract-most-important-sentences-in-article/
 ---
 

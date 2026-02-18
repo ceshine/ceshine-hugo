@@ -12,6 +12,11 @@ keywords:
   - nlp
   - bert
   - deep learning
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/multilingual-toxic-classification/
 ---
 

@@ -1,11 +1,15 @@
 ---
-
 categories: [ "Machine Learning", "Golang" ]
 description: "Concurrent version of the previous implementation of FTRL-Proximal Algorithm"
 tags: ["golang", "machine_learning"]
 date: "2015-01-02T17:42:55+10:00"
 title: "Implement FTRL-Proximal Algorithm in Go - Part 2"
-
+cover:
+  image: "/post/538-model-2020/featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: false
+url: /post/ftrl-in-go-concurrent/  
 ---
 
 I've actually finished the concurrent version of the algorithm a while ago, right after the previous post. Unfortunately my laptop broke and it took almost a month to repair.

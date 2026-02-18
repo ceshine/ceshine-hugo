@@ -21,6 +21,11 @@ keywords:
   - statistics
   - machine-learning
   - data-science
+cover:
+  image: "featuredImage.jpeg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/quantile-regression-part-1/
 ---
 

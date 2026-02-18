@@ -10,6 +10,11 @@ keywords:
   - tip
   - pytorch
   - pytorch lightning
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/pytorch-lightning-grad-accu/
 ---
 

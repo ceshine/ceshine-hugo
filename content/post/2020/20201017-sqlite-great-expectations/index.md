@@ -11,6 +11,11 @@ keywords:
   - tutorial
   - dataset
   - tabular
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/sqlite-great-expectations/
 ---
 

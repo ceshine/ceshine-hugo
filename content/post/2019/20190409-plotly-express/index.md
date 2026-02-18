@@ -11,6 +11,11 @@ tags:
 keywords:
   - plotly
   - dataviz
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/a-first-look-at-plotly-express/
 ---
 

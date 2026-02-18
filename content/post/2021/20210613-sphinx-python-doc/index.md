@@ -7,6 +7,11 @@ tags:
   - python
 keywords:
   - python
+cover:
+  image: "/post/streamlit-deployment/featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: false
 url: /post/sphinx-python-doc/
 ---
 

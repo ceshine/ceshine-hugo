@@ -5,6 +5,12 @@ tags: ["docker"]
 date: "2015-07-07T17:42:55+10:00"
 title: "Change Sources of Ubuntu in a Docker image"
 
+cover:
+  image: "/post/538-model-2020/featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: false
+url: /post/ubuntu-source-in-docker/
 ---
 
 The official docker images of Ubuntu use _archive.ubuntu.com_ as the default package source.

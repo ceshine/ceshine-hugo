@@ -10,6 +10,11 @@ keywords:
   - python
   - telegram
   - cron
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/python-cron-telegram-wrapper/
 ---
 

@@ -4,6 +4,12 @@ description: "Taking random samples from a large set"
 tags: ["data_eng"]
 date: "2015-01-22T10:42:55+10:00"
 title: "Random Sampling at the Command Line"
+cover:
+  image: "/post/538-model-2020/featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: false
+url: /post/sampling-data/
 ---
 
 When you receive a large dataset to analyze, you'd probably want to take a look at the data before fitting any models on it. But what if the dataset is too big to fit into the memory?

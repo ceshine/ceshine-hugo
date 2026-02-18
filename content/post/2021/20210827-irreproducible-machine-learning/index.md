@@ -9,6 +9,11 @@ tags:
 keywords:
   - machine learning
   - dataset
+cover:
+  image: "/post/text-annotation-2/featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: false
 url: /post/irreproducible-machine-learning/
 ---
 

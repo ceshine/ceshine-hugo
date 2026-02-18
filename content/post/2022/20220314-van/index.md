@@ -13,6 +13,11 @@ keywords:
   - cv
   - deep learning
   - research
+cover:
+  image: "/post/replicate-conda-environment-in-docker/featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: false
 url: /post/van-notes/
 ---
 

@@ -11,6 +11,11 @@ tags:
 keywords:
   - nlp
   - spacy
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/spacy-sentencizer/
 ---
 

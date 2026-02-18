@@ -12,6 +12,11 @@ keywords:
   - kaggle
   - deep learning
   - nlp
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/kaggle-jigsaw-toxic-2019/
 ---
 

@@ -12,6 +12,11 @@ keywords:
   - nlp
   - pytorch
   - distill
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/failed-to-distill-transformer-into-rnn/
 ---
 

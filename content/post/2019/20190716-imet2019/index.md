@@ -11,6 +11,11 @@ tags:
 keywords:
   - kaggle
   - deep learning
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/kaggle-imet-2019/
 ---
 

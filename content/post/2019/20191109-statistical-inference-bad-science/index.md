@@ -9,6 +9,11 @@ tags:
 keywords:
   - science
   - statistics
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/statistical-inference-bad-science/
 ---
 

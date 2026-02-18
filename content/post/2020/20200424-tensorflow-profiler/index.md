@@ -9,6 +9,11 @@ tags:
 keywords:
   - python
   - tensorflow
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/tensorflow-profiler/
 ---
 

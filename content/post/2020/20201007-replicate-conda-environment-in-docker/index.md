@@ -10,6 +10,11 @@ keywords:
   - tip
   - docker
   - conda
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/replicate-conda-environment-in-docker/
 ---
 

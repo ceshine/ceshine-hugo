@@ -14,6 +14,11 @@ keywords:
   - visual-studio-code
   - vscode
   - ide
+cover:
+  image: "featuredImage.jpeg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/use-visual-studio-code-to-develop-python-programs/
 ---
 

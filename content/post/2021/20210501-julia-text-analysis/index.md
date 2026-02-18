@@ -9,6 +9,11 @@ tags:
 keywords:
   - julia
   - nlp
+cover:
+  image: "/post/julia-sysimage-script/featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: false
 url: /post/julia-text-analysis/
 ---
 

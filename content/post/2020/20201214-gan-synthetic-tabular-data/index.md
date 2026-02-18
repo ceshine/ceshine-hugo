@@ -10,6 +10,11 @@ keywords:
   - gan
   - synthetic
   - synthetic data
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: /post/gan-synthetic-tabular-data/
 ---
 

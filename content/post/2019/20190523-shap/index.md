@@ -5,6 +5,11 @@ date: 2019-05-23T11:29:49+08:00
 tags: [""]
 images: ["cover.jpg"]
 draft: false
+cover:
+  image: "featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: true
 url: "/post/shap/"
 ---
 

@@ -7,6 +7,12 @@ tags: ["docker"]
 categories: [
   "Docker"
 ]
+cover:
+  image: "/post/538-model-2020/featuredImage.jpg"
+  hidden: true
+  responsiveImages: true
+  relative: false
+url: /post/docker-remove-untagged/
 ---
 By courtesy of this [post](http://jimhoskins.com/2013/07/27/remove-untagged-docker-images.html), its comment section and this [thread](http://stackoverflow.com/questions/17236796/how-to-remove-old-docker-containers):
 
