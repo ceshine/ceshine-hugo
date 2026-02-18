@@ -360,6 +360,8 @@ Currently, the fetch-result parser and the summarizer agents each handle one req
 
 We could probably use Algolia’s free tier to provide simple search functionality for the static website. We could also build a simple search index for story titles and implement a self-contained HTML page to provide a more integrated experience.
 
+Update: I’ve added a full‑text search powered by **[PageFind](https://pagefind.app)** on 2026-02-15. You can try it at **[https://hnreader.ceshine.net/search](https://hnreader.ceshine.net/search)**
+
 **Improve the system prompt of the summarizer agent**:
 
 The current system prompt has rigid output requirements for all story types. We may want to give the agent more leeway to decide what content to include in the summary. Providing more examples of story types could also help.
