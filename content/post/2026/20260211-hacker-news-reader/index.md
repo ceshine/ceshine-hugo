@@ -368,7 +368,7 @@ The current system prompt has rigid output requirements for all story types. We 
 
 ## AI Use Disclosure
 
-I rely heavily on the Codex CLI (GPT-5.2 Codex) to create Mermaid diagrams consistent with the codebase. I also used AI tools to revise the rest of the post, primarily for grammar and word choice. However, I wrote most of the content myself; it was not generated using prompts.
+I rely heavily on the Codex CLI (GPT-5.2-Codex) to create Mermaid diagrams consistent with the codebase. I also used AI tools to revise the rest of the post, primarily for grammar and word choice. However, I wrote most of the content myself; it was not generated using prompts.
 
 I developed the Hacker News reader mainly with assistance from the Gemini CLI (3 Pro Preview and 3 Flash Preview), occasionally using Codex CLI and OpenCode.
 
