@@ -76,6 +76,8 @@ This package also includes two minor fixes:
 1. The `--no-optional-locks` flag has been added to the `git status` command, so it no longer has the potential to leave a residual `.git/index.lock` file when interrupted.
 2. Rate limit usage now comes directly [from Claude Code](https://code.claude.com/docs/en/statusline#rate-limit-usage), removing the need for an additional background API call and the associated cache management workflow.
 
+Note: There is a Claude Code plugin named [claude-hud](https://github.com/jarrodwatts/claude-hud) that provides a much more powerful status-line implementation. However, it is too complicated for my needs, and I am not familiar with TypeScript.
+
 ### Setup and Updates
 
 **Prerequisite**:
