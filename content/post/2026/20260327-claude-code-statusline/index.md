@@ -58,7 +58,7 @@ The package currently provides the following information:
 
 {{< figure src="screenshot.png" caption="A screenshot of the rendered status line" >}}
 
-### Differences from the Original Bash Script
+## Differences from the Original Bash Script
 
 This package is heavily based on the Bash script published by Tzeng Yuxio in [tzengyuxio/claude-statusline](https://github.com/tzengyuxio/claude-statusline). 
 
@@ -78,7 +78,7 @@ This package also includes two minor fixes:
 
 Note: There is a Claude Code plugin named [claude-hud](https://github.com/jarrodwatts/claude-hud) that provides a much more powerful status-line implementation. However, it is too complicated for my needs, and I am not familiar with TypeScript.
 
-### Setup and Updates
+## Setup and Updates
 
 **Prerequisite**:
 
