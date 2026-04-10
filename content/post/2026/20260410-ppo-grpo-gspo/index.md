@@ -1,8 +1,8 @@
 ---
 slug: PPO-GRPO-GSPO
-date: 2026-03-27T00:00:00.000Z
+date: 2026-04-11T00:00:00.000Z
 title: "[Notes] PPO, GRPO, and GSPO"
-description: ""
+description: "A walkthrough of PPO, GRPO, and GSPO — covering clipped surrogates, group-relative advantages, and sequence-level importance sampling."
 tags:
   - paper
   - notes
@@ -32,102 +32,102 @@ For a deep-dive into reinforcement learning fundamentals, I recommend [David Sil
 
 **Proximal Policy Optimization (PPO)** is an on-policy reinforcement learning algorithm introduced by Schulman et al. (2017) [1]. It was the dominant method for the RLHF (Reinforcement Learning from Human Feedback) stage of LLM alignment (e.g., InstructGPT, ChatGPT) prior to the release of DeepSeek-R1.
 
-PPO is a **policy gradient** method. The goal is to **maximise expected reward while preventing the updated policy $\pi_\theta$ from straying too far from the old policy $\pi_{\theta_\text{old}}$ used to collect data**. It achieves this through a **clipped surrogate objective**:
+PPO is a **policy gradient** method. The goal is to **maximise expected reward while preventing the updated policy $\pi\_\theta$ from straying too far from the old policy $\pi\_{\theta\_\text{old}}$ used to collect data**. It achieves this through a **clipped surrogate objective**:
 
 $$
-\mathcal{J}^{\text{CLIP}}(\theta) = \mathbb{E}_t \left[ \min\!\left( r_t(\theta)\, \hat{A}_t,\; \text{clip}(r_t(\theta),\, 1-\varepsilon,\, 1+\varepsilon)\, \hat{A}_t \right) \right]
+\mathcal{J}^{\text{CLIP}}(\theta) = \mathbb{E}\_t \left[ \min\!\left( r\_t(\theta)\, \hat{A}\_t,\; \text{clip}(r\_t(\theta),\, 1-\varepsilon,\, 1+\varepsilon)\, \hat{A}\_t \right) \right]
 $$
 
 where:
-- $r_t(\theta) = \dfrac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_\text{old}}(a_t \mid s_t)}$ is the probability ratio between the new and old policy.
-- $\hat{A}_t$ is the estimated **advantage** at step $t$ (how much better the action was than the baseline).
+- $r\_t(\theta) = \dfrac{\pi\_\theta(a\_t \mid s\_t)}{\pi\_{\theta\_\text{old}}(a\_t \mid s\_t)}$ is the probability ratio between the new and old policy.
+- $\hat{A}\_t$ is the estimated **advantage** at step $t$ (how much better the action was than the baseline).
 - $\varepsilon$ (typically 0.1–0.2) controls how large a policy update is allowed in a single step.
 
-### First term: $r_t(\theta)\,\hat{A}_t$
+### First term: $r\_t(\theta)\,\hat{A}\_t$
 
-The first term $r_t(\theta)\,\hat{A}_t$ is a direct application of **importance sampling** — a technique for estimating an expectation under one distribution (the new policy $\pi_\theta$) using samples drawn from another distribution (the old policy $\pi_{\theta_\text{old}}$).
+The first term $r\_t(\theta)\,\hat{A}\_t$ is a direct application of **importance sampling** — a technique for estimating an expectation under one distribution (the new policy $\pi\_\theta$) using samples drawn from another distribution (the old policy $\pi\_{\theta\_\text{old}}$ ).
 
-Recall that we want to compute $\mathbb{E}_{\pi_\theta}[A_t]$, the expected advantage under the *current* policy. But we only have rollouts sampled from $\pi_{\theta_\text{old}}$. Importance sampling lets us correct for this mismatch:
+Recall that we want to compute $\mathbb{E}\_{\pi\_\theta}[A\_t]$, the expected advantage under the *current* policy. But we only have rollouts sampled from $\pi\_{\theta\_\text{old}}$. Importance sampling lets us correct for this mismatch:
 
 $$
-\mathbb{E}_{a_t \sim \pi_\theta}[\hat{A}_t] = \mathbb{E}_{a_t \sim \pi_{\theta_\text{old}}}\!\left[\frac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_\text{old}}(a_t \mid s_t)}\,\hat{A}_t\right] = \mathbb{E}_{a_t \sim \pi_{\theta_\text{old}}}\!\left[r_t(\theta)\,\hat{A}_t\right]
+\mathbb{E}\_{a\_t \sim \pi\_\theta}[\hat{A}\_t] = \mathbb{E}\_{a\_t \sim \pi\_{\theta\_\text{old}}}\\!\left[\frac{\pi\_\theta(a\_t \mid s\_t)}{\pi\_{\theta\_\text{old}}(a\_t \mid s\_t)}\,\hat{A}\_t\right] = \mathbb{E}\_{a\_t \sim \pi\_{\theta\_\text{old}}}\\!\left[r\_t(\theta)\\,\hat{A}\_t\right]
 $$
 
-With this knowledge, we now know that $r_t(\theta)\,\hat{A}_t$ is the **unclipped surrogate objective** — the advantage weighted by the **importance sampling ratio**, i.e., how much more (or less) likely the current policy $\pi_\theta$ is to choose action $a_t$ relative to the old policy $\pi_{\theta_\text{old}}$:
+With this knowledge, we now know that $r\_t(\theta)\,\hat{A}\_t$ is the **unclipped surrogate objective** — the advantage weighted by the **importance sampling ratio**, i.e., how much more (or less) likely the current policy $\pi\_\theta$ is to choose action $a\_t$ relative to the old policy $\pi\_{\theta\_\text{old}}$:
 
-- $r_t > 1$: the current policy assigns higher probability to this action than the old policy did.
-- $r_t < 1$: the current policy has moved away from this action.
-- $\hat{A}_t > 0$: the action was better than the baseline → increase its probability.
-- $\hat{A}_t < 0$: the action was worse than the baseline → decrease its probability.
+- $r\_t > 1$: the current policy assigns higher probability to this action than the old policy did.
+- $r\_t < 1$: the current policy has moved away from this action.
+- $\hat{A}\_t > 0$: the action was better than the baseline → increase its probability.
+- $\hat{A}\_t < 0$: the action was worse than the baseline → decrease its probability.
 
-Intuition: when $\hat{A}_t > 0$, we want to increase the chance of the policy $\pi_\theta$ choosing this action, which usually leads to $r_t > 1$.
+Intuition: when $\hat{A}\_t > 0$, we want to increase the chance of the policy $\pi\_\theta$ choosing this action, which usually leads to $r\_t > 1$.
 
-On its own, this term is unbounded — large $r_t$ can cause catastrophically large updates, which is why the `clip` is needed. 
+On its own, this term is unbounded — large $r\_t$ can cause catastrophically large updates, which is why the `clip` is needed. 
 
 ### Clipping behaviour
 
-The high-variance in practice when the two policies diverge significantly. This is why PPO clips $r_t(\theta)$. The clipping in the second term acts as a safeguard: it caps the importance sampling correction once it strays outside $[1-\varepsilon,\, 1+\varepsilon]$, preventing large, destabilising updates.
+The high-variance in practice when the two policies diverge significantly. This is why PPO clips $r\_t(\theta)$. The clipping in the second term acts as a safeguard: it caps the importance sampling correction once it strays outside $[1-\varepsilon,\, 1+\varepsilon]$, preventing large, destabilising updates.
 
 The `min` + `clip` construction is **pessimistic**: it only constrains updates that make the objective look *better*. Gradient flows unconstrained precisely when the policy is moving in the *wrong* direction:
 
-| $r_t$ vs clip | $\hat{A}_t > 0$ | $\hat{A}_t < 0$ |
+| $r\_t$ vs clip | $\hat{A}\_t > 0$ | $\hat{A}\_t < 0$ |
 |---|---|---|
-| $r_t > 1+\varepsilon$ | clipped (zero grad) | **unconstrained** — policy drifting toward a bad action |
-| $r_t \in [1-\varepsilon,\,1+\varepsilon]$ | normal gradient | normal gradient |
-| $r_t < 1-\varepsilon$ | **unconstrained** — policy drifting away from a good action | clipped (zero grad) |
+| $r\_t > 1+\varepsilon$ | clipped (zero grad) | **unconstrained** — policy drifting toward a bad action |
+| $r\_t \in [1-\varepsilon,\,1+\varepsilon]$ | normal gradient | normal gradient |
+| $r\_t < 1-\varepsilon$ | **unconstrained** — policy drifting away from a good action | clipped (zero grad) |
 
-In both unconstrained cases the policy has strayed in the wrong direction, so an aggressive corrective update is permitted. Conversely, once the policy has already moved far enough in the right direction ($r_t < 1-\varepsilon$, $\hat{A}_t < 0$ or $r_t > 1+\varepsilon$, $\hat{A}_t > 0$), the gradient is zeroed out to prevent over-correction.
+In both unconstrained cases the policy has strayed in the wrong direction, so an aggressive corrective update is permitted. Conversely, once the policy has already moved far enough in the right direction ($r\_t < 1-\varepsilon$, $\hat{A}\_t < 0$ or $r\_t > 1+\varepsilon$, $\hat{A}\_t > 0$), the gradient is zeroed out to prevent over-correction.
 
 ### Additional Details
 
 #### Generalized Advantage Estimation
 
-PPO typically uses **Generalized Advantage Estimation (GAE)** to compute $\hat{A}_t$:
+PPO typically uses **Generalized Advantage Estimation (GAE)** to compute $\hat{A}\_t$:
 
 $$
-\hat{A}_t = \sum_{l=0}^{\infty} (\gamma \lambda)^l \delta_{t+l}, \quad \delta_t = R_t + \gamma V(s_{t+1}) - V(s_t)
+\hat{A}\_t = \sum\_{l=0}^{\infty} (\gamma \lambda)^l \delta\_{t+l}, \quad \delta\_t = R\_t + \gamma V(s\_{t+1}) - V(s\_t)
 $$
 
-$\lambda \in [0,1]$ trades off bias vs. variance. $\delta_t$ represents the [TD error](https://en.wikipedia.org/wiki/Temporal_difference_learning), where $R_t$ is the reward at step $t$ (distinct from the probability ratio $r_t(\theta)$ used above). $V(s_t)$ is the [state value function](https://en.wikipedia.org/wiki/Reinforcement_learning#Algorithms_for_control_learning) (a.k.a. the critic). This requires the value function/model to produce token-level baseline estimates throughout the generation rollout. Higher $\lambda$ gives us higher variance, as the estimated advantage relies more on actual future rewards (and less on the [value function bootstrap](https://datascience.stackexchange.com/questions/30714/what-is-the-difference-between-bootstrapping-and-sampling-in-reinforcement-learn)) by weighting further-horizon terms in the sum more heavily. A critic/value model must be trained to produce accurate $V(s_t)$ estimates, because noisy value estimates propagate directly into noisy advantage estimates and therefore noisy policy gradients.
+$\lambda \in [0,1]$ trades off bias vs. variance. $\delta\_t$ represents the [TD error](https://en.wikipedia.org/wiki/Temporal_difference_learning), where $R\_t$ is the reward at step $t$ (distinct from the probability ratio $r\_t(\theta)$ used above). $V(s\_t)$ is the [state value function](https://en.wikipedia.org/wiki/Reinforcement_learning#Algorithms_for_control_learning) (a.k.a. the critic). This requires the value function/model to produce token-level baseline estimates throughout the generation rollout. Higher $\lambda$ gives us higher variance, as the estimated advantage relies more on actual future rewards (and less on the [value function bootstrap](https://datascience.stackexchange.com/questions/30714/what-is-the-difference-between-bootstrapping-and-sampling-in-reinforcement-learn)) by weighting further-horizon terms in the sum more heavily. A critic/value model must be trained to produce accurate $V(s\_t)$ estimates, because noisy value estimates propagate directly into noisy advantage estimates and therefore noisy policy gradients.
 
 #### KL Divergence Penalty
 
-When being applied in the RLHF (Reinforcement Learning from Human Feedback) context, an additional per-token [KL divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) penalty $-\beta \log \frac{\pi_\theta(a_t|s_t)}{\pi_\text{ref}(a_t|s_t)}$ is added to the reward to prevent the policy from collapsing into reward-hacking behaviour far from the original SFT distribution.
+When being applied in the RLHF (Reinforcement Learning from Human Feedback) context, an additional per-token [KL divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) penalty $-\beta \log \frac{\pi\_\theta(a\_t|s\_t)}{\pi\_\text{ref}(a\_t|s\_t)}$ is added to the reward to prevent the policy from collapsing into reward-hacking behaviour far from the original SFT distribution.
 
-Clipping limits the size of the update (the speed of the new policy model $\pi_\theta$ moves away from the old policy model $\pi_{\theta_\text{old}}$), while the KL penalty constantly pulls the new policy model $\pi_\theta$ towards the reference policy model $\pi_\text{ref}$, which is usually the initial SFT (supervised fine-tuning) model. The table below provides a quick comparison between the two.
+Clipping limits the size of the update (the speed of the new policy model $\pi\_\theta$ moves away from the old policy model $\pi\_{\theta\_\text{old}}$), while the KL penalty constantly pulls the new policy model $\pi\_\theta$ towards the reference policy model $\pi\_\text{ref}$, which is usually the initial SFT (supervised fine-tuning) model. The table below provides a quick comparison between the two.
 
-| Mechanism | Constrains $\pi_\theta$ relative to… | Model refresh cadence | Purpose |
+| Mechanism | Constrains $\pi\_\theta$ relative to… | Model refresh cadence | Purpose |
 |---|---|---|---|
-| Clipping | $\pi_{\theta_\text{old}}$ (old policy) | Every inner iteration | Stable per-step updates |
-| KL penalty | $\pi_\text{ref}$ (reference model) | Every outer iteration or a fixed SFT model | Prevent mid-run drift |
+| Clipping | $\pi\_{\theta\_\text{old}}$ (old policy) | Every inner iteration | Stable per-step updates |
+| KL penalty | $\pi\_\text{ref}$ (reference model) | Every outer iteration or a fixed SFT model | Prevent mid-run drift |
 
 ## Group Relative Policy Optimization (GRPO)
 
 **Group Relative Policy Optimization (GRPO)** (Shao et al., 2024) is a variant of PPO that **eliminates the critic/value model entirely**. Instead of learning a value function $V(s)$ to estimate per-token/per-action advantages, GRPO estimates advantages from the relative ranking of rewards within a *group* of sampled outputs for the same prompt. (We'll use "token" instead of "action" in this section as this algorithm is mainly used in LLM training. However, this algorithm can also be applied to general RL scenarios.)
 
-For each prompt $q$, sample a **group** of $G$ complete outputs $\{o_1, o_2, \ldots, o_G\}$ from **the old policy** $\pi_{\theta_\text{old}}$. Score each output with a reward model (or rule-based verifier) to get rewards $\{R_1, R_2, \ldots, R_G\}$. The advantage of each output is simply its **z-score within the group**:
+For each prompt $q$, sample a **group** of $G$ complete outputs $\{o\_1, o\_2, \ldots, o\_G\}$ from **the old policy** $\pi\_{\theta\_\text{old}}$. Score each output with a reward model (or rule-based verifier) to get rewards $\{R\_1, R\_2, \ldots, R\_G\}$. The advantage of each output is simply its **z-score within the group**:
 
 $$
-\hat{A}_i = \frac{R_i - \text{mean}(\{R_1, \ldots, R_G\})}{\text{std}(\{R_1, \ldots, R_G\})}
+\hat{A}\_i = \frac{R\_i - \text{mean}(\{R\_1, \ldots, R\_G\})}{\text{std}(\{R\_1, \ldots, R\_G\})}
 $$
 
-This is a **sequence-level** advantage: every token in the same output $o_i$ receives the same advantage $\hat{A}_i$. There is no per-token credit assignment — just "this entire response was better/worse than its peers."
+This is a **sequence-level** advantage: every token in the same output $o\_i$ receives the same advantage $\hat{A}\_i$. There is no per-token credit assignment — just "this entire response was better/worse than its peers."
 
 GRPO uses the same clipped surrogate structure as PPO, but applied at the **token level within each output**, with a KL divergence regulariser replacing the separate KL penalty reward in PPO:
 
 $$
-\mathcal{J}_\text{GRPO}(\theta) = \mathbb{E}_{q \sim \mathcal{D},\, \{o_i\} \sim \pi_{\theta_\text{old}}} \left[ \frac{1}{G} \sum_{i=1}^{G} \frac{1}{|o_i|} \sum_{t=1}^{|o_i|} \left( \min\!\left( r_{i,t}(\theta)\,\hat{A}_i,\; \text{clip}(r_{i,t}(\theta), 1-\varepsilon, 1+\varepsilon)\,\hat{A}_i \right) - \beta\, \mathbb{D}_\text{KL}\!\left[\pi_\theta \| \pi_\text{ref}\right] \right) \right]
+\mathcal{J}\_\text{GRPO}(\theta) = \mathbb{E}\_{q \sim \mathcal{D},\, \{o\_i\} \sim \pi\_{\theta\_\text{old}}} \left[ \frac{1}{G} \sum\_{i=1}^{G} \frac{1}{|o\_i|} \sum\_{t=1}^{|o\_i|} \left( \min\!\left( r\_{i,t}(\theta)\,\hat{A}\_i,\; \text{clip}(r\_{i,t}(\theta), 1-\varepsilon, 1+\varepsilon)\,\hat{A}\_i \right) - \beta\, \mathbb{D}\_\text{KL}\!\left[\pi\_\theta \| \pi\_\text{ref}\right] \right) \right]
 $$
 
-where $r_{i,t}(\theta) = \frac{\pi_\theta(o_{i,t} \mid q, o_{i,<t})}{\pi_{\theta_\text{old}}(o_{i,t} \mid q, o_{i,<t})}$ is the per-token probability ratio (same as PPO). 
+where $r\_{i,t}(\theta) = \frac{\pi\_\theta(o\_{i,t} \mid q, o\_{i,<t})}{\pi\_{\theta\_\text{old}}(o\_{i,t} \mid q, o\_{i,<t})}$ is the per-token probability ratio (same as PPO). 
 
 ### Why It Works: Intuition
 
 The z-score normalization creates an implicit **within-group competition**:
 
-- Outputs with above-average rewards get $\hat{A}_i > 0$ → their token probabilities are **increased**.
-- Outputs with below-average rewards get $\hat{A}_i < 0$ → their token probabilities are **decreased**.
-- An output that is *average* for the group ($\hat{A}_i \approx 0$) is largely ignored.
+- Outputs with above-average rewards get $\hat{A}\_i > 0$ → their token probabilities are **increased**.
+- Outputs with below-average rewards get $\hat{A}\_i < 0$ → their token probabilities are **decreased**.
+- An output that is *average* for the group ($\hat{A}\_i \approx 0$) is largely ignored.
 
 This is a form of **REINFORCE with a baseline**, where the baseline is the empirical group mean. The group standard deviation acts as an adaptive scaling factor — when the reward variance within a group is low (the model is confident), advantages are amplified; when variance is high, advantages are moderated.
 
@@ -150,23 +150,23 @@ This gives **three model states moving at different speeds**:
 
 | Model                                  | Updated every…  | Role                                                |
 | -------------------------------------- | --------------- | --------------------------------------------------- |
-| $\pi_\theta$ (policy)                  | Gradient step   | Being trained                                       |
-| $\pi_{\theta_\text{old}}$ (old policy) | Inner step      | Sampling rollouts; denominator of $r_{i,t}(\theta)$ |
-| $\pi_\text{ref}$ (reference)           | Outer iteration | Anchor for KL penalty                               |
+| $\pi\_\theta$ (policy)                  | Gradient step   | Being trained                                       |
+| $\pi\_{\theta\_\text{old}}$ (old policy) | Inner step      | Sampling rollouts; denominator of $r\_{i,t}(\theta)$ |
+| $\pi\_\text{ref}$ (reference)           | Outer iteration | Anchor for KL penalty                               |
 
 The reference model is **not** permanently frozen to the SFT checkpoint — it is set to the current policy at the start of each outer iteration, then held fixed for $M$ inner steps. This means the KL penalty prevents drift *within* an outer iteration, but allows the reference to gradually shift with the policy across iterations. The overall training trajectory is thus a series of "controlled leaps" rather than a single long leash back to the SFT model.
 
 ### Additional Details
 
-#### The KL Term
+#### The KL Divergence Penalty
 
 The KL term in the objective function is estimated token-wise:
 
 $$
-\mathbb{D}_\text{KL}\!\left[\pi_\theta \| \pi_\text{ref}\right] = \frac{\pi_\theta(o_{i,t} \mid q, o_{i,<t})}{\pi_\text{ref}(o_{i,t} \mid q, o_{i,<t})} - \log \frac{\pi_\theta(o_{i,t} \mid q, o_{i,<t})}{\pi_\text{ref}(o_{i,t} \mid q, o_{i,<t})} - 1
+\mathbb{D}\_\text{KL}\\!\left[\pi\_\theta \| \pi\_\text{ref}\right] = \frac{\pi\_\theta(o\_{i,t} \mid q, o\_{i,<t})}{\pi\_\text{ref}(o\_{i,t} \mid q, o\_{i,<t})} - \log \frac{\pi\_\theta(o\_{i,t} \mid q, o\_{i,<t})}{\pi\_\text{ref}(o\_{i,t} \mid q, o\_{i,<t})} - 1
 $$
 
-This is a sample-based approximation of $\mathbb{D}_\text{KL}\!\left[\pi_\theta \| \pi_\text{ref}\right]$, **not** $\mathbb{D}_\text{KL}\!\left[\pi_\text{ref} \| \pi_\theta\right]$. The expression $\frac{p}{q} - \log \frac{p}{q} - 1$ is non-negative and equals zero when $p = q$, matching the KL divergence in expectation.
+This is a sample-based approximation of $\mathbb{D}\_\text{KL}\\!\left[\pi\_\theta \| \pi\_\text{ref}\right]$, **not** $\mathbb{D}\_\text{KL}\\!\left[\pi\_\text{ref} \| \pi\_\theta\right]$. The expression $\frac{p}{q} - \log \frac{p}{q} - 1$ is non-negative and equals zero when $p = q$, matching the KL divergence in expectation.
 
 #### Model Requirements
 
@@ -179,7 +179,7 @@ This is a sample-based approximation of $\mathbb{D}_\text{KL}\!\left[\pi_\theta 
 
 By removing the value model, GRPO roughly **halves the training-time GPU memory** compared to PPO. GRPO-Zero (used in DeepSeek-R1-Zero [3]) goes further by replacing the learned reward model with a **rule-based verifier** — only feasible for tasks with objectively checkable answers (e.g., math, code).
 
-{{< figure src="ppo-vs-grpo.jpg" caption="Taken from [2]" >}}
+{{< figure src="ppo-vs-grpo.png" caption="Taken from [2]" >}}
 
 ## Group Sequence Policy Optimization (GSPO)
 
@@ -187,37 +187,83 @@ Group Sequence Policy Optimization (GSPO) [4] is a refinement of GRPO that fixes
 
 ### Motivation: What's Wrong with GRPO's Token-Level Weights?
 
-Recall that the GRPO's objective uses a per-token probability ratio $r_{i,t}(\theta) = \frac{\pi_\theta(o_{i,t} \mid q, o_{i,<t})}{\pi_{\theta_\text{old}}(o_{i,t} \mid q, o_{i,<t})}$ inside the clipped surrogate, even though every token in the same output shares the same sequence-level advantage $\hat{A}_i$.
+Recall that the GRPO's objective uses a per-token probability ratio $r\_{i,t}(\theta) = \frac{\pi\_\theta(o\_{i,t} \mid q, o\_{i,<t})}{\pi\_{\theta\_\text{old}}(o\_{i,t} \mid q, o\_{i,<t})}$ inside the clipped surrogate, even though every token in the same output shares the same sequence-level advantage $\hat{A}\_i$.
 
 This creates three problems:
 
 1. **Misapplied importance sampling**: As the reward and advantages are sequence-level, performing token-based importance sampling creates a misalignment between the policy and the reward. Note that even if we remove the clipping mechanism, the importance sampling in GRPO is not equivalent to sequence-lvel sampling, as it uses summation instead product on the weightd advantages.
 2. **Variance accumulation.** Token-level ratios vary independently across positions. Over long sequences, these fluctuations compound, injecting high-variance noise into the training gradient. The clipping mechanism (designed to stabilise updates) actually *exacerbates* this because different tokens within the same response get clipped at different positions, creating inconsistent gradient signals.
-3. **MoE instability.** In MoE models, ~10% of expert activations change after each gradient update. This causes individual token likelihoods to fluctuate drastically between $\pi_\theta$ and $\pi_{\theta_\text{old}}$, even when the overall sequence likelihood is stable. GRPO's token-level ratios amplify this volatility, often leading to training collapse without a workaround called **Routing Replay** (caching and replaying expert assignments from $\pi_{\theta_\text{old}}$ — costly in memory and communication).
+3. **MoE instability.** In MoE models, ~10% of expert activations change after each gradient update. This causes individual token likelihoods to fluctuate drastically between $\pi\_\theta$ and $\pi\_{\theta\_\text{old}}$, even when the overall sequence likelihood is stable. GRPO's token-level ratios amplify this volatility, often leading to training collapse without a workaround called **Routing Replay** (caching and replaying expert assignments from $\pi\_{\theta\_\text{old}}$ — costly in memory and communication).
 
 ### The GSPO Fix: Sequence-Level Everything
 
 GSPO's objective mirrors GRPO's clipped surrogate structure but operates at the **sequence level**:
 
 $$
-\mathcal{J}_\text{GSPO}(\theta) = \mathbb{E}\!\left[ \frac{1}{G} \sum_{i=1}^{G} \min\!\left( s_i(\theta)\,\hat{A}_i,\; \text{clip}(s_i(\theta),\, 1-\varepsilon,\, 1+\varepsilon)\,\hat{A}_i \right) \right]
+\mathcal{J}\_\text{GSPO}(\theta) = \mathbb{E}\\!\left[ \frac{1}{G} \sum\_{i=1}^{G} \min\\!\left( s\_i(\theta)\,\hat{A}\_i,\\; \text{clip}(s\_i(\theta),\\, 1-\varepsilon,\\, 1+\varepsilon)\,\hat{A}\_i \right) \right]
 $$
 
-The advantage $\hat{A}_i$ is the same group z-score as GRPO:
+The advantage $\hat{A}\_i$ is the same group z-score as GRPO:
 
 $$
-\hat{A}_i = \frac{r_i - \text{mean}(\{r_1, \ldots, r_G\})}{\text{std}(\{r_1, \ldots, r_G\})}
+\hat{A}\_i = \frac{r\_i - \text{mean}(\{r\_1, \ldots, r\_G\})}{\text{std}(\{r\_1, \ldots, r\_G\})}
 $$
 
-The key difference is the **sequence-level importance ratio** $s_i(\theta)$, defined as the geometric mean of token-level ratios (equivalently, the length-normalised sequence likelihood ratio):
+The key difference is the **sequence-level importance ratio** $s\_i(\theta)$, defined as the geometric mean of token-level ratios (equivalently, the length-normalised sequence likelihood ratio):
 
 $$
-s_i(\theta) = \left( \frac{\pi_\theta(y_i \mid x)}{\pi_{\theta_\text{old}}(y_i \mid x)} \right)^{1/|y_i|} = \exp\!\left( \frac{1}{|y_i|} \sum_{t=1}^{|y_i|} \log \frac{\pi_\theta(y_{i,t} \mid x, y_{i,<t})}{\pi_{\theta_\text{old}}(y_{i,t} \mid x, y_{i,<t})} \right)
+s\_i(\theta) = \left( \frac{\pi\_\theta(y\_i \mid x)}{\pi\_{\theta\_\text{old}}(y\_i \mid x)} \right)^{1/|y\_i|} = \exp\\!\left( \frac{1}{|y\_i|} \sum\_{t=1}^{|y\_i|} \log \frac{\pi\_\theta(y\_{i,t} \mid x, y\_{i,<t})}{\pi\_{\theta\_\text{old}}(y\_{i,t} \mid x, y\_{i,<t})} \right)
 $$
 
-The $1/|y_i|$ exponent serves two purposes:
+The $1/|y\_i|$ exponent serves two purposes:
 - **Variance reduction**: averaging log-ratios across tokens smooths out per-token noise.
 - **Length normalisation**: keeps the ratio in a consistent numerical range regardless of sequence length.
+
+### Additional Details
+
+#### KL Divergence Penalty
+
+GRPO's objective includes an explicit KL penalty term anchored to a reference policy $\pi\_\text{ref}$:
+
+$$\mathcal{J}\_\text{GRPO}(\theta) = \ldots \left( \min(\ldots) - \beta\\, \mathbb{D}\_\text{KL}[\pi\_\theta \| \pi\_\text{ref}] \right)$$
+
+**GSPO drops this term entirely.** Its objective (shown above) contains no `β·KL` component — policy constraint comes solely from sequence-level clipping. It's unclear whether the GSPO paper is using a PPO-style KL divergence penalty on rewards or simply don't use KL divergence penalty at all.
+
+#### GSPO-token: Finer-Grained Credit Assignment
+
+For settings requiring per-token advantages (e.g., multi-turn RL with step-level rewards), GSPO offers a token-level variant:
+
+$$
+\mathcal{J}\_\text{GSPO-token}(\theta) = \mathbb{E}\\!\left[ \frac{1}{G} \sum\_{i=1}^{G} \frac{1}{|y\_i|} \sum\_{t=1}^{|y\_i|} \min\\!\left( s\_{i,t}(\theta)\\,\hat{A}\_{i,t},\\; \text{clip}(s\_{i,t}(\theta),\\, 1-\varepsilon,\\, 1+\varepsilon)\\,\hat{A}\_{i,t} \right) \right]
+$$
+
+where the token-level ratio is constructed via a **stop-gradient** trick:
+
+$$
+s\_{i,t}(\theta) = \text{sg}[s\_i(\theta)] \cdot \frac{\pi\_\theta(y\_{i,t} \mid x, y\_{i,<t})}{\text{sg}[\pi\_\theta(y\_{i,t} \mid x, y\_{i,<t})]}
+$$
+
+This preserves the sequence-level weighting in the gradient (the sg factors cancel out during backpropagation), while allowing the clipping to operate per-token. When all token advantages equal the sequence advantage ($\hat{A}\_{i,t} = \hat{A}\_i$), GSPO-token reduces exactly to standard GSPO.
+
+#### Gradient Comparison: GSPO vs GRPO
+
+The difference becomes clearest when examining gradients.
+
+**GSPO gradient:**
+
+$$
+\nabla\_\theta \mathcal{J}\_\text{GSPO}(\theta) = \mathbb{E}\\!\left[ \frac{1}{G} \sum\_{i} \underbrace{\left(\frac{\pi\_\theta(y\_i|x)}{\pi\_{\theta\_\text{old}}(y\_i|x)}\right)^{1/|y\_i|}}_{\text{single weight per sequence}} \hat{A}\_i \cdot \frac{1}{|y\_i|} \sum\_t \nabla\_\theta \log \pi\_\theta(y\_{i,t} \mid x, y\_{i,<t}) \right]
+$$
+
+All tokens within a response are weighted **equally** by the same sequence-level factor.
+
+**GRPO gradient:**
+
+$$
+\nabla\_\theta \mathcal{J}\_\text{GRPO}(\theta) = \mathbb{E}\\!\left[ \frac{1}{G} \sum\_{i} \hat{A}\_i \cdot \frac{1}{|y\_i|} \sum\_t \underbrace{\frac{\pi\_\theta(y\_{i,t}|x,y\_{i,<t})}{\pi\_{\theta\_\text{old}}(y\_{i,t}|x,y\_{i,<t})}}_{\text{different weight per token}} \nabla\_\theta \log \pi\_\theta(y\_{i,t} \mid x, y\_{i,<t}) \right]
+$$
+
+Each token's gradient is scaled by its own importance ratio. These unequal weights are the source of GRPO's instability — they amplify some token gradients and suppress others in ways that have no principled connection to the sequence-level reward signal.
 
 ## Reference
 
@@ -228,4 +274,6 @@ The $1/|y_i|$ exponent serves two purposes:
 
 ## AI Use Disclosure
 
-- TBW
+I relied much more heavily on AI for this post than I usually do when writing other posts for this site. I use AI to parse the papers, extract key formulas in LaTeX, and draft explanations for key concepts. I organize, edit, and add to the AI-generated content to correct inaccuracies and align it more closely with my mental model for understanding the key concepts in these papers. I iteratively used AI to proofread my draft and then revised it until I felt the post was ready to publish. While AI saves me a significant amount of time, this post reflects my own understanding of the topics.
+
+I relied much more heavily on AI for this post than I usually do when writing other posts for this site. I used AI to analyze the papers, extract key formulas and format them in LaTeX, and draft explanations for key concepts. I organized, edited, and added to the AI-generated content to correct inaccuracies and align it more closely with my mental model of the key concepts in these papers. I used AI iteratively to proofread my draft and then revised it until I felt the post was ready to publish. While AI saved me a significant amount of time, this post reflects my own understanding of the topics.
