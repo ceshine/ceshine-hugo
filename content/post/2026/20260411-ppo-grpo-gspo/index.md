@@ -58,7 +58,7 @@ where:
 
 The first term $r\_t(\theta)\\,\hat{A}\_t$ is a direct application of **importance sampling** — a technique for estimating an expectation under one distribution (the new policy $\pi\_\theta$) using samples drawn from another distribution (the old policy $\pi\_{\theta\_\text{old}}$ ).
 
-Recall that we want to compute $\mathbb{E}\_{\pi\_\theta}[A\_t]$, the expected advantage under the *current* policy. But we only have rollouts sampled from $\pi\_{\theta\_\text{old}}$. Importance sampling lets us correct for this mismatch:
+Recall that we want to compute $\mathbb{E}\_{\pi\_\theta}[A\_t]$, the expected advantage under the _current_ policy. But we only have rollouts sampled from $\pi\_{\theta\_\text{old}}$. Importance sampling lets us correct for this mismatch:
 
 $$
 \mathbb{E}\_{a\_t \sim \pi\_\theta}[\hat{A}\_t] = \mathbb{E}\_{a\_t \sim \pi\_{\theta\_\text{old}}}\\!\left[\frac{\pi\_\theta(a\_t \mid s\_t)}{\pi\_{\theta\_\text{old}}(a\_t \mid s\_t)}\,\hat{A}\_t\right] = \mathbb{E}\_{a\_t \sim \pi\_{\theta\_\text{old}}}\\!\left[r\_t(\theta)\\,\hat{A}\_t\right]
@@ -73,19 +73,19 @@ With this knowledge, we now know that $r\_t(\theta)\,\hat{A}\_t$ is the **unclip
 
 Intuition: when $\hat{A}\_t > 0$, we want to increase the chance of the policy $\pi\_\theta$ choosing this action, which usually leads to $r\_t > 1$.
 
-On its own, this term is unbounded — large $r\_t$ can cause catastrophically large updates, which is why the `clip` is needed. 
+On its own, this term is unbounded — large $r\_t$ can cause catastrophically large updates, which is why the `clip` is needed.
 
 ### Clipping Behavior
 
 The unclipped term exhibits high variance in practice when the two policies diverge significantly. This is why PPO clips $r\_t(\theta)$. The clipping in the second term acts as a safeguard: it caps the importance sampling correction once it strays outside $[1-\varepsilon,\\, 1+\varepsilon]$, preventing large, destabilizing updates.
 
-The `min` + `clip` construction is **pessimistic**: it only constrains updates that make the objective look *better*. Gradient flows unconstrained precisely when the policy is moving in the *wrong* direction:
+The `min` + `clip` construction is **pessimistic**: it only constrains updates that make the objective look _better_. Gradient flows unconstrained precisely when the policy is moving in the _wrong_ direction:
 
-| $r\_t$ vs clip | $\hat{A}\_t > 0$ | $\hat{A}\_t < 0$ |
-|---|---|---|
-| $r\_t > 1+\varepsilon$ | clipped (zero grad) | **unconstrained** — policy drifting toward a bad action |
-| $r\_t \in [1-\varepsilon,\\,1+\varepsilon]$ | normal gradient | normal gradient |
-| $r\_t < 1-\varepsilon$ | **unconstrained** — policy drifting away from a good action | clipped (zero grad) |
+| $r\_t$ vs clip                              | $\hat{A}\_t > 0$                                            | $\hat{A}\_t < 0$                                        |
+| ------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------- |
+| $r\_t > 1+\varepsilon$                      | clipped (zero grad)                                         | **unconstrained** — policy drifting toward a bad action |
+| $r\_t \in [1-\varepsilon,\\,1+\varepsilon]$ | normal gradient                                             | normal gradient                                         |
+| $r\_t < 1-\varepsilon$                      | **unconstrained** — policy drifting away from a good action | clipped (zero grad)                                     |
 
 In both unconstrained cases the policy has strayed in the wrong direction, so an aggressive corrective update is permitted. Conversely, once the policy has already moved far enough in the right direction ($r\_t < 1-\varepsilon$, $\hat{A}\_t < 0$ or $r\_t > 1+\varepsilon$, $\hat{A}\_t > 0$), the gradient is zeroed out to prevent over-correction.
 
@@ -111,14 +111,14 @@ When being applied in the RLHF (Reinforcement Learning from Human Feedback) cont
 
 Clipping limits the size of the update (the speed of the new policy model $\pi\_\theta$ moves away from the old policy model $\pi\_{\theta\_\text{old}}$), while the KL penalty constantly pulls the new policy model $\pi\_\theta$ towards the reference policy model $\pi\_\text{ref}$, which is usually the initial SFT (supervised fine-tuning) model. The table below provides a quick comparison between the two.
 
-| Mechanism | Constrains $\pi\_\theta$ relative to… | Model refresh cadence | Purpose |
-|---|---|---|---|
-| Clipping | $\pi\_{\theta\_\text{old}}$ (old policy) | Every inner iteration | Stable per-step updates |
-| KL penalty | $\pi\_\text{ref}$ (reference model) | Every outer iteration or a fixed SFT model | Prevent mid-run drift |
+| Mechanism  | Constrains $\pi\_\theta$ relative to…    | Model refresh cadence                      | Purpose                 |
+| ---------- | ---------------------------------------- | ------------------------------------------ | ----------------------- |
+| Clipping   | $\pi\_{\theta\_\text{old}}$ (old policy) | Every inner iteration                      | Stable per-step updates |
+| KL penalty | $\pi\_\text{ref}$ (reference model)      | Every outer iteration or a fixed SFT model | Prevent mid-run drift   |
 
 ## Group Relative Policy Optimization (GRPO)
 
-**Group Relative Policy Optimization (GRPO)** (Shao et al., 2024) is a variant of PPO that **eliminates the critic/value model entirely**. Instead of learning a value function $V(s)$ to estimate per-token/per-action advantages, GRPO estimates advantages from the relative ranking of rewards within a *group* of sampled outputs for the same prompt. (We'll use "token" instead of "action" in this section as this algorithm is mainly used in LLM training. However, this algorithm can also be applied to general RL scenarios.)
+**Group Relative Policy Optimization (GRPO)** (Shao et al., 2024) is a variant of PPO that **eliminates the critic/value model entirely**. Instead of learning a value function $V(s)$ to estimate per-token/per-action advantages, GRPO estimates advantages from the relative ranking of rewards within a _group_ of sampled outputs for the same prompt. (We'll use "token" instead of "action" in this section as this algorithm is mainly used in LLM training. However, this algorithm can also be applied to general RL scenarios.)
 
 For each prompt $q$, sample a **group** of $G$ complete outputs $\{o\_1, o\_2, \ldots, o\_G\}$ from **the old policy** $\pi\_{\theta\_\text{old}}$. Score each output with a reward model (or rule-based verifier) to get rewards $\{R\_1, R\_2, \ldots, R\_G\}$. The advantage of each output is simply its **z-score within the group**:
 
@@ -134,7 +134,7 @@ $$
 \mathcal{J}\_\text{GRPO}(\theta) = \mathbb{E}\_{q \sim \mathcal{D},\, \{o\_i\} \sim \pi\_{\theta\_\text{old}}} \left[ \frac{1}{G} \sum\_{i=1}^{G} \frac{1}{|o\_i|} \sum\_{t=1}^{|o\_i|} \left( \min\\!\left( r\_{i,t}(\theta)\\,\hat{A}\_i,\\; \text{clip}(r\_{i,t}(\theta), 1-\varepsilon, 1+\varepsilon)\\,\hat{A}\_i \right) - \beta\\, \mathbb{D}\_\text{KL}\\!\left[\pi\_\theta \\| \pi\_\text{ref}\right] \right) \right]
 $$
 
-where $r\_{i,t}(\theta) = \frac{\pi\_\theta(o\_{i,t} \mid q, o\_{i,<t})}{\pi\_{\theta\_\text{old}}(o\_{i,t} \mid q, o\_{i,<t})}$ is the per-token probability ratio (same as PPO). 
+where $r\_{i,t}(\theta) = \frac{\pi\_\theta(o\_{i,t} \mid q, o\_{i,<t})}{\pi\_{\theta\_\text{old}}(o\_{i,t} \mid q, o\_{i,<t})}$ is the per-token probability ratio (same as PPO).
 
 ### Why It Works: Intuition
 
@@ -142,7 +142,7 @@ The z-score normalization creates an implicit **within-group competition**:
 
 - Outputs with above-average rewards get $\hat{A}\_i > 0$ → their token probabilities are **increased**.
 - Outputs with below-average rewards get $\hat{A}\_i < 0$ → their token probabilities are **decreased**.
-- An output that is *average* for the group ($\hat{A}\_i \approx 0$) is largely ignored.
+- An output that is _average_ for the group ($\hat{A}\_i \approx 0$) is largely ignored.
 
 This is a form of **REINFORCE with a baseline**, where the baseline is the empirical group mean. The group standard deviation acts as an adaptive scaling factor — when the reward variance within a group is low (the model produces consistently-scored outputs), advantages are amplified; when variance is high, advantages are moderated.
 
@@ -163,13 +163,13 @@ for each outer iteration i = 1, …, I:
 
 This gives **three model states moving at different speeds**:
 
-| Model                                  | Updated every…  | Role                                                |
-| -------------------------------------- | --------------- | --------------------------------------------------- |
-| $\pi\_\theta$ (policy)                  | Gradient step   | Being trained                                       |
+| Model                                    | Updated every…  | Role                                                 |
+| ---------------------------------------- | --------------- | ---------------------------------------------------- |
+| $\pi\_\theta$ (policy)                   | Gradient step   | Being trained                                        |
 | $\pi\_{\theta\_\text{old}}$ (old policy) | Inner step      | Sampling rollouts; denominator of $r\_{i,t}(\theta)$ |
-| $\pi\_\text{ref}$ (reference)           | Outer iteration | Anchor for KL penalty                               |
+| $\pi\_\text{ref}$ (reference)            | Outer iteration | Anchor for KL penalty                                |
 
-The reference model is **not** permanently frozen to the SFT checkpoint — it is set to the current policy at the start of each outer iteration, then held fixed for $M$ inner steps. This means the KL penalty prevents drift *within* an outer iteration, but allows the reference to gradually shift with the policy across iterations. The overall training trajectory is thus a series of "controlled leaps" rather than a single long leash back to the SFT model.
+The reference model is **not** permanently frozen to the SFT checkpoint — it is set to the current policy at the start of each outer iteration, then held fixed for $M$ inner steps. This means the KL penalty prevents drift _within_ an outer iteration, but allows the reference to gradually shift with the policy across iterations. The overall training trajectory is thus a series of "controlled leaps" rather than a single long leash back to the SFT model.
 
 ### Additional Details
 
@@ -181,7 +181,7 @@ $$
 \mathbb{D}\_\text{KL}\\!\left[\pi\_\theta \\| \pi\_\text{ref}\right] = \frac{\pi\_\theta(o\_{i,t} \mid q, o\_{i,<t})}{\pi\_\text{ref}(o\_{i,t} \mid q, o\_{i,<t})} - \log \frac{\pi\_\theta(o\_{i,t} \mid q, o\_{i,<t})}{\pi\_\text{ref}(o\_{i,t} \mid q, o\_{i,<t})} - 1
 $$
 
-This expression serves as a token-level proxy for the KL penalty on $\pi\_\theta$ relative to $\pi\_\text{ref}$. The expression $\frac{p}{q} - \log \frac{p}{q} - 1$ is non-negative and equals zero when $p = q$, making it a suitable regularizer. 
+This expression serves as a token-level proxy for the KL penalty on $\pi\_\theta$ relative to $\pi\_\text{ref}$. The expression $\frac{p}{q} - \log \frac{p}{q} - 1$ is non-negative and equals zero when $p = q$, making it a suitable regularizer.
 
 #### Model Requirements
 
@@ -207,7 +207,7 @@ Recall that the GRPO's objective uses a per-token probability ratio $r\_{i,t}(\t
 This creates three problems:
 
 1. **Misapplied importance sampling**: As the reward and advantages are sequence-level, performing token-based importance sampling creates a misalignment between the policy and the reward. Note that even if we remove the clipping mechanism, the importance sampling in GRPO is not equivalent to sequence-level sampling, as it uses summation instead of product on the weighted advantages.
-2. **Variance accumulation.** Token-level ratios vary independently across positions. Over long sequences, these fluctuations compound, injecting high-variance noise into the training gradient. The clipping mechanism (designed to stabilize updates) actually *exacerbates* this because different tokens within the same response get clipped at different positions, creating inconsistent gradient signals.
+2. **Variance accumulation.** Token-level ratios vary independently across positions. Over long sequences, these fluctuations compound, injecting high-variance noise into the training gradient. The clipping mechanism (designed to stabilize updates) actually _exacerbates_ this because different tokens within the same response get clipped at different positions, creating inconsistent gradient signals.
 3. **MoE instability.** In MoE models, ~10% of expert activations change after each gradient update. This causes individual token likelihoods to fluctuate drastically between $\pi\_\theta$ and $\pi\_{\theta\_\text{old}}$, even when the overall sequence likelihood is stable. GRPO's token-level ratios amplify this volatility, often leading to training collapse without a workaround called **Routing Replay** (caching and replaying expert assignments from $\pi\_{\theta\_\text{old}}$ — costly in memory and communication).
 
 ### The GSPO Fix: Sequence-Level Everything
@@ -290,7 +290,7 @@ Each token's gradient is scaled by its own importance ratio. These unequal weigh
 
 ## AI Use Disclosure
 
-- I relied much more heavily on AI for this post than I usually do when writing other posts for this site. 
-- I used AI to analyze the papers, extract key formulas and format them in LaTeX, and draft explanations for key concepts. 
-- I organized, edited, and added to the AI-generated content to correct inaccuracies and align it more closely with my mental model of the key concepts in these papers. 
+- I relied much more heavily on AI for this post than I usually do when writing other posts for this site.
+- I used AI to analyze the papers, extract key formulas and format them in LaTeX, and draft explanations for key concepts.
+- I organized, edited, and added to the AI-generated content to correct inaccuracies and align it more closely with my mental model of the key concepts in these papers.
 - I used AI iteratively to proofread my draft and then revised it until I felt the post was ready to publish. While AI saved me a significant amount of time, this post reflects my own understanding of the topics.
