@@ -8,9 +8,20 @@ tags:
   - notes
   - ai
   - rl
+  - llm
+  - alignment
 keywords:
-  - rl
   - reinforcement learning
+  - PPO
+  - GRPO
+  - GSPO
+  - RLHF
+  - policy gradient
+  - LLM training
+  - DeepSeek
+  - importance sampling
+  - clipped surrogate objective
+  - generalized advantage estimation
 cover:
   image: "cover.jpg"
   hidden: true
