@@ -99,7 +99,11 @@ $$
 \hat{A}\_t = \sum\_{l=0}^{\infty} (\gamma \lambda)^l \delta\_{t+l}, \quad \delta\_t = R\_t + \gamma V(s\_{t+1}) - V(s\_t)
 $$
 
-$\lambda \in [0,1]$ trades off bias vs. variance. $\delta\_t$ represents the [TD error](https://en.wikipedia.org/wiki/Temporal_difference_learning), where $R\_t$ is the reward at step $t$ (distinct from the probability ratio $r\_t(\theta)$ used above). $V(s\_t)$ is the [state value function](https://en.wikipedia.org/wiki/Reinforcement_learning#Algorithms_for_control_learning) (a.k.a. the critic). This requires the value function/model to produce token-level baseline estimates throughout the generation rollout. Higher $\lambda$ gives us higher variance, as the estimated advantage relies more on actual future rewards (and less on the [value function bootstrap](https://datascience.stackexchange.com/questions/30714/what-is-the-difference-between-bootstrapping-and-sampling-in-reinforcement-learn)) by weighting further-horizon terms in the sum more heavily. A critic/value model must be trained to produce accurate $V(s\_t)$ estimates, because noisy value estimates propagate directly into noisy advantage estimates and therefore noisy policy gradients.
+$\lambda \in [0,1]$ trades off bias vs. variance. $\delta\_t$ represents the [TD error](https://en.wikipedia.org/wiki/Temporal_difference_learning), where $R\_t$ is the reward at step $t$ (distinct from the probability ratio $r\_t(\theta)$ used above). $V(s\_t)$ is the [state value function](https://en.wikipedia.org/wiki/Reinforcement_learning#Algorithms_for_control_learning) (a.k.a. the critic). This requires the value function/model to produce token-level baseline estimates throughout the generation rollout.
+
+Higher $\lambda$ gives us higher variance, as the estimated advantage relies more on actual future rewards (and less on the [value function bootstrap](https://datascience.stackexchange.com/questions/30714/what-is-the-difference-between-bootstrapping-and-sampling-in-reinforcement-learn)) by weighting further-horizon terms in the sum more heavily.
+
+A critic/value model must be trained to produce accurate $V(s\_t)$ estimates, because noisy value estimates propagate directly into noisy advantage estimates and therefore noisy policy gradients.
 
 #### KL Divergence Penalty
 
