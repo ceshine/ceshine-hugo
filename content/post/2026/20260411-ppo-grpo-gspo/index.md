@@ -178,7 +178,7 @@ The reference model is **not** permanently frozen to the SFT checkpoint — it i
 The KL term in the objective function is estimated token-wise:
 
 $$
-\mathbb{D}\_\text{KL}\\!\left[\pi\_\theta \| \pi\_\text{ref}\right] = \frac{\pi\_\theta(o\_{i,t} \mid q, o\_{i,<t})}{\pi\_\text{ref}(o\_{i,t} \mid q, o\_{i,<t})} - \log \frac{\pi\_\theta(o\_{i,t} \mid q, o\_{i,<t})}{\pi\_\text{ref}(o\_{i,t} \mid q, o\_{i,<t})} - 1
+\mathbb{D}\_\text{KL}\\!\left[\pi\_\theta \\| \pi\_\text{ref}\right] = \frac{\pi\_\theta(o\_{i,t} \mid q, o\_{i,<t})}{\pi\_\text{ref}(o\_{i,t} \mid q, o\_{i,<t})} - \log \frac{\pi\_\theta(o\_{i,t} \mid q, o\_{i,<t})}{\pi\_\text{ref}(o\_{i,t} \mid q, o\_{i,<t})} - 1
 $$
 
 This expression serves as a token-level proxy for the KL penalty on $\pi\_\theta$ relative to $\pi\_\text{ref}$. The expression $\frac{p}{q} - \log \frac{p}{q} - 1$ is non-negative and equals zero when $p = q$, making it a suitable regularizer. 
