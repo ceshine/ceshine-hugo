@@ -34,7 +34,7 @@ url: /post/PPO-GRPO-GSPO/
 
 ## Introduction
 
-This blog post provides an overview of the core concepts of the Proximal Policy Optimization (PPO) algorithm and its two variants — the Group Relative Policy Optimization (GRPO) and Group Sequence Policy Optimization (GSPO) algorithms. This post assumes basic knowledge of reinforcement learning fundamentals, meaning it does not explain terms such as on-policy/off-policy learning, policy, and value function in detail.
+This blog post provides an overview of the core concepts of the Proximal Policy Optimization (PPO) algorithm and its two variants — the Group Relative Policy Optimization (GRPO) and Group Sequence Policy Optimization (GSPO) algorithms. This post assumes basic knowledge of reinforcement learning fundamentals, meaning it does not explain terms such as _policy_, _on-policy/off-policy learning_, and _state value function_ in detail.
 
 For a deep-dive into reinforcement learning fundamentals, I recommend [David Silver's classic 2015 course](https://davidstarsilver.wordpress.com/teaching/). I don't know if there's a good modern alternative. Kindly let me know in the comment section.
 
