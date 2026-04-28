@@ -10,6 +10,10 @@ tags:
 keywords:
   - PyTorch
   - Python
+  - ArrayRecord
+  - TFRecord
+  - Data Pipeline
+  - Image Classification
 cover:
   image: "cover.jpg"
   hidden: true
@@ -32,7 +36,7 @@ In short, there are three key insights you need to build an efficient ArrayRecor
 2. Use PyTorch `Dataset`'s `__getitems__` method with ArrayRecord's batch operations to obtain a fully randomized training data stream with low I/O and OS overhead.
 3. Use PyTorch's `IterableDataset` to serve validation and test data using ArrayRecord's sequential operations for maximum I/O throughput.
 
-My motivation for writing this post is the lack of resources for this specific use case (ArrayRecord + PyTorch). I figured out a way to do it with decent performance, so I'd like to share my experience. I'm not an expert in system programming or IO performance optimization. I'd appreciate it if you gave me some feedback if I get something wrong.
+My motivation for writing this post is the lack of resources for this specific use case (ArrayRecord + PyTorch). I figured out a way to do it with decent performance, so I'd like to share my experience. I'm not an expert in system programming or I/O performance optimization. I'd appreciate it if you gave me some feedback if I get something wrong.
 
 ## Quick Tour of ArrayRecord
 
@@ -40,7 +44,7 @@ My motivation for writing this post is the lack of resources for this specific u
 
 1. File Structure: An ArrayRecord file is structured as a sequence of chunks that may be individually compressed. The index chunk at the end of the file allows random access to chunks without reading the entire file.
 2. Write-time configurations:
-   a. Group size (`group_size`): This determines the number of records stored in a chunk. We read one chunk at a time. Therefore, the group size needs to be 1 when you need fully random access. Otherwise, we'll have to read `group_size` records to get 1 records, wasting time reading the remaining `group_size - 1` records.
+   a. Group size (`group_size`): This determines the number of records stored in a chunk. We read one chunk at a time. Therefore, the group size needs to be 1 when you need fully random access. Otherwise, we'll have to read `group_size` records to get 1 record, wasting time reading the remaining `group_size - 1` records.
    b. Compression: ArrayRecord supports multiple compression algorithms. The larger the chunk size, the better the compression ratio will be. That's why it is recommended to use a large `group_size` if you only need sequantial data access (e.g., for validation and test dataset).
 3. Access patterns:
    a. Random access: Reading non-contiguous records one at a time. Requires `group_size = 1` for best performance.
@@ -73,20 +77,21 @@ For image data (e.g., JPEG, PNG), ArrayRecord's documentation [5,6] recommends u
 
 You can tune the number of examples that go into an ArrayRecord file, and the group size for the validation dataset. We use 5000 examples per ArrayRecord file (shard) for both training and validation. The group size for validation may not matter as much here because we are using uncompressed chunks. We use a group size of 500 without any tuning. This produces 10 ArrayRecord files for the training set and 2 files for the validation set.
 
-Below are the core functions for writing ArrayRecord files. I'll leave it to you to implement the data preprocessing code that fits your use case. **Remember to use a group size of 1 for the training data.**
+Below are the core functions for writing ArrayRecord files. I'll leave it to you to implement the data preprocessing code that fits your use case. 
+
+**Note: Remember to use a group size of 1 for the training data.**
 
 ```python
 import struct
+from pathlib import Path
 
 from array_record.python.array_record_module import ArrayRecordWriter
 
 def encode_record(label: int, jpeg_bytes: bytes) -> bytes:
     """Encode a label and JPEG payload into a length-prefixed binary record.
-
     Args:
         label: Integer class label for the image.
         jpeg_bytes: Raw JPEG image bytes.
-
     Returns:
         A binary blob suitable for ArrayRecord writing.
     """
@@ -100,7 +105,6 @@ def _write_array_records(
     group_size: int = 1,
 ) -> None:
     """Write a buffered batch of records into a single ArrayRecord shard.
-
     Args:
         buffer (list[tuple[int, bytes]]): Collection of ``(label, jpeg_bytes)`` tuples to write.
         shard_index (int): Zero-based shard index used in the output filename.
@@ -121,11 +125,13 @@ def _write_array_records(
 
 ### Decoding Records
 
-Before we can start implementing the training and validation dataset classes and data loader instances, we need to create a function for decoding a serialized record. Below is a sample implementation. Note that we need to segment the binary data manually. That's why `jpeg_len` is added (it probably isn't strictly required, but it helps us validate the data). The `label` and `jpeg_len` integers takes four bytes each (they are 32-bit unsigned integers), the rest are the JPEG bytes. The JPEG bytes are decoded using OpenCV and converted into an RGB-formatted Numpy array.
+Before we can start implementing the training and validation dataset classes and data loader instances, we need to create a function for decoding a serialized record. Below is a sample implementation. Note that we need to segment the binary data manually. That's why `jpeg_len` is added (it probably isn't strictly required, but it helps us validate the data). The `label` and `jpeg_len` integers take four bytes each (they are 32-bit unsigned integers), the rest are the JPEG bytes. The JPEG bytes are decoded using OpenCV and converted into an RGB-formatted NumPy array.
 
 ```python
-import cv2
 import struct
+
+import cv2
+import numpy as np
 
 def decode_record(data: bytes) -> tuple[int, np.ndarray]:
     """Decode a length-prefixed binary record into label and image array.
@@ -154,11 +160,12 @@ This is a map-style PyTorch dataset class that supports image augmentations usin
 
 1. The `__getitem__` method is implemented for compatibility reasons. However, it should not be used in most cases. That's why I made it emit a UserWarning every time it is called. If the caller really needs to use it, they can manually suppress the warning message. This is a design choice I made. You can remove the message without any functional change if you disagree.
 2. The `__getitems__` method simply calls the method with the same name on the ArrayRecordDataSource instance. The `array_record` library handles the concurrent I/O for us.
-3. The `_process_record` method used by `__getitems__` is single-threaded, so it may become the true bottleneck. However, we usually use multiple workers in the DataLoader, so other workers can continue to read the records while one workers is decoding the bytes that have been read.
-4. This setup may be tuned to achieve even higher throughput. For example, it may help to use only a couple of workers in the DataLoader and spawn multiple processes in each worker to decode and augment images in parallel. It really dependes on your data shapes and your hardware. Do not treat this implementation as a gold standard.
+3. The `_process_record` method used by `__getitems__` is single-threaded, so it may become the true bottleneck. However, we usually use multiple workers in the DataLoader, so other workers can continue to read the records while one worker is decoding the bytes that have been read.
+4. This setup may be tuned to achieve even higher throughput. For example, it may help to use only a couple of workers in the DataLoader and spawn multiple processes in each worker to decode and augment images in parallel. It really depends on your data shapes and your hardware. Do not treat this implementation as a gold standard.
 
 ```python
-from typing import final
+import warnings
+from typing import final, override
 
 import torch
 import albumentations as A
@@ -232,7 +239,7 @@ class ArrayRecordImageDataset(torch.utils.data.Dataset[tuple[torch.Tensor, torch
         return [self._process_record(record) for record in records]
 ```
 
-You can pass the `ArrayRecordImageDataset` instance to the `DataLoader` class like any other `Dataset` instances:
+You can pass the `ArrayRecordImageDataset` instance to the `DataLoader` class like any other `Dataset` instance:
 
 ```python
 dataset = ArrayRecordImageDataset(
@@ -273,7 +280,7 @@ class SequentialArrayRecordDataset(torch.utils.data.IterableDataset[tuple[torch.
 
     Use this for validation data written with ``group_size > 1``. It bypasses
     :class:`~array_record_data_source.ArrayRecordDataSource` (which is
-    optimised for random access and requires ``group_size:1``) and reads
+    optimized for random access and requires ``group_size:1``) and reads
     directly with :class:`~array_record_module.ArrayRecordReader` instead.
     """
 
@@ -358,7 +365,7 @@ class SequentialArrayRecordDataset(torch.utils.data.IterableDataset[tuple[torch.
                 reader.close()
 ```
 
-Similar to the map-type Dataset instances, the IterableDataset instance can be directly passed to DataLoader. One caveat is that you need to set the number of workers carefully. Using too many workers can cause the high-throughput sequential access become essentially low-throughput random access. Experiments show that setting `num_workers` to 2 works best on my local setup (NVMe SSD + a single GPU). Your mileage may vary.
+Similar to the map-type Dataset instances, the IterableDataset instance can be directly passed to DataLoader. One caveat is that you need to set the number of workers carefully. Using too many workers can cause the high-throughput sequential access to become essentially low-throughput random access. Experiments show that setting `num_workers` to 2 works best on my local setup (NVMe SSD + a single GPU). Your mileage may vary.
 
 ```python
 dataset = SequentialArrayRecordDataset(
@@ -370,7 +377,7 @@ data_loader = torch.utils.data.DataLoader(
     dataset,
     batch_size=batch_size,
     # Use a fixed number of workers to manually tune the sequential data read operations
-    # Too many workers create random access patterns, a single worker create a gap between files
+    # Too many workers create random access patterns, a single worker creates a gap between files
     num_workers=2,
     pin_memory=True,
     drop_last=False,
@@ -381,7 +388,7 @@ data_loader = torch.utils.data.DataLoader(
 
 For sequential access, reading a few ArrayRecord files is undoubtedly faster than reading hundreds of thousands of small image files. However, this is not as obvious in random access scenarios.
 
-In this section, I'll provide some references that may offer empirical evidence and theoretical explanations for the claim that ArrayRecord provides better random access than reading a large number of small files. Please note that, based on my research, it's unclear that if ArrayRecord always performs better. However, we can say that it performs at least on par with the alternative approach of reading a large number of small files and should perform much better in some scenarios.
+In this section, I'll provide some references that may offer empirical evidence and theoretical explanations for the claim that ArrayRecord provides better random access than reading a large number of small files. Please note that, based on my research, it's unclear whether ArrayRecord always performs better. However, we can say that it performs at least on par with the alternative approach of reading a large number of small files and should perform much better in some scenarios.
 
 ### Per-file Overhead
 
@@ -429,11 +436,11 @@ This is not a direct benchmark comparing random reading of Array Record files an
 
 ### Conclusion
 
-Ultimately, the actual speedup largely depends on the characteristics of your data (e.g, the size of each record and its compression ratios) and your hardware.
+Ultimately, the actual speedup largely depends on the characteristics of your data (e.g., the size of each record and its compression ratios) and your hardware.
 
-The main advantage of using ArrayRecord for machine learning is its robustness against hardware changes. You can expect the same pipeline that work well locally will also work in a cloud environment. There's no need for environment-specific optimization other than tuning some hyperparameters (e.g., group size, number of workers).
+The main advantage of using ArrayRecord for machine learning is its robustness against hardware changes. You can expect the same pipeline that works well locally will also work in a cloud environment. There's no need for environment-specific optimization other than tuning some hyperparameters (e.g., group size, number of workers).
 
-Another advantage of ArrayRecord is its portability. No more archiving thousands or even milliions of small files into archives. With ArrayRecord, you just need to share a handful of files. The label data is also embedded. There's no need for shipping label files separately, and there's no risk of discrepancy between the label files and the data files.
+Another advantage of ArrayRecord is its portability. No more archiving thousands or even millions of small files into archives. With ArrayRecord, you just need to share a handful of files. The label data is also embedded. There's no need for shipping label files separately, and there's no risk of discrepancy between the label files and the data files.
 
 I'm pretty satisfied with this setup for using ArrayRecord with PyTorch and plan to apply it to different tasks in the near future. I'd appreciate it if you could share your experience with ArrayRecord in the comments section or via social media.
 
