@@ -73,7 +73,7 @@ For image data (e.g., JPEG, PNG), ArrayRecord's documentation [5,6] recommends u
 
 You can tune the number of examples that go into an ArrayRecord file, and the group size for the validation dataset. We use 5000 examples per ArrayRecord file (shard) for both training and validation. The group size for validation may not matter as much here because we are using uncompressed chunks. We use a group size of 500 without any tuning. This produces 10 ArrayRecord files for the training set and 2 files for the validation set.
 
-Below are the core functions for writing ArrayRecord files. I'll leave it to you to implement the data preprocessing code that fits your use case.
+Below are the core functions for writing ArrayRecord files. I'll leave it to you to implement the data preprocessing code that fits your use case. **Remember to use a group size of 1 for the training data.**
 
 ```python
 import struct
@@ -106,7 +106,7 @@ def _write_array_records(
         shard_index (int): Zero-based shard index used in the output filename.
         output_path (Path): Directory where the shard should be written.
         group_size (int): Number of records per compressed chunk. Use ``1`` for
-            random-access training data and a larger value (e.g. ``256``) for
+            random-access training data and a larger value (e.g. ``500``) for
             sequential validation data.
     """
     filepath = output_path / "{:03d}-{}.array_record".format(shard_index, len(buffer))
@@ -119,6 +119,245 @@ def _write_array_records(
     writer.close()
 ```
 
+### Decoding Records
+
+Before we can start implementing the training and validation dataset classes and data loader instances, we need to create a function for decoding a serialized record. Below is a sample implementation. Note that we need to segment the binary data manually. That's why `jpeg_len` is added (it probably isn't strictly required, but it helps us validate the data). The `label` and `jpeg_len` integers takes four bytes each (they are 32-bit unsigned integers), the rest are the JPEG bytes. The JPEG bytes are decoded using OpenCV and converted into an RGB-formatted Numpy array.
+
+```python
+import cv2
+import struct
+
+def decode_record(data: bytes) -> tuple[int, np.ndarray]:
+    """Decode a length-prefixed binary record into label and image array.
+
+    Args:
+        data: Raw bytes from an ArrayRecord shard.
+
+    Returns:
+        A tuple of ``(label, image)`` where image is a NumPy array in
+        HWC / RGB format suitable for ``albumentations`` transforms.
+    """
+    label = struct.unpack("<I", data[:4])[0]
+    jpeg_len = struct.unpack("<I", data[4:8])[0]
+    jpeg_bytes = data[8 : 8 + jpeg_len]
+    arr = np.frombuffer(jpeg_bytes, dtype=np.uint8)
+    image = cv2.imdecode(arr, cv2.IMREAD_COLOR)
+    if image is None:
+        raise ValueError("Failed to decode JPEG bytes")
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    return label, image
+```
+
+### Training Dataset and DataLoader
+
+This is a map-style PyTorch dataset class that supports image augmentations using the [Albumentations](https://albumentations.ai) library [7]. A couple of things to pay attention to:
+
+1. The `__getitem__` method is implemented for compatibility reasons. However, it should not be used in most cases. That's why I made it emit a UserWarning every time it is called. If the caller really needs to use it, they can manually suppress the warning message. This is a design choice I made. You can remove the message without any functional change if you disagree.
+2. The `__getitems__` method simply calls the method with the same name on the ArrayRecordDataSource instance. The `array_record` library handles the concurrent I/O for us.
+3. The `_process_record` method used by `__getitems__` is single-threaded, so it may become the true bottleneck. However, we usually use multiple workers in the DataLoader, so other workers can continue to read the records while one workers is decoding the bytes that have been read.
+4. This setup may be tuned to achieve even higher throughput. For example, it may help to use only a couple of workers in the DataLoader and spawn multiple processes in each worker to decode and augment images in parallel. It really dependes on your data shapes and your hardware. Do not treat this implementation as a gold standard.
+
+```python
+from typing import final
+
+import torch
+import albumentations as A
+from array_record.python import array_record_data_source
+
+@final
+class ArrayRecordImageDataset(torch.utils.data.Dataset[tuple[torch.Tensor, torch.Tensor]]):
+    """Map-style PyTorch Dataset over ArrayRecord shards."""
+
+    def __init__(
+        self,
+        file_paths: list[str],
+        transforms: A.Compose | None = None,
+    ):
+        """Initialize the dataset.
+
+        Args:
+            file_paths: List of ArrayRecord shard paths.
+            transforms: Optional albumentations compose pipeline.
+        """
+        self.data_source = array_record_data_source.ArrayRecordDataSource(file_paths)
+        self.transforms = transforms
+
+    def __len__(self) -> int:
+        return len(self.data_source)
+
+    def _process_record(self, record_bytes: bytes) -> tuple[torch.Tensor, torch.Tensor]:
+        """Decode and transform a single raw record.
+
+        Args:
+            record_bytes: Raw bytes from an ArrayRecord shard.
+
+        Returns:
+            A tuple of ``(image_tensor, label_tensor)``.
+        """
+        label, image = decode_record(record_bytes)
+        if self.transforms is not None:
+            image = self.transforms(image=image)["image"]
+        image = image.transpose(2, 0, 1)
+        return torch.from_numpy(image), torch.tensor(label)
+
+    @override
+    def __getitem__(self, idx: int) -> tuple[torch.Tensor, torch.Tensor]:
+        warnings.warn(
+            (
+                "Single-index __getitem__ is slow for batched loading. "
+                "Use DataLoader with batch_size is not None to trigger __getitems__ "
+                "for parallel batched I/O."
+            ),
+            UserWarning,
+            stacklevel=2,
+        )
+        return self._process_record(self.data_source[idx])
+
+    def __getitems__(self, indices: list[int]) -> list[tuple[torch.Tensor, torch.Tensor]]:
+        """Fetch multiple records in a single batched I/O call.
+
+        PyTorch's DataLoader calls this instead of looping over
+        :meth:`__getitem__` when ``batch_size`` is not None. By delegating to
+        :meth:`ArrayRecordDataSource.__getitems__`, we enable parallel reads
+        across multiple ArrayRecord shards.
+
+        Args:
+            indices: List of dataset indices to fetch.
+
+        Returns:
+            A list of ``(image_tensor, label_tensor)`` tuples in the same
+            order as ``indices``.
+        """
+        records = self.data_source.__getitems__(indices)
+        return [self._process_record(record) for record in records]
+```
+
+You can pass the `ArrayRecordImageDataset` instance to the `DataLoader` class like any other `Dataset` instances:
+
+```python
+dataset = ArrayRecordImageDataset(
+    train_files,
+    transforms=train_transforms,
+)
+return torch.utils.data.DataLoader(
+    dataset,
+    batch_size=self.config.batch_size,
+    shuffle=True,
+    num_workers=num_workers,
+    pin_memory=True,
+    drop_last=True,
+)
+```
+
+### The Validation Dataset and Data Loader
+
+As mentioned before, an IterableDataset class is a better fit for the validation data pipeline that reads the data sequentially. Below is a sample implementation of such a class that reads `ArrayRecord` files sequentially.
+
+Pay attention to these points:
+
+1. We distribute the workflow across multiple workers (if used) at the file level: `files_to_read = self.file_paths[worker_info.id :: worker_info.num_workers]`. This means we should tune the shard size (the number of records in each file) so that the number of shards/files is a multiple of the number of workers. This ensures the workload is evenly distributed for best performance.
+2. The class supports two modes of reading via the `high_memory_mode` flag. When `high_memory_mode` is True, it uses the `ArrayRecordReader.read_all()` method to read all records in the file at once; when `high_memory_mode` is False, it uses the `ArrayRecordReader.read()` method to read the records in batches. The former should theoretically be faster. However, the ArrayRecord documentation shows some contradictory empirical results [6], so please always benchmark and tune to find the optimal configurations for your specific use case.
+3. The default `reader_options` value of `"readahead_buffer_size:16M,max_parallelism:8"` is not tuned. It may make sense to use a different set of options when using `ArrayRecordReader.read_all()`.
+
+```python
+from typing import final
+
+import torch
+import albumentations as A
+from array_record.python.array_record_module import ArrayRecordReader
+
+_DEFAULT_BATCH_READ_SIZE = 500
+
+class SequentialArrayRecordDataset(torch.utils.data.IterableDataset[tuple[torch.Tensor, torch.Tensor]]):
+    """Iterable PyTorch Dataset for sequential ArrayRecord reading.
+
+    Use this for validation data written with ``group_size > 1``. It bypasses
+    :class:`~array_record_data_source.ArrayRecordDataSource` (which is
+    optimised for random access and requires ``group_size:1``) and reads
+    directly with :class:`~array_record_module.ArrayRecordReader` instead.
+    """
+
+    def __init__(
+        self,
+        file_paths: list[str],
+        transforms: A.Compose | None = None,
+        # TODO: figure out the optimal options for this use case
+        reader_options: str = "readahead_buffer_size:16M,max_parallelism:8",
+        high_memory_mode: bool = True,
+    ):
+        """Initialize the dataset.
+
+        Args:
+            file_paths: List of ArrayRecord shard paths.
+            transforms: Optional albumentations compose pipeline.
+            reader_options: Options passed to ``ArrayRecordReader``. Tune this
+                for sequential throughput on your storage backend.
+            high_memory_mode: If True, load all records into memory at once
+                via ``read_all``; if False, read records in batches of
+                ``_DEFAULT_BATCH_READ_SIZE`` sequentially.
+        """
+        self.file_paths: list[str] = [str(p) for p in file_paths]
+        self.transforms: A.Compose | None = transforms
+        self.reader_options: str = reader_options
+        self.high_memory_mode: bool = high_memory_mode
+
+        # Pre-compute record counts so __len__ works for progress bars.
+        self._lengths: list[int] = []
+        for fp in self.file_paths:
+            reader = ArrayRecordReader(fp)
+            self._lengths.append(reader.num_records())
+            reader.close()
+        self._total: int = sum(self._lengths)
+
+    def __len__(self) -> int:
+        return self._total
+
+    def _process_record(self, record_bytes: bytes) -> tuple[torch.Tensor, torch.Tensor]:
+        """Decode and transform a single raw record.
+
+        Args:
+            record_bytes: Raw bytes from an ArrayRecord shard.
+
+        Returns:
+            A tuple of ``(image_tensor, label_tensor)``.
+        """
+        label, image = decode_record(record_bytes)
+        if self.transforms is not None:
+            image = self.transforms(image=image)["image"]
+        image = image.transpose(2, 0, 1)
+        return torch.from_numpy(image), torch.tensor(label)
+
+    @override
+    def __iter__(self):
+        worker_info = torch.utils.data.get_worker_info()
+        if worker_info is None:
+            # Single-process loading
+            files_to_read = self.file_paths
+        else:
+            # Multi-worker: shard by file round-robin
+            files_to_read = self.file_paths[worker_info.id :: worker_info.num_workers]
+
+        for fp in files_to_read:
+            reader = ArrayRecordReader(
+                fp,
+                options=self.reader_options,
+            )
+            try:
+                if self.high_memory_mode:
+                    for record in reader.read_all():
+                        yield self._process_record(record)
+                else:
+                    for idx in range(0, reader.num_records(), _DEFAULT_BATCH_READ_SIZE):
+                        # Note: reader.read() (reading a single record) often hangs the process for unknown reasons
+                        # Solution: Use batch reads for better performance but not read_all to reduce memory footprint
+                        # The actual group size should be a divisor to _DEFAULT_BATCH_READ_SIZE for the best performance
+                        records = reader.read(idx, min(reader.num_records(), idx + _DEFAULT_BATCH_READ_SIZE))
+                        for record in records:
+                            yield self._process_record(record)
+            finally:
+                reader.close()
+```
+
 ## References
 
 1. [(GitHub) google/array_record](https://github.com/google/array_record)
@@ -127,3 +366,4 @@ def _write_array_records(
 4. [(Tensorflow Datasets) TFDS for Jax and PyTorch](https://www.tensorflow.org/datasets/data_source)
 5. [ArrayRecord: Core Concepts](https://array-record.readthedocs.io/en/latest/core_concepts.html)
 6. [ArrayRecord: Performance Guide](https://array-record.readthedocs.io/en/latest/performance.html)
+7. [Albumentations: fast and flexible image augmentations](https://albumentations.ai)
