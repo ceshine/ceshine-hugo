@@ -44,12 +44,12 @@ My motivation for writing this post is the lack of resources for this specific u
 
 1. File Structure: An ArrayRecord file is structured as a sequence of chunks that may be individually compressed. The index chunk at the end of the file allows random access to chunks without reading the entire file.
 2. Write-time configurations:
-   a. Group size (`group_size`): This determines the number of records stored in a chunk. We read one chunk at a time. Therefore, the group size needs to be 1 when you need fully random access. Otherwise, we'll have to read `group_size` records to get 1 record, wasting time reading the remaining `group_size - 1` records.
-   b. Compression: ArrayRecord supports multiple compression algorithms. The larger the chunk size, the better the compression ratio will be. That's why it is recommended to use a large `group_size` if you only need sequantial data access (e.g., for validation and test dataset).
+   - Group size (`group_size`): This determines the number of records stored in a chunk. We read one chunk at a time. Therefore, the group size needs to be 1 when you need fully random access. Otherwise, we'll have to read `group_size` records to get 1 record, wasting time reading the remaining `group_size - 1` records.
+   - Compression: ArrayRecord supports multiple compression algorithms. The larger the chunk size, the better the compression ratio will be. That's why it is recommended to use a large `group_size` if you only need sequantial data access (e.g., for validation and test dataset).
 3. Access patterns:
-   a. Random access: Reading non-contiguous records one at a time. Requires `group_size = 1` for best performance.
-   b. Sequential access: Reading contiguous records iteratively. A large `group_size` is recommended.
-   c. Batch access: Reading multiple records in a single function call. **This is the recommended way to use ArrayRecord**. It can provide performance improvements even for non-contiguous records (random reads), thanks to the underlying C++ thread pool.
+   - Random access: Reading non-contiguous records one at a time. Requires `group_size = 1` for best performance.
+   - Sequential access: Reading contiguous records iteratively. A large `group_size` is recommended.
+   - Batch access: Reading multiple records in a single function call. **This is the recommended way to use ArrayRecord**. It can provide performance improvements even for non-contiguous records (random reads), thanks to the underlying C++ thread pool.
 
 Please read the [ArrayRecord documentation](https://array-record.readthedocs.io/en/latest/core_concepts.html) [4] for more details.
 
@@ -69,15 +69,15 @@ Please read this [Google for Developers blog post](https://developers.googleblog
 
 ## Case Study: Image Classification
 
-We'll use a hypothetical scenario for training and validating an image classification model to provide a case study on using ArrayRecord with PyTorch. In this scenario, we are dealing with a mid-sized image classification dataset with 50k training images and 10k validation images. We ignore the test dataset here for simplicity (its treatment is exactly the same as the validation set).
+We'll use a hypothetical scenario for training and validating an image classification model to provide a case study on using ArrayRecord with PyTorch. In this scenario, we are dealing with a mid-sized image classification dataset with **50k training images** and **10k validation images**. We ignore the test dataset here for simplicity (its treatment is exactly the same as the validation set).
 
 ### Preparing ArrayRecord Files
 
 For image data (e.g., JPEG, PNG), ArrayRecord's documentation [5,6] recommends using the file's original binary form for optimal compression. Therefore, we serialize each example by concatenating `label` (an integer), `size_of_jpeg_bytes` (an integer), and `jpeg_bytes`. We instruct the `ArrayRecordWriter` instance to use uncompressed chunks because the image bytes are already compressed.
 
-You can tune the number of examples that go into an ArrayRecord file, and the group size for the validation dataset. We use 5000 examples per ArrayRecord file (shard) for both training and validation. The group size for validation may not matter as much here because we are using uncompressed chunks. We use a group size of 500 without any tuning. This produces 10 ArrayRecord files for the training set and 2 files for the validation set.
+You can tune the number of examples that go into an ArrayRecord file, and the group size for the validation dataset. We use **5000 examples per ArrayRecord file** (shard) for both training and validation. The group size for validation may not matter as much here because we are using uncompressed chunks. We use **a group size of 500** without any tuning. This produces 10 ArrayRecord files for the training set and 2 files for the validation set.
 
-Below are the core functions for writing ArrayRecord files. I'll leave it to you to implement the data preprocessing code that fits your use case. 
+Below are the core functions for writing ArrayRecord files. I'll leave it to you to implement the data preprocessing code that fits your use case.
 
 **Note: Remember to use a group size of 1 for the training data.**
 
@@ -392,7 +392,7 @@ In this section, I'll provide some references that may offer empirical evidence 
 
 ### Per-file Overhead
 
-The article ["I built a 2x faster lexer, then discovered I/O was the real bottleneck"](https://modulovalue.com/blog/syscall-overhead-tar-gz-io-performance/) [8] shows that reading 104,000 individual files is 42.85 times slower than reading them in tar.gz archives. The archives are 6.68 times smaller, so the actual speedup in I/O is about 6 times.
+The article ["I built a 2x faster lexer, then discovered I/O was the real bottleneck"](https://modulovalue.com/blog/syscall-overhead-tar-gz-io-performance/) [8] shows that reading 104,000 individual files is 42.85 times slower than reading them in tar.gz archives. The archives are 6.68 times smaller, so **the actual speedup in I/O is about 6 times**.
 
 This mainly reinforces our already established belief that reading a small number of files is much faster than reading a large number of files of the same total size. Nonetheless, the article demonstrates that reading small files will trigger more syscalls than reading large files, which contributes to the overall overhead.
 
@@ -402,7 +402,7 @@ This is the article's explanation of the I/O time gap (which is only part of the
 
 ### Remote Storage Per-file Latency
 
-On a network filesystem, **every filesystem operation requires a network round-trip**. Unlike object stores, where the issue is per-object GET latency, NFS adds round-trip overhead to each operation individually:  `stat()`, `open()`, `read()`, and `close()`. The "[Amazon EFS performance tips](https://docs.aws.amazon.com/efs/latest/ug/performance-tips.html)" article [9] indicates that:
+On a network filesystem, **every filesystem operation requires a network round-trip**. Unlike object stores, where the issue is per-object GET latency, NFS adds round-trip overhead to each operation individually: `stat()`, `open()`, `read()`, and `close()`. The "[Amazon EFS performance tips](https://docs.aws.amazon.com/efs/latest/ug/performance-tips.html)" article [9] indicates that:
 
 > File open, close, and metadata operations generally cannot be made asynchronously or through a pipeline. When reading or writing small files, **the two additional round trips are significant.** Each round trip (file open, file close) can take as much time as reading or writing megabytes of bulk data.
 
@@ -412,24 +412,24 @@ The "[MinIO — The Small Files Problem](https://www.min.io/blog/challenge-big-d
 
 **Back-of-the-envelope for the example 50k-image training dataset on NFS:**
 
-| Metric | Raw files (50K) | ArrayRecord (10 files) |
-|---|---|---|
-| File opens per epoch | 50,000 | 10 |
-| Total round-trips (stat + open + read + close) | 200,000 | 40 |
-| Time @ 1ms per round-trip | **200 seconds** | **0.040 seconds** |
-| Time @ 5ms per round-trip | **1,000 seconds** | **0.200 seconds** |
+| Metric                                         | Raw files (50K)   | ArrayRecord (10 files) |
+| ---------------------------------------------- | ----------------- | ---------------------- |
+| File opens per epoch                           | 50,000            | 10                     |
+| Total round-trips (stat + open + read + close) | 200,000           | 40                     |
+| Time @ 1ms per round-trip                      | **200 seconds**   | **0.040 seconds**      |
+| Time @ 5ms per round-trip                      | **1,000 seconds** | **0.200 seconds**      |
 
 **Why ArrayRecord doesn't suffer the same way:** Once the ArrayRecord file is opened (10 `open()` calls total), reading a record at a random offset is a single `read()` operation — one round-trip — because the internal index maps each record ID to its byte offset directly. There's no per-record `stat()`/`open()`/`close()` sequence.
 
 ### Random Access Benchmark
 
-The official Performance Guide document [6] provides a [benchmark for random access](https://array-record.readthedocs.io/en/latest/performance.html#random-access) that indicates 40- to 100-fold speedup from individual read operations to batch read operations, depending on the compression algorithm used. 
+The official Performance Guide document [6] provides a [benchmark for random access](https://array-record.readthedocs.io/en/latest/performance.html#random-access) that indicates **40- to 100-fold speedup** from individual read operations to batch read operations, depending on the compression algorithm used.
 
 Note that the speedup can be attributed to the internal C++ thread pool employed by the `array_record` package. However, even if we want to match that using multi-threading (which is restricted by the GIL) or multi-processing (higher overhead), it is still likely to be much slower than the high-performance, low-overhead C++ implementation.
 
-| Method | Throughput (QPS) |
-|---|---|
-| Individual `read()` | ~5,000 |
+| Method                | Throughput (QPS)    |
+| --------------------- | ------------------- |
+| Individual `read()`   | ~5,000              |
 | Batch `read(indices)` | ~200,000 – ~500,000 |
 
 This is not a direct benchmark comparing random reading of Array Record files and random reading of small image files, but it provides a strong reason to believe that the former will be faster than the latter.
@@ -456,7 +456,6 @@ I'm pretty satisfied with this setup for using ArrayRecord with PyTorch and plan
 8. [I built a 2x faster lexer, then discovered I/O was the real bottleneck](https://modulovalue.com/blog/syscall-overhead-tar-gz-io-performance/)
 9. [Amazon EFS performance tips](https://docs.aws.amazon.com/efs/latest/ug/performance-tips.html)
 10. [MinIO — The Small Files Problem](https://www.min.io/blog/challenge-big-data-small-files)
-
 
 ## AI Use Disclosure
 
