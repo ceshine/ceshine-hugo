@@ -2,3 +2,7 @@ public/
 .vscode
 *.xcf
 cache/
+.gemini
+.zed
+*.backup
+browser-state.*
