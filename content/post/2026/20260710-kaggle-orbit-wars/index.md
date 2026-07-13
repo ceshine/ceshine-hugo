@@ -114,6 +114,11 @@ This swept-pair collision model is one of the aspects of the game that require p
 
 6. Prioritizing and long-term thinking are very important. I got hooked on the dopamine rush of getting a marginal leaderboard jump from minor tweaks. That time should have been spent on more ambitious things that would benefit me more in the long term. I believe this is actually the most important lesson I can take from participating in Kaggle competitions and apply to other parts of my life. Apparently, I still have much to learn in this regard.
 
+#### Worth-Noting Observations
+
+1. My solution is mainly designed for 2-player games, where the net ship counts can be directly calculated from the ships I gained plus the ships the sole opponent lost. In 4-player games, it treats all three opponents as a single opponent, which is strategically misleading. A capture that significantly cripples the hypothetical opponent's economy in my calculation may only hurt the weakest opponent in the game, while the strongest opponent becomes even stronger. The Producer agent's flow-diff algorithm uses the same approach.
+2. Multiple top RL-based solutions use two separate agents: one for 2-player games and one for 4-player games. While this design may make heuristic-based agents more complex, machine-learning-based agents can run two different models within the same prediction framework. This is a significant advantage for machine-learning-based agents over heuristic-based agents.
+
 ### Future Work
 
 There are a lot of interesting things shared in post-competition write-ups that I'd like to explore. To be perfectly candid, some of the code shared in the write-ups is very hard to read. In one case, I found a single Python file with seven thousand lines, including a function of more than 1,000 lines. This is the reality after the advent of coding agents, and people who still like to read and understand code (like me) have to adapt to this reality. Hopefully, I can successfully crack the code and share my findings and lessons learned in a later blog post.
