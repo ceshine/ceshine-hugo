@@ -20,7 +20,7 @@ cover:
   image: "cover.jpg"
   hidden: true
   responsiveImages: true
-  relative: true 
+  relative: true
 url: /post/developing-a-hacker-news-reader/
 ---
 
@@ -129,7 +129,7 @@ flowchart TD
     F --> I[Upsert snapshots, stories, comments]:::rust
     I --> J[Return ingestion summary]:::rust
     J --> K[Python receives counts]:::python
-    
+
     classDef rust fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,color:#0b2b55;
     classDef python fill:#e3f2fd,stroke:#1565c0,stroke-width:1px,color:#0b2b55;
 ```
@@ -275,7 +275,7 @@ source_mode: [page | hn_only]
 {"id": 9272, "parent_id": 9224, "depth": 1, "rank_in_parent": 1, "by": "user2", "time": 1175822880, "dead": false, "deleted": false, "excerpt": "This is a nested reply containing only an excerpt..."}
 ... (one JSON object per line)
 
---- 
+---
 
 [The Page Content in Markdown when `source_mode` is `page`]
 ```

@@ -36,6 +36,33 @@ hugo
 
 This will generate the static site in the `public/` directory.
 
+## Pre-commit Hooks
+
+This project uses [prek](https://github.com/j178/prek) (a Rust re-implementation of pre-commit) to manage Git pre-commit hooks. Configuration is in `.pre-commit-config.yaml`.
+
+### Active hooks
+
+| Hook | Purpose |
+|------|---------|
+| `trailing-whitespace` | Remove trailing whitespace (respects Markdown line breaks) |
+| `end-of-file-fixer` | Ensure files end with a single newline |
+| `check-yaml` | Validate YAML syntax (allows multi-document files) |
+| `check-added-large-files` | Reject files > 500 KB |
+| `check-json` | Validate JSON syntax |
+| `check-merge-conflict` | Detect unresolved merge conflict markers |
+| `check-symlinks` | Prevent broken symlinks |
+| `mixed-line-ending` | Enforce LF line endings |
+
+### Running manually
+
+```bash
+# Check all files
+prek run --all-files
+
+# Check only staged files (identical to commit-time behavior)
+prek run
+```
+
 ## Development Conventions
 
 ### Content

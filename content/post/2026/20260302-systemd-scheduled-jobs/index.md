@@ -21,7 +21,7 @@ cover:
   image: "cover.jpg"
   hidden: true
   responsiveImages: true
-  relative: true 
+  relative: true
 url: /post/systemd-scheduled-jobs/
 ---
 

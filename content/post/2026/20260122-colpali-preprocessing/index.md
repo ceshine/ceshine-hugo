@@ -168,12 +168,12 @@ new_map = np.zeros(batched_similarity_maps[0].shape[1:])
 for idx in range(batched_similarity_maps[0].shape[0]):
     # Pick the `j` index that maximizes the dot product result for each `i`
     index = np.unravel_index(
-        batched_similarity_maps[0][idx].to(torch.float32).cpu().numpy().argmax(), 
+        batched_similarity_maps[0][idx].to(torch.float32).cpu().numpy().argmax(),
         batched_similarity_maps[0][idx].shape
     )
     new_map[index[0]][index[1]] += batched_similarity_maps[0][idx][index[0]][index[1]]
 fig, ax = plot_similarity_map(
-    images[image_idx], 
+    images[image_idx],
     torch.tensor(new_map),
     show_grid_lines=True,
     normalization_range=(0, new_map.max())

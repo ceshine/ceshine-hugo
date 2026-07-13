@@ -24,4 +24,3 @@ Deployment on a VPS (Virtual Private Server) and is not needed for local develop
 ## License
 
 This project is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](./LICENSE) license.
-

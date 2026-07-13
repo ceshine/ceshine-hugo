@@ -60,7 +60,7 @@ The package currently provides the following information:
 
 ## Differences from the Original Bash Script
 
-This package is heavily based on the Bash script published by Tzeng Yuxio in [tzengyuxio/claude-statusline](https://github.com/tzengyuxio/claude-statusline). 
+This package is heavily based on the Bash script published by Tzeng Yuxio in [tzengyuxio/claude-statusline](https://github.com/tzengyuxio/claude-statusline).
 
 The main purposes of this rewrite are:
 
